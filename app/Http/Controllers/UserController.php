@@ -47,7 +47,6 @@ class UserController extends Controller{
             ],400);
         }   
         else{
-            // $check = Hash::check($req->password, $user->password);
             $check = User::where('password',$req->password);
                 if(!$check){
                     return response()->json([

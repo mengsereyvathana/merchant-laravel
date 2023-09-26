@@ -14,24 +14,13 @@ use App\Models\scheme;
 use App\Models\product_price_scheme;
 use App\Models\slide;
 use App\Http\Requests\AddListRequest;
+use App\Http\Requests\UpdateSlideRequest;
 use App\Http\Requests\addCartRequest;
 use App\Http\Requests\UpdateListRequest;
 use Illuminate\Support\Collection;
 
 class ListController extends Controller
 {
-    // $offset=0;
-    //         $pg=1;
-    //         if(isset($_GET['pg'])){
-    //           $pg=$_GET['pg'];
-    //           $offset=($pg-1)* MAXPERPAGE;
-    //         }
-    //         // if($num>3){
-    //         $numpage    = ceil($num/MAXPERPAGE);
-    //         // }else{
-    //         //   $numpage=$num;
-    //         // }
-    //         $sql="select * from tbl_products  limit " . MAXPERPAGE . " offset $offset";
 
     public function list($pg=null){
         $offset = 0;
@@ -65,7 +54,6 @@ class ListController extends Controller
             'total_page'=>$total_page
          ],200);
     }
-
 
     public function user_scheme_price_list(Request $req,$pg=null){
         $offset = 0;
@@ -109,11 +97,6 @@ class ListController extends Controller
             ],404);
         }
     }
-
-    // public function list(){
-    //     $products = products::with ('category')->get();
-    //     return $products;
-    // }
 
    public function add_list(Request $request){
        $currentYear = date('Y');
@@ -161,69 +144,6 @@ class ListController extends Controller
           
        }
    }
-
-// add_list image binary 
-//     public function add_list(AddListRequest $request){
-
-//             // image to string conversion
-//         $imagelink = file_get_contents('https://www.thesprucepets.com/thmb/uQnGtOt9VQiML2oG2YzAmPErrHo=/5441x0/filters:no_upscale():strip_icc()/all-about-tabby-cats-552489-hero-a23a9118af8c477b914a0a1570d4f787.jpg'); 
-//         // uploads/product/2023/07/13th/16892145371060388850.png
-
-//         // image string data into base64 
-//         $encdata = base64_encode($imagelink);
-        
-//         // Output
-//         $emotion = 'data:image/jpeg;base64,' . $encdata;
-//             return $emotion;
-//         // return $encdata; 
-   
-//        $currentYear = date('Y');
-//        $currentMonth = date('m');
-//        $currentDay = date('jS');
-
-//        if ($request->hasFile('image')) {
-//            $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
-
-//            if (!file_exists($folder_name)) {
-//                mkdir($folder_name, 0777, true);
-//            }
-//            $file = $request->file('image');
-//            $extention = strtolower($file->getClientOriginalExtension());
-//            $image_name = time() . rand() . "." . $extention;
-//            $uploads_path = $folder_name . "/";
-//            $image_url = "/" . $uploads_path . $image_name;
-//            $file->move($folder_name . '/', $image_name);
-
-//            $data = products::create([
-//                'name'       => $request->name,
-//                'price'      => round($request->price,4),
-//                'image'      => $image_url,
-//                'color'      => $request->color,
-//                'description'=> $request->description,
-//                'scheme_id'  => $request->scheme_id,
-//                'ram'        => $request->ram,
-//                'storage'    => $request->storage,
-//                'buy'        => round($request->buy,4),
-//                'margin'     => round($request->price-$request->buy,4),
-//                'stock'      => $request->stock,
-//                'action'     => $request->action
-//            ]);
-//            if($data){
-//             return response()->json([
-//                 'success' => true,
-//                 'message' => 'The products has been uploaded.',
-//                 'data'    => $data
-//                ],201);
-//            }else{
-//             return response()->json([
-//                 'success' => false,
-//                 'message' => 'Upload has been errors.',
-//                ],401);
-//            }
-          
-//        }
-//    }
-
 
     public function update_list(UpdateListRequest $req,$id){
             $currentYear = date('Y');
@@ -523,6 +443,7 @@ class ListController extends Controller
     
 
     }
+
     public function delete_cart(Request $req){
       $cart = Cart::where('user_id', $req->user_id)->where('product_id', $req->product_id)->delete();
       if($cart){
@@ -594,7 +515,6 @@ class ListController extends Controller
         }
         // return 'gg';
     }
-
 
     public function order_details(Request $req){
 
@@ -788,6 +708,7 @@ class ListController extends Controller
         }
 
     }
+
     public function list_ordered(Request $req){
        $order_detail = orderDetail::whereRelation('order', 'user_id', $req->user_id)->whereRelation('order', 'status', 'delivered')->with('order','product')->get();
   
@@ -833,19 +754,7 @@ class ListController extends Controller
             ],200);
         }
     }
-    // public function list_slide(){
-    //     $slide = slide::orderBy('slide_order', 'asc')->get();
-    //     if(!$slide){
-    //         return response()->json([
-    //             'success' =>false,
-    //             'message' =>'Not found slide'
-    //         ],404);
-    //     }
-    //     return response()->json([
-    //         'success'=>true,
-    //         'data'=>$slide
-    //     ],200);
-    // }
+
     public function list_category(){
         $get = category::all();
             if($get){
@@ -860,6 +769,7 @@ class ListController extends Controller
                 ],400);
             }
     }
+
     public function user_scheme_price_list_detail(Request $req){
         $user = User::where('id',$req->user_id)->first();
         if($user){
@@ -892,6 +802,7 @@ class ListController extends Controller
             ],400);
         }
     }
+
     public function user_scheme_price_list_by_category(Request $req){
         $user = User::where('id',$req->user_id)->first();
         if($user){
@@ -926,7 +837,8 @@ class ListController extends Controller
             ],400);
         }
     }
-        public function add_slide(Request $request){
+
+    public function add_slide(Request $request){
        $slide_order = slide::max('slide_order');
        if($slide_order==0){
         $slide_order  = 0;
@@ -1004,76 +916,134 @@ class ListController extends Controller
         }    
     }
 
-    public function update_slide(UpdateListRequest $req){
+    public function detail_slide($slide_id){
+        $get_slide = slide::where('id',$slide_id)->first();
+        if($get_slide){
+            return response()->json([
+                'success' =>true,
+                'data'=>$get_slide
+            ],200);
+        }else{
+            return response()->json([
+                'success' =>false,
+                'message'=>'slide not found'
+            ],400);
+        }
+
+    }
+
+    public function update_slide(UpdateSlideRequest $req){
+
         $currentYear = date('Y');
         $currentMonth = date('m');
         $currentDay = date('d');
-        if ($req->hasFile('image')) {
-            $folder_name = 'uploads/slide/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
- 
-            if (!file_exists($folder_name)) {
-                mkdir($folder_name, 0777, true);
-            }
-            $file = $req->file('image');
-            
-            $extention = strtolower($file->getClientOriginalExtension());
-            $image_name = time() . rand() . "." . $extention;
-            $uploads_path = $folder_name . "/";
-            $image_url = "/" . $uploads_path . $image_name;
-            $file->move($folder_name . '/', $image_name);
-
-        $slide_order = slide::max('slide_order');
-        $where_slide_order = slide::where('id',$req->id)->first();
-        $old_slide_order =$where_slide_order->slide_order;
-        $slide = slide::all();
-        // for($i=0;$i<count($slide);$i++) {
-        //      $slide_order_all[] = $slide[$i]['slide_order']; 
+        //find slide 
+        $get_slide = slide::where('id',$req->id)->first(); 
         
-            
-        // }
-       if($old_slide_order==$slide_order ){
+        if($get_slide){
 
-            if($req->new_order>=$old_slide_order){
-                
-                $new_Order = $old_slide_order;
+            $old_img = $get_slide->image;
+            if($req->new_image!=null){
+                $folder_name = 'uploads/slide/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+                if (!file_exists($folder_name)) {
+                    mkdir($folder_name, 0777, true);
+                }
+                $file = $req->file('new_image');
+                $extention = strtolower($file->getClientOriginalExtension());
+                $image_name = time() . rand() . "." . $extention;
+                $uploads_path = $folder_name . "/";
+                $image_url = "/" . $uploads_path . $image_name;
+                $file->move($folder_name . '/', $image_name);
+                //delete old img in local  
+                $new_image =  $image_url;
+                unlink(substr($get_slide->image, 1));
             }else{
-                slide::where('id',$req->id)->update(['slide_order'=>$req->new_order,'image'=>$image_url]);
-                // return $old_slide_order;
-                slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
-            }    
-
-        }
-        else{
-
-            if($req->new_order>=$slide_order){
-
-                $new_Order = $slide_order;
-                // return $new_Order;
-                
-
-                slide::where('id',$req->id)->update(['slide_order'=>$new_Order,'image'=>$image_url]);
-                // return $old_slide_order;
-                slide::where('id', '!=', $req->id)->where('slide_order',$slide_order)->update(['slide_order'=>$old_slide_order]);
-            }else{
-                slide::where('id',$req->id)->update(['slide_order'=>$req->new_order,'image'=>$image_url]);
-                // return $old_slide_order;
-                slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
-                
+                $new_image = $get_slide->image;
             }
+            if($req->new_order!=null){
+                        $slide_order = slide::max('slide_order');
+                        $where_slide_order = slide::where('id',$req->id)->first();
+                        $old_slide_order =$where_slide_order->slide_order;
+                        $slide = slide::all();
+                    if($old_slide_order==$slide_order ){
+                        if($req->new_order>$old_slide_order){
+                            return response()->json([
+                                'success' => false,
+                                'message'=>'The new order is out of the maximum order'
+                            ],400);
+                        }
+                            if($req->new_order==$old_slide_order){
+                                
+                                $new_Order = $old_slide_order;
+                            }else{
+                                slide::where('id',$req->id)->update(['slide_order'=>$req->new_order]);
+                                // return $old_slide_order;
+                                slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
+                            }    
+                        }
+                        else{
+                            if($req->new_order>$slide_order){
+                                return response()->json([
+                                    'success' => false,
+                                    'message'=>'The new order is out of the maximum order'
+                                ],400);
+                            }
+                            if($req->new_order==$slide_order){
+
+                                $new_Order = $slide_order;
+                                // return $new_Order;
+                                
+
+                                slide::where('id',$req->id)->update(['slide_order'=>$new_Order]);
+                                // return $old_slide_order;
+                                slide::where('id', '!=', $req->id)->where('slide_order',$slide_order)->update(['slide_order'=>$old_slide_order]);
+                            }else{
+                                slide::where('id',$req->id)->update(['slide_order'=>$req->new_order]);
+                                // return $old_slide_order;
+                                slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
+                                
+                            }
+                        }
+                        $get_slide = slide::where('id',$req->id)->first(); 
+                        $new_order = $get_slide->slide_order;
+            }else{
+                $new_order = $get_slide->slide_order;
+            }
+            if($req->new_title!=null){
+                $new_title = $req->new_title;
+            }else{
+                $new_title = $get_slide->title;
+            }
+            if($req->new_tage!=null){
+               $new_tage = $req->new_tage;
+            }else{
+                $new_tage = $get_slide->tage;
+            }
+            if($req->new_link!=null){
+                $new_link = $req->new_link;
+            }else{
+                $new_link = $get_slide->link;
+            }
+            if($req->action!=null){
+                $action = $req->action;
+            }else{
+                return $req->action;
+                $action = $get_slide->action; 
+            }
+
+            $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link,'action'=>$action]);
+            return response()->json([
+                'success' => true,
+                'meesage'=>'The slide has been updated'
+            ],200);
+        }else{
+            return response()->json([
+                'success' =>false,
+                'message'=>'The slide ID Not found'
+            ],400);
         }
+
        
-        return response()->json([
-            'success' =>true,
-            'message' =>"You has been Updated"
-        ],200);
-         
-        
-            
-        // $update = slide::where('id',$req->id)->first();
-
-        // $update->image = $image_url;
-        // $update->order = 
-        }
     }
 
 }

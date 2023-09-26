@@ -47,6 +47,7 @@ Route::get('/show_cart/{pg?}',[ListController::class,'show_cart']);
 Route::get('/list/{pg?}',[ListController::class,'list']);
 Route::get('/search/{pg?}',[ListController::class,'search']);
 Route::get('/list_slide',[ListController::class,'list_slide']);
+Route::get('/detail_slide/{slide_id?}',[ListController::class,'detail_slide']);
 
 
 Route::post('/login',[UserController::class,'login']);
