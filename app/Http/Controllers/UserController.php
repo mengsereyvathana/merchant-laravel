@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Kreait\Firebase\Factory;
 use Exception;
-
+//mane.............
 class UserController extends Controller{
 
     public function admin_login(admin_loginRequest $req){
