@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    * {
+        @apply m-0 p-0 box-border outline-none border-none font-sans;
+    }
+    html,
+    body {
+        @apply bg-white font-sans;
+    }
+    html {
+        @apply scroll-smooth scrollbar-none scrollbar-track-gray-200 scrollbar-thumb-main;
+    }
+    .v-select.fit .v-field__append-inner {
+        @apply hidden;
+    }
+    .v-select.fit {
+        @apply max-w-[80px];
+    }
+    .v-select.fit .v-select__selection--comma {
+        @apply text-clip;
+    }
+    .swal2-modal {
+        @apply w-auto;
+    }
+    .swal2-container {
+        @apply w-auto;
+    }
+    .scrollbar-main {
+        @apply scrollbar-thin scrollbar-track-gray-200 scrollbar-thumb-main;
+    }
+    .animate__animated.animate__bounce {
+        @apply duration-200;
+    }
+
+    .input {
+        @apply rounded-md border-gray-300 px-3 py-2 border-solid border focus:border-main focus:ring-main sm:text-sm;
+    }
+    select {
+        @apply rounded-md border-gray-300 px-3 py-2 border-solid border focus:border-main focus:ring-main sm:text-sm;
+    }
+    .w-content {
+        width: calc(100%-250px);
+    }
+    .mycontainer {
+        @apply px-[5%] py-[1.5rem];
+    }
+    .head {
+        @apply bg-head;
+    }
+    .head span {
+        @apply mr-1 text-xs;
+    }
+    .head .soicons i {
+        @apply text-sm mr-3 cursor-pointer;
+    }
+    .navlink ul li {
+        @apply mr-10;
+    }
+    .navlink ul li a {
+        @apply transition hover:text-[#e94560] text-[#2B3445];
+    }
+    .search.active {
+        @apply h-28 fixed top-0 z-40 w-full bg-white transition;
+    }
+    .ripple-effect {
+        @apply relative overflow-hidden inline-block hover:bg-opacity-90;
+    }
+    .ripple {
+        @apply absolute bg-gray-500 w-[10px] h-[10px] rounded-[5px] opacity-0 transform -translate-x-1/2 -translate-y-1/2;
+    }
+    .ripple.animate {
+        @apply animate-ripple;
+    }
+    header ul li {
+        @apply max-lg:w-full max-lg:uppercase;
+    }
+}
+@layer components {
+    .animate-ripple {
+        animation-name: ripple;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: 1;
+    }
+}
+@keyframes ripple {
+    from {
+        opacity: 0.25;
+    }
+    to {
+        opacity: 0;
+        transform: scale(50);
+    }
+}
