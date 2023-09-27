@@ -843,53 +843,57 @@ class ListController extends Controller
     }
 
     public function add_slide(Request $request){
-       $slide_order = slide::max('slide_order');
-       if($slide_order==0){
-        $slide_order  = 0;
-       }else{
-        $slide_order = $slide_order;
-        }
-        $currentYear = date('Y');
-        $currentMonth = date('m');
-        $currentDay = date('d');
-        if ($request->hasFile('image')) {
-            $folder_name = 'uploads/slide/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+        $slide_order = slide::max('slide_order');
+        if($slide_order==0){
+         $slide_order  = 0;
+        }else{
+         $slide_order = $slide_order;
+         }
+         $currentYear = date('Y');
+         $currentMonth = date('m');
+         $currentDay = date('d');
+         if ($request->hasFile('image')) {
+             $folder_name = 'uploads/slide/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+  
+             if (!file_exists($folder_name)) {
+                 mkdir($folder_name, 0777, true);
+             }
+             $file = $request->file('image');
+             
+             $extention = strtolower($file->getClientOriginalExtension());
+             $image_name = time() . rand() . "." . $extention;
+             $uploads_path = $folder_name . "/";
+             $image_url = "/" . $uploads_path . $image_name;
+             $file->move($folder_name . '/', $image_name);
+         $insert = new slide;
+         $insert->image =$image_url;
+         $insert->slide_order  = $slide_order+1;
+         $insert->title  = $request->title;
+         $insert->tage  = $request->tage;
+         $insert->link  = $request->link;
+         $insert->action  = $request->action;
+         $insert_slide = $insert->save(); 
+         $get_insert = $insert->refresh();  
+         if(!$insert_slide){
+             return response()->json([
+                 'success' =>false,
+                 'message'=>'Error '
+             ],400);
+         }else{
+             return response()->json([
+                 'success' =>true,
+                 'data'=>$get_insert
+             ],200);
+         }  
  
-            if (!file_exists($folder_name)) {
-                mkdir($folder_name, 0777, true);
-            }
-            $file = $request->file('image');
-            
-            $extention = strtolower($file->getClientOriginalExtension());
-            $image_name = time() . rand() . "." . $extention;
-            $uploads_path = $folder_name . "/";
-            $image_url = "/" . $uploads_path . $image_name;
-            $file->move($folder_name . '/', $image_name);
-        $insert = new slide;
-        $insert->image =$image_url;
-        $insert->slide_order  = $slide_order+1;
-        $insert_slide = $insert->save(); 
-        $get_insert = $insert->refresh();  
-        if(!$insert_slide){
-            return response()->json([
-                'success' =>false,
-                'message'=>'Error '
-            ],400);
-        }else{
-            return response()->json([
-                'success' =>true,
-                'data'=>$get_insert
-            ],200);
-        }  
-
-      
-        }else{
-            return response()->json([
-                'success'=>false,
-                'mesaage'=>'No Files image'
-            ],400);
-        }
-    }
+       
+         }else{
+             return response()->json([
+                 'success'=>false,
+                 'mesaage'=>'No Files image'
+             ],400);
+         }
+     }
 
     public function list_slide(){
         $slide = slide::orderBy('slide_order', 'asc')->get();
