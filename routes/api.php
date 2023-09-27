@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListController;
 use App\Http\Controllers\UserController;
-///////////////rtr
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,7 +40,7 @@ Route::group (['middleware' => 'auth:sanctum'],function(){
     Route::get('/user_scheme_price_list_by_category',[ListController::class,'user_scheme_price_list_by_category']);
     Route::post('/add_slide',[ListController::class,'add_slide']);
     Route::delete('/delete_slide',[ListController::class,'delete_slide']);
-    Route::post('/update_slide',[ListController::class,'update_slide']);
+    Route::put('/update_slide',[ListController::class,'update_slide']);
 });
 
 Route::get('/show_cart/{pg?}',[ListController::class,'show_cart']);
