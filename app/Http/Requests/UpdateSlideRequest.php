@@ -12,7 +12,7 @@ class UpdateSlideRequest extends FormRequest
     {
         return [
             'new_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3048',
-            'new_order'=>'numeric',
+            'new_order'=>'numeric|regex:/^(?!0+$)[0-9]+$/',
         ];
     }
 
