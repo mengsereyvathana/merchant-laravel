@@ -131,7 +131,15 @@ class ListController extends Controller
         }
     }
 
-    public function user_scheme_price_list_delete(){
+    public function user_scheme_price_list_delete(Request $req){
+        return 'g';
+            $delete = product_price_scheme::where(['scheme_id',$req->scheme_id],['product_id',$req->product_id])->delete();
+       
+            return response()->json([
+                'success'=>false,
+                'message'=>'The products ID must not be null'
+            ],400);
+      
 
     }
 
@@ -807,6 +815,42 @@ class ListController extends Controller
             }
     }
 
+    public function add_category(Request $request){
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $currentDay = date('d');
+        if ($request->hasFile('image')) {
+            $folder_name = 'uploads/category/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+ 
+            if (!file_exists($folder_name)) {
+                mkdir($folder_name, 0777, true);
+            }
+            $file = $request->file('image');
+            $extention = strtolower($file->getClientOriginalExtension());
+            $image_name = time() . rand() . "." . $extention;
+            $uploads_path = $folder_name . "/";
+            $image_url = "/" . $uploads_path . $image_name;
+            $file->move($folder_name . '/', $image_name);
+            $data = new category;
+            $data->name = $request->name;
+            $data->image = $image_url;
+            $insert = $data->save();
+            $get_data = $data->refresh();
+            if($insert){
+                return response()->json([
+                    'success'=>true,
+                    'data'=>$get_data
+                ],200);
+            }else{
+                return response()->json([
+                    'success'=>true,
+                    'data'=>$get_data
+                ],200);
+            }
+
+        }
+    }
+
     public function user_scheme_price_list_by_category(Request $req){
         $user = User::where('id',$req->user_id)->first();
         if($user){
@@ -926,7 +970,7 @@ class ListController extends Controller
 
     public function detail_slide($slide_id=null){
         $get_slide = slide::where('id',$slide_id)->first();
-        if($slide_id!=null){
+        if($slide_id){
                 if($get_slide){
                 return response()->json([
                     'success' =>true,

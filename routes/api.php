@@ -37,10 +37,11 @@ Route::group (['middleware' => 'auth:sanctum'],function(){
     Route::get('/list_cart',[ListController::class,'list_cart']);
     Route::get('/list_ordered',[ListController::class,'list_ordered']);
     Route::get('/user_scheme_price_list_detail',[ListController::class,'user_scheme_price_list_detail']);
-    Route::get('/user_scheme_price_list_delete/{id?}',[ListController::class,'user_scheme_price_list_delete']);
+    Route::delete('/user_scheme_price_list_delete/{scheme_id?}',[ListController::class,'user_scheme_price_list_delete']);
     Route::get('/user_scheme_price_list_by_category',[ListController::class,'user_scheme_price_list_by_category']);
     Route::post('/add_slide',[ListController::class,'add_slide']);
     Route::delete('/delete_slide',[ListController::class,'delete_slide']);
+    Route::post('/add_category',[ListController::class,'add_category']);
     Route::put('/update_slide',[ListController::class,'update_slide']);////dfdfdklklklklk
 });
 
