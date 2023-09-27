@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group (['middleware' => 'auth:sanctum'],function(){
+    //jasldfjasldjf
     // Route::post('/logout',[UserController::class,'logout'])->name('auth.logout');
     Route::get('/user_scheme_price_list',[ListController::class,'user_scheme_price_list']);
     Route::post('/add_list',[ListController::class,'add_list']);
