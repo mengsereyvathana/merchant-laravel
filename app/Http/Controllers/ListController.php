@@ -1156,9 +1156,13 @@ class ListController extends Controller
                 $new_link = $req->new_link;
             }else{
                 $new_link = $get_slide->link;
+            }if($req->action!=null){
+                $action = $req->action;
+            }else{
+                $action = $get_slide->action;
             }
 
-            $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link]);
+            $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link,'action'=>$action]);
             return response()->json([
                 'success' => true,
                 'meesage'=>'The slide has been updated'
