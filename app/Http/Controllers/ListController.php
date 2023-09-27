@@ -1086,7 +1086,10 @@ class ListController extends Controller
                 $file->move($folder_name . '/', $image_name);
                 //delete old img in local  
                 $new_image =  $image_url;
-                unlink(substr($get_slide->image, 1));
+                $path = public_path(substr($get_slide->image, 1));
+                if(file_exists($path)){
+                    unlink(substr($get_slide->image, 1));
+                }
             }else{
                 $new_image = $get_slide->image;
             }
