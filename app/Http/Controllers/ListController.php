@@ -98,6 +98,43 @@ class ListController extends Controller
         }
     }
 
+    public function user_scheme_price_list_detail(Request $req){
+        $user = User::where('id',$req->user_id)->first();
+        if($user){
+          $scheme_id =  $user->scheme_id;
+          $pro_price_scheme = product_price_scheme::where('product_id',$req->product_id)->where('scheme_id',$scheme_id)->with('products')->with('products.category')->first();
+            if($pro_price_scheme==null){
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'Product Not Found'
+                ],200);
+                }else{
+                    return response()->json([
+                        'success'=>true,
+                        'data'=>$pro_price_scheme
+                    ],200);
+                }
+            
+            if(!$pro_price_scheme){
+            return response()->json([
+                'success'=>false,
+                'data'=>"Can't fetch data"
+            ],400);
+          }
+         
+        }    
+        else{
+            return response()->json([
+                'success'=>false,
+                'data'=>"Can't fetch data"
+            ],400);
+        }
+    }
+
+    public function user_scheme_price_list_delete(){
+
+    }
+
    public function add_list(Request $request){
        $currentYear = date('Y');
        $currentMonth = date('m');
@@ -167,17 +204,17 @@ class ListController extends Controller
             
             if($update){
 
-                if(!$req->name){
+                if(!$req->name!=null){
                     $update->name = $update->name;
                 }else{
                 $update->name       = $req->name;
                 }
-                if(!$req->price){
+                if(!$req->price!=null){
                     $update->price = $update->price;
                 }else{
                     $update->price      = $req->price;
                 }
-                if(!$req->image){
+                if(!$req->image!=null){
                     $update->image = $update->image;
                 }else{
                     if (file_exists(substr($update->image, 1))){ //check file's_path
@@ -186,37 +223,37 @@ class ListController extends Controller
                 $update->image      = $image_url;
                 }
 
-                if(!$req->color){
+                if(!$req->color!=null){
                     $update->color = $update->color;
                 }else{
                     $update->color      = $req->color;
                 }
-                if(!$req->description){
+                if(!$req->description!=null){
                     $update->description = $update->description;
                 }else{
                     $update->description= $req->description;
                 }
-                if(!$req->ram){
+                if(!$req->ram!=null){
                     $update->ram = $update->ram;
                 }else{
                     $update->ram        = $req->ram;
                 }
-                if(!$req->storage){
+                if(!$req->storage!=null){
                     $update->storage = $update->storage;
                 }else{
                     $update->storage    = $req->storage;
                 }
-                if(!$req->buy){
+                if(!$req->buy!=null){
                     $update->buy = $update->buy;
                 }else{
                     $update->buy        = $req->buy;
                 }
-                if(!$req->stock){
+                if(!$req->stock!=null){
                     $update->stock = $update->stock;
                 }else{
                     $update->stock      = $req->stock;
                 }
-                if(!$req->action){
+                if(!$req->action!=null){
                     $update->action = $update->action;
                 }else{
                     $update->action     = $req->action;
@@ -224,7 +261,7 @@ class ListController extends Controller
                 // return $update->name;
 
                 $update->created_at = $update->created_at;
-                $update->updated_at =  date('Y-m-d H:i:s');
+                $update->updated_at =  now('Y-m-d H:i:s');
             
                 $result = $update->save();
                 $data   = $update->refresh();
@@ -770,39 +807,6 @@ class ListController extends Controller
             }
     }
 
-    public function user_scheme_price_list_detail(Request $req){
-        $user = User::where('id',$req->user_id)->first();
-        if($user){
-          $scheme_id =  $user->scheme_id;
-          $pro_price_scheme = product_price_scheme::where('product_id',$req->product_id)->where('scheme_id',$scheme_id)->with('products')->with('products.category')->first();
-            if($pro_price_scheme==null){
-                return response()->json([
-                    'success'=>false,
-                    'message'=>'Product Not Found'
-                ],200);
-                }else{
-                    return response()->json([
-                        'success'=>true,
-                        'data'=>$pro_price_scheme
-                    ],200);
-                }
-            
-            if(!$pro_price_scheme){
-            return response()->json([
-                'success'=>false,
-                'data'=>"Can't fetch data"
-            ],400);
-          }
-         
-        }    
-        else{
-            return response()->json([
-                'success'=>false,
-                'data'=>"Can't fetch data"
-            ],400);
-        }
-    }
-
     public function user_scheme_price_list_by_category(Request $req){
         $user = User::where('id',$req->user_id)->first();
         if($user){
@@ -916,20 +920,28 @@ class ListController extends Controller
         }    
     }
 
-    public function detail_slide($slide_id){
+    public function detail_slide($slide_id=null){
         $get_slide = slide::where('id',$slide_id)->first();
-        if($get_slide){
-            return response()->json([
-                'success' =>true,
-                'data'=>$get_slide
-            ],200);
+        if($slide_id!=null){
+                if($get_slide){
+                return response()->json([
+                    'success' =>true,
+                    'data'=>$get_slide
+                ],200);
+            }else{
+                return response()->json([
+                    'success' =>false,
+                    'message'=>'slide not found'
+                ],400);
+            }
+
         }else{
             return response()->json([
                 'success' =>false,
-                'message'=>'slide not found'
+                'message'=>'The slide ID must not be null '
             ],400);
         }
-
+       
     }
 
     public function update_slide(UpdateSlideRequest $req){
