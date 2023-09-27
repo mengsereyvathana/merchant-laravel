@@ -944,6 +944,120 @@ class ListController extends Controller
        
     }
 
+    // public function update_slide(UpdateSlideRequest $req){
+
+    //     $currentYear = date('Y');
+    //     $currentMonth = date('m');
+    //     $currentDay = date('d');
+    //     //find slide 
+    //     $get_slide = slide::where('id',$req->id)->first(); 
+        
+    //     if($get_slide){
+
+    //         $old_img = $get_slide->image;
+    //         if($req->new_image!=null){
+    //             $folder_name = 'uploads/slide/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+    //             if (!file_exists($folder_name)) {
+    //                 mkdir($folder_name, 0777, true);
+    //             }
+    //             $file = $req->file('new_image');
+    //             $extention = strtolower($file->getClientOriginalExtension());
+    //             $image_name = time() . rand() . "." . $extention;
+    //             $uploads_path = $folder_name . "/";
+    //             $image_url = "/" . $uploads_path . $image_name;
+    //             $file->move($folder_name . '/', $image_name);
+    //             //delete old img in local  
+    //             $new_image =  $image_url;
+    //             unlink(substr($get_slide->image, 1));
+    //         }else{
+    //             $new_image = $get_slide->image;
+    //         }
+    //         if($req->new_order!=null){
+    //                     $slide_order = slide::max('slide_order');
+    //                     $where_slide_order = slide::where('id',$req->id)->first();
+    //                     $old_slide_order =$where_slide_order->slide_order;
+    //                     $slide = slide::all();
+    //                 if($old_slide_order==$slide_order ){
+    //                     if($req->new_order>$old_slide_order){
+    //                         return response()->json([
+    //                             'success' => false,
+    //                             'message'=>'The new order is out of the maximum order'
+    //                         ],400);
+    //                     }
+    //                         if($req->new_order==$old_slide_order){
+                                
+    //                             $new_Order = $old_slide_order;
+    //                         }else{
+    //                             slide::where('id',$req->id)->update(['slide_order'=>$req->new_order]);
+    //                             // return $old_slide_order;
+    //                             slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
+    //                         }    
+    //                     }
+    //                     else{
+    //                         if($req->new_order>$slide_order){
+    //                             return response()->json([
+    //                                 'success' => false,
+    //                                 'message'=>'The new order is out of the maximum order'
+    //                             ],400);
+    //                         }
+    //                         if($req->new_order==$slide_order){
+
+    //                             $new_Order = $slide_order;
+    //                             // return $new_Order;
+                                
+
+    //                             slide::where('id',$req->id)->update(['slide_order'=>$new_Order]);
+    //                             // return $old_slide_order;
+    //                             slide::where('id', '!=', $req->id)->where('slide_order',$slide_order)->update(['slide_order'=>$old_slide_order]);
+    //                         }else{
+    //                             slide::where('id',$req->id)->update(['slide_order'=>$req->new_order]);
+    //                             // return $old_slide_order;
+    //                             slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
+                                
+    //                         }
+    //                     }
+    //                     $get_slide = slide::where('id',$req->id)->first(); 
+    //                     $new_order = $get_slide->slide_order;
+    //         }else{
+    //             $new_order = $get_slide->slide_order;
+    //         }
+    //         if($req->new_title!=null){
+    //             $new_title = $req->new_title;
+    //         }else{
+    //             $new_title = $get_slide->title;
+    //         }
+    //         if($req->new_tage!=null){
+    //            $new_tage = $req->new_tage;
+    //         }else{
+    //             $new_tage = $get_slide->tage;
+    //         }
+    //         if($req->new_link!=null){
+    //             $new_link = $req->new_link;
+    //         }else{
+    //             $new_link = $get_slide->link;
+    //         }
+    //         if($req->action!=null){
+    //             $action = $req->action;
+    //         }else{
+    //             return $req->action;
+    //             $action = $get_slide->action; 
+    //         }
+
+    //         $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link,'action'=>$action]);
+    //         return response()->json([
+    //             'success' => true,
+    //             'meesage'=>'The slide has been updated'
+    //         ],200);
+    //     }else{
+    //         return response()->json([
+    //             'success' =>false,
+    //             'message'=>'The slide ID Not found'
+    //         ],400);
+    //     }
+
+       
+    // }
+
     public function update_slide(UpdateSlideRequest $req){
 
         $currentYear = date('Y');
@@ -1036,14 +1150,8 @@ class ListController extends Controller
             }else{
                 $new_link = $get_slide->link;
             }
-            if($req->action!=null){
-                $action = $req->action;
-            }else{
-                return $req->action;
-                $action = $get_slide->action; 
-            }
 
-            $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link,'action'=>$action]);
+            $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link]);
             return response()->json([
                 'success' => true,
                 'meesage'=>'The slide has been updated'
