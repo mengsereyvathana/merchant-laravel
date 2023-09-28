@@ -7,6 +7,7 @@ import { CART_STORE } from '@/store/constants';
 import { useStore } from '@/use/useStore';
 import Swal from 'sweetalert2';
 import { cartService } from '@/services/api/modules/cart.api';
+import { orderService } from '@/services/api/modules/order.api';
 
 const store = useStore();
 const router = useRouter();
@@ -91,11 +92,10 @@ const checkout = async () => {
         if (result.isConfirmed) {
             form.value.user_id = Crypt.decrypt(Cookie.get("session_id") as string) as string;
 
-            const dataOrder = {
-                user_id: form.value.user_id,
-                address_id: "1",
-                pay_by: selected_payment_method.value
-            }
+            const formDataOrder = new FormData();
+            formDataOrder.append("user_id", form.value.user_id);
+            formDataOrder.append("address_id", "1");
+            formDataOrder.append("pay_by", selected_payment_method.value);
 
             Swal.fire({
                 position: 'center',
@@ -106,32 +106,39 @@ const checkout = async () => {
                     Swal.showLoading();
                 }
             })
-            const response = await cartService.addOrder(dataOrder);
-            if (response.success) {
-                const data: CartData[] = [];
-                for (let index = 0; index < products.value.length; index++) {
-                    const item = {
-                        order_id: response.data.id,
-                        product_id: products.value[index].products?.id,
-                        qty: products.value[index].qty,
-                        unit_price: products.value[index].unit_price,
-                        discount: 10,
+            const [error, data] = await orderService.addOrder(formDataOrder);
+            if (error) console.log(error);
+            else {
+                if (data.success) {
+                    const form: CartData[] = [];
+                    for (let index = 0; index < products.value.length; index++) {
+                        const item = {
+                            order_id: data.data.id,
+                            product_id: products.value[index].products?.id,
+                            qty: products.value[index].qty,
+                            unit_price: products.value[index].unit_price,
+                            discount: 10,
+                        }
+                        form.push(item)
                     }
-                    data.push(item)
-                }
-                const res = await cartService.addOrderDetail(data);
-                if (res.success) {
-                    getProductCart();
-                    store.commit(CART_STORE.MUTATIONS.CLEAR_CART, 0);
-                    Swal.close();
-                    Swal.fire({
-                        toast: true,
-                        position: 'top',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 1000,
-                    })
-                    router.push('/my_order');
+
+                    const [error, res] = await orderService.addOrderDetail(form);
+                    if (error) console.log(error)
+                    else {
+                        if (res.success) {
+                            getProductCart();
+                            store.commit(CART_STORE.MUTATIONS.CLEAR_CART, 0);
+                            Swal.close();
+                            Swal.fire({
+                                toast: true,
+                                position: 'top',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1000,
+                            })
+                            router.push('/my_order');
+                        }
+                    }
                 }
             }
         }

@@ -944,7 +944,7 @@ class ListController extends Controller
      }
 
     public function list_slide(){
-        $slide = slide::orderBy('slide_order', 'asc')->get();
+        $slide = slide::orderBy('slide_order', 'asc')->where('action', 1)->get();
         if(!$slide){
             return response()->json([
                 'success' =>false,

@@ -1,22 +1,13 @@
-import { UserID } from "@/services/helper/index";
-import { Http } from "../ApiDataService";
+import { Http } from "../api.service";
 import { CartRoute } from "../route";
 import { ICart, IUpdateCart } from "@/types/Cart";
-import { IAddOrderDetail } from "@/types/OrderDetail";
-import { IAddOrder } from "@/types/Order";
+import { Form } from "./types";
 
-interface CartData {
-    order_id: number;
-    product_id: number | undefined;
-    qty: number;
-    unit_price: number;
-    discount: number;
-}
-
-interface IDataOrder {
-    user_id: string;
-    address_id: string;
-    pay_by: string;
+interface ICartService {
+    getAllCart(user_id: string): Promise<Form<ICart>>;
+    addToCart(data: FormData): Promise<Form<IUpdateCart>>;
+    minusFromCart(data: FormData): Promise<Form<IUpdateCart>>;
+    deleteFromCart(form: FormData): Promise<Form<IUpdateCart>>;
 }
 
 interface IUserCart {
@@ -24,98 +15,42 @@ interface IUserCart {
     product_id: string;
 }
 
-export class Cart extends Http {
-    async getAllCart(user_id: string) {
+export class CartService extends Http implements ICartService {
+    async getAllCart(user_id: string): Promise<Form<ICart>> {
         try {
-            const response = await this.get<ICart>(
-                CartRoute.LIST_CART,
-                { params: { user_id } },
-                true
-            );
-            return response.data;
+            const { data } = await this.get<ICart>(CartRoute.LIST_CART, true, { user_id: user_id });
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error]
         }
     }
-    async addToCart(data: IUserCart) {
+    async addToCart(form: FormData): Promise<Form<IUpdateCart>> {
         try {
-            const formData = new FormData();
-            formData.append("user_id", data.user_id);
-            formData.append("product_id", data.product_id);
-            const response = await this.post<IUpdateCart>(
-                CartRoute.ADD_TO_CART,
-                formData,
-                true
-            );
-            return response.data;
+            const { data } = await this.post<IUpdateCart>(CartRoute.ADD_TO_CART, true, form);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
-    async minusFromCart(data: IUserCart) {
+    async minusFromCart(form: FormData): Promise<Form<IUpdateCart>> {
         try {
-            const formData = new FormData();
-            formData.append("user_id", data.user_id);
-            formData.append("product_id", data.product_id);
-            const response = await this.post<IUpdateCart>(
-                CartRoute.SUB_TO_CART,
-                formData,
-                true
-            );
-            return response.data;
+            const { data } = await this.post<IUpdateCart>(CartRoute.SUB_TO_CART, true, form);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
-    async deleteFromCart(data: IUserCart) {
+    async deleteFromCart(form: FormData): Promise<Form<IUpdateCart>> {
         try {
-            const formData = new FormData();
-            formData.append("user_id", data.user_id);
-            formData.append("product_id", data.product_id);
-            formData.append("_method", "DELETE");
-            const response = await this.post<IUpdateCart>(
-                CartRoute.DELETE_CART,
-                formData,
-                true
-            );
-            return response.data;
+            const { data } = await this.post<IUpdateCart>(CartRoute.DELETE_CART, true, form);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
-        }
-    }
-    async addOrder(data: IDataOrder) {
-        try {
-            const formDataOrder = new FormData();
-            formDataOrder.append("user_id", data.user_id);
-            formDataOrder.append("address_id", data.address_id);
-            formDataOrder.append("pay_by", data.pay_by);
-            const response = await this.post<IAddOrder>(
-                `order`,
-                formDataOrder,
-                true
-            );
-            return response.data;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-    async addOrderDetail(data: CartData[]) {
-        try {
-            const response = await this.post<IAddOrderDetail>(
-                `order_detail`,
-                data,
-                true
-            );
-            return response.data;
-        } catch (error) {
-            console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
 }
-export const cartService = new Cart();
+export const cartService = new CartService();
