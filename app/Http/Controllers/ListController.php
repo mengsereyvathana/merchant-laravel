@@ -54,6 +54,53 @@ class ListController extends Controller
             'total_page'=>$total_page
          ],200);
     }
+
+    public function add_list(AddListRequest $request){
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $currentDay = date('d');
+        if ($request->hasFile('image')) {
+            $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+ 
+            if (!file_exists($folder_name)) {
+                mkdir($folder_name, 0777, true);
+            }
+            $file = $request->file('image');
+            $extention = strtolower($file->getClientOriginalExtension());
+            $image_name = time() . rand() . "." . $extention;
+            $uploads_path = $folder_name . "/";
+            $image_url = "/" . $uploads_path . $image_name;
+            $file->move($folder_name . '/', $image_name);
+            $data = new products;
+                $data->name       = $request->name;
+                $data->price      = round($request->price,4);
+                $data->image      = $image_url;
+                $data->category_id= $request->category_id;
+                $data->color      = $request->color;
+                $data->description= $request->description;
+                $data->ram        = $request->ram;
+                $data->storage    = $request->storage;
+                $data->buy        = round($request->buy,4);
+                $data->margin     = round($request->price-$request->buy,4);
+                $data->stock      = $request->stock;
+                $data->action     = $request->action;
+                $get_data = $data->save();
+                $load_data = $data->refresh();
+            if($get_data){
+             return response()->json([
+                 'success' => true,
+                 'message' => 'The products has been uploaded.',
+                 'data'    => $load_data
+                ],201);
+            }else{
+             return response()->json([
+                 'success' => false,
+                 'message' => 'Upload has been errors.',
+                ],401);
+            }
+           
+        }
+    }
    
     public function user_scheme_price_list(Request $req,$pg=null){
         $offset = 0;
@@ -143,52 +190,7 @@ class ListController extends Controller
 
     }
 
-   public function add_list(Request $request){
-       $currentYear = date('Y');
-       $currentMonth = date('m');
-       $currentDay = date('d');
-       if ($request->hasFile('image')) {
-           $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
-
-           if (!file_exists($folder_name)) {
-               mkdir($folder_name, 0777, true);
-           }
-           $file = $request->file('image');
-           $extention = strtolower($file->getClientOriginalExtension());
-           $image_name = time() . rand() . "." . $extention;
-           $uploads_path = $folder_name . "/";
-           $image_url = "/" . $uploads_path . $image_name;
-           $file->move($folder_name . '/', $image_name);
-
-           $data = products::create([
-               'name'       => $request->name,
-               'price'      => round($request->price,4),
-               'image'      => $image_url,
-               'category_id'=> $request->category_id,
-               'color'      => $request->color,
-               'description'=> $request->description,
-               'ram'        => $request->ram,
-               'storage'    => $request->storage,
-               'buy'        => round($request->buy,4),
-               'margin'     => round($request->price-$request->buy,4),
-               'stock'      => $request->stock,
-               'action'     => $request->action
-           ]);
-           if($data){
-            return response()->json([
-                'success' => true,
-                'message' => 'The products has been uploaded.',
-                'data'    => $data
-               ],201);
-           }else{
-            return response()->json([
-                'success' => false,
-                'message' => 'Upload has been errors.',
-               ],401);
-           }
-          
-       }
-   }
+    
 
     public function update_list(UpdateListRequest $req,$id){
             $currentYear = date('Y');
