@@ -46,6 +46,7 @@ Route::group (['middleware' => 'auth:sanctum'],function(){
 });
 
 Route::get('/show_cart/{pg?}',[ListController::class,'show_cart']);
+
 Route::get('/list/{pg?}',[ListController::class,'list']);
 Route::get('/search/{pg?}',[ListController::class,'search']);
 Route::get('/list_slide',[ListController::class,'list_slide']);

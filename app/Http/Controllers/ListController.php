@@ -54,7 +54,7 @@ class ListController extends Controller
             'total_page'=>$total_page
          ],200);
     }
-
+   
     public function user_scheme_price_list(Request $req,$pg=null){
         $offset = 0;
         $limit  = 4;
@@ -833,6 +833,7 @@ class ListController extends Controller
             $file->move($folder_name . '/', $image_name);
             $data = new category;
             $data->name = $request->name;
+            $data->des = $request->des;
             $data->image = $image_url;
             $insert = $data->save();
             $get_data = $data->refresh();
