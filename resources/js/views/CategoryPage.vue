@@ -13,7 +13,7 @@ onMounted(() => {
 const getCategory = async () => {
     try {
         const [error, data] = await categoryService.getAllCategories();
-        if (error) console.log(error)
+        if (error) console.log(error);
         else {
             if (data.success) {
                 categories.value = data.data;
