@@ -20,10 +20,13 @@ onMounted(() => {
 })
 
 const getSlider = async () => {
-    const response = await sliderService.getAllSliders();
-    if (response.success) {
-        sliders.value = response.data;
-        isSliderLoaded.value = true;
+    const [error, data] = await sliderService.getAllSliders();
+    if (error) console.log(error);
+    else {
+        if (data.success) {
+            sliders.value = data.data;
+            isSliderLoaded.value = true;
+        }
     }
 }
 

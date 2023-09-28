@@ -950,9 +950,14 @@ class ListController extends Controller
          }
      }
 
+<<<<<<< HEAD
     
      public function list_slide(){
         $slide = slide::orderBy('slide_order', 'asc')->get();
+=======
+    public function list_slide(){
+        $slide = slide::orderBy('slide_order', 'asc')->where('action', 1)->get();
+>>>>>>> 5f86854c3a6249d7369fffe36e4864401c76fa34
         if(!$slide){
             return response()->json([
                 'success' =>false,

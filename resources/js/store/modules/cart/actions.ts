@@ -15,23 +15,30 @@ import { User } from "@/services/api/modules/user.api";
 export const actions: ActionTree<CartStateTypes, IRootState> &
     CartActionsTypes = {
     async [CART_STORE.ACTIONS.GET_CART_ITEM_API]({ commit }) {
-        const user_id  = UserID.getUser();
-        const response = await cartService.getAllCart(user_id);
-        if (response.success) {
-            commit(CART_STORE.MUTATIONS.SET_CART, JSON.stringify(response));
+        const user_id = UserID.getUser();
+        const [error, data] = await cartService.getAllCart(user_id);
+        if (error) console.log(error)
+        else {
+            if (data.success) {
+                commit(CART_STORE.MUTATIONS.SET_CART, JSON.stringify(data));
+            }
         }
     },
     async [CART_STORE.ACTIONS.ADD_TO_CART](
         { commit },
         payload: IPayload<string>
     ) {
-        const user_id  = UserID.getUser();
+        const user_id = UserID.getUser();
         const { product_id } = payload;
 
-        const data = {
-            user_id: user_id,
-            product_id: product_id,
-        };
+        // const data = {
+        //     user_id: user_id,
+        //     product_id: product_id,
+        // };
+
+        const formData = new FormData();
+        formData.append("user_id", user_id);
+        formData.append("product_id", product_id);
 
         Swal.fire({
             position: "center",
@@ -43,23 +50,26 @@ export const actions: ActionTree<CartStateTypes, IRootState> &
             },
         });
 
-        const response = await cartService.addToCart(data);
-        if (response.success) {
-            Swal.close();
-            commit(CART_STORE.MUTATIONS.ADD_TO_CART, response.data);
+        const [error, data] = await cartService.addToCart(formData);
+        if (error) console.log(error);
+        else {
+            if (data.success) {
+                Swal.close();
+                commit(CART_STORE.MUTATIONS.ADD_TO_CART, data.data);
+            }
         }
     },
     async [CART_STORE.ACTIONS.MINUS_FROM_CART](
         { commit },
         payload: IPayload<string>
     ) {
-        const user_id  = UserID.getUser();
+        const user_id = UserID.getUser();
         const { product_id } = payload;
 
-        const data = {
-            user_id: user_id,
-            product_id: product_id,
-        };
+        const formData = new FormData();
+        formData.append("user_id", user_id);
+        formData.append("product_id", product_id);
+
         Swal.fire({
             position: "center",
             allowEscapeKey: false,
@@ -70,10 +80,13 @@ export const actions: ActionTree<CartStateTypes, IRootState> &
             },
         });
 
-        const response = await cartService.minusFromCart(data);
-        if (response.success) {
-            Swal.close();
-            commit(CART_STORE.MUTATIONS.MINUS_FROM_CART, response.data);
+        const [error, data] = await cartService.minusFromCart(formData);
+        if (error) console.log(error)
+        else {
+            if (data.success) {
+                Swal.close();
+                commit(CART_STORE.MUTATIONS.MINUS_FROM_CART, data.data);
+            }
         }
     },
     async [CART_STORE.ACTIONS.DELETE_FROM_CART](
@@ -81,7 +94,7 @@ export const actions: ActionTree<CartStateTypes, IRootState> &
         payload: IPayload<string>
     ) {
         try {
-            const user_id  = UserID.getUser();
+            const user_id = UserID.getUser();
             const { product_id, index } = payload;
 
             const result = await Swal.fire({
@@ -94,10 +107,10 @@ export const actions: ActionTree<CartStateTypes, IRootState> &
                 confirmButtonText: "Yes, delete it!",
             });
             if (result.isConfirmed) {
-                const data = {
-                    user_id: user_id,
-                    product_id: product_id,
-                };
+                const formData = new FormData();
+                formData.append("user_id", user_id);
+                formData.append("product_id", product_id);
+                formData.append("_method", "DELETE");
                 Swal.fire({
                     position: "center",
                     allowEscapeKey: false,
@@ -107,28 +120,17 @@ export const actions: ActionTree<CartStateTypes, IRootState> &
                         Swal.showLoading();
                     },
                 });
-                const response = await cartService.deleteFromCart(data);
-                if (response.success) {
-                    Swal.close();
-                    commit(
-                        CART_STORE.MUTATIONS.DELETE_FROM_CART,
-                        Number(index)
-                    );
+                const [error, data] = await cartService.deleteFromCart(formData);
+                if (error) console.log(error);
+                else {
+                    if (data.success) {
+                        Swal.close();
+                        commit(CART_STORE.MUTATIONS.DELETE_FROM_CART, Number(index));
+                    }
                 }
             }
         } catch (error) {
             console.log(error);
-            Swal.fire({
-                toast: true,
-                position: "center",
-                showClass: {
-                    icon: "animated heartBeat delay-1s",
-                },
-                icon: "info",
-                text: "Unauthorized",
-                showConfirmButton: false,
-                timer: 1000,
-            });
         }
     },
 };

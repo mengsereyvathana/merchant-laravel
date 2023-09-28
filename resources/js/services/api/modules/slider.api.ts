@@ -1,17 +1,21 @@
 import { ISlider } from "@/types/Slider";
-import { Http } from "../ApiDataService";
+import { Http } from "../api.service";
 import { SliderRoute } from "../route";
+import { Form } from "./types";
 
-export class Slider extends Http {
-    async getAllSliders() {
+interface ISlideshowService {
+    getAllSliders(): Promise<Form<ISlider>>;
+}
+export class SlideshowService extends Http implements ISlideshowService {
+    async getAllSliders(): Promise<Form<ISlider>> {
         try {
-            const response = await this.getAll<ISlider>(SliderRoute.LIST_SLIDER);
-            return response.data;
+            const { data } = await this.getAll<ISlider>(SliderRoute.LIST_SLIDER);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
 }
 
-export const sliderService = new Slider();
+export const sliderService = new SlideshowService();

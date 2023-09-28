@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, CreateAxiosDefaults, InternalAxiosRequestConfig } from "axios";
-import { API_URL } from '@/config/api.config'
-import { Cookie } from "../helper";
+import { Cookie } from "../helper/index";
 
 export type Data = object | FormData
 

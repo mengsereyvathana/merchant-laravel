@@ -1,21 +1,22 @@
-import { Http } from "../ApiDataService";
+import { Http } from "../api.service";
 import { ICategory } from "@/types/Category";
 import { CategoryRoute } from "../route";
+import { Form } from "./types";
 
-export class Category {
-    protected readonly http: Http;
-    constructor() {
-        this.http = new Http();
-    }
-    async getAll() {
+interface ICategoryService {
+    getAllCategories(): Promise<Form<ICategory>>;
+}
+
+export class CategoryService extends Http implements ICategoryService {
+    async getAllCategories(): Promise<Form<ICategory>> {
         try {
-            const response = await this.http.getAll<ICategory>(CategoryRoute.LIST_CATEGORY);
-            return response.data;
+            const { data } = await this.getAll<ICategory>(CategoryRoute.LIST_CATEGORY);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
 }
 
-export const categoryService = new Category();
+export const categoryService = new CategoryService();
