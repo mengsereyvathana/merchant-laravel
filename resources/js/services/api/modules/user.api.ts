@@ -1,5 +1,5 @@
-import { Cookie, Crypt, UserID } from "@/services/helper/index";
-import { Http } from "../ApiDataService";
+import { Cookie, Crypt } from "@/services/helper/index";
+import { Http } from "../api.service";
 import { IAuth } from "@/types/Auth";
 import { IChecker } from "@/types/Checker";
 import { IUserDetail } from "@/types/UserDetail";
@@ -10,6 +10,7 @@ import { UserRoute } from "../route";
 import { httpAuth } from "../http.common";
 import { store } from "@/store";
 import { AUTH_STORE } from "@/store/constants";
+import { Form } from "./types";
 
 export type UserSendCode = Pick<IUserForm, "verificationId"> | undefined;
 export type SuccessChecker = Pick<IUserForm, "success">;
@@ -17,6 +18,20 @@ export type TLoginWithPhone = Pick<IUserForm, "phoneNumber" | "pss">;
 export type Auth = ReturnType<typeof getAuth>;
 export type UserCredential = ReturnType<typeof signInWithCredential>;
 export type FirebaseErrorCodes = typeof AuthErrorCodes;
+
+interface IUserService {
+    createRecaptchaVerifier(appVerifier: RecaptchaVerifier | null, auth: Auth): Promise<RecaptchaVerifier>;
+    sendCode(phoneNumber: string, appVerifier: RecaptchaVerifier, auth: Auth): Promise<UserSendCode>;
+    verifyCode(verificationId: string, code: string, auth: Auth): Promise<UserCredential>;
+    login(data: IUserForm): Promise<void>;
+    loginWithPhone(form: FormData): Promise<Form<ILoginPhone>>;
+    logoutFirebase(auth: Auth): Promise<SuccessChecker>;
+    logoutBaseToken(): Promise<void>;
+    getUser(token: string | null): Promise<IUserDetail | undefined>
+    checkAuth(token: string | null): Promise<IChecker>;
+    checkUser(phoneNumber: string): Promise<{ isNewUser: boolean; message: string; token?: string | null } | undefined>;
+    registerUser(full_name: string, dob: string, default_password: string, phoneNumber: string): Promise<{ success: boolean; message: string; token: string | null } | undefined>;
+}
 
 export interface IUserForm {
     success: boolean;
@@ -30,12 +45,7 @@ export interface IUserForm {
     isSent: true;
 }
 
-export class User extends Http {
-    // private user_id: Record<string, string>;
-    // constructor() {
-    //     super();
-    //     this.user_id = UserID.getUser();
-    // }
+export class UserService extends Http implements IUserService {
     async createRecaptchaVerifier(appVerifier: RecaptchaVerifier | null, auth: Auth): Promise<RecaptchaVerifier> {
         return (appVerifier = new RecaptchaVerifier(auth, "recaptcha-container", { size: "invisible" }));
     }
@@ -59,13 +69,13 @@ export class User extends Http {
             throw error;
         }
     }
-    async login(data: IUserForm) {
+    async login(data: IUserForm): Promise<void> {
         try {
             const formData = new FormData();
             formData.append("PhoneEmail", data.email);
             formData.append("password", data.password);
 
-            const response = await this.post<IAuth>(UserRoute.LOGIN, formData);
+            const response = await this.post<IAuth>(UserRoute.LOGIN, false, formData);
             if (response.data.success) {
                 Cookie.set("token", response.data.token, 10);
                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(response.data.user.id)), 10);
@@ -74,16 +84,13 @@ export class User extends Http {
             console.log(error);
         }
     }
-    async loginWithPhone(data: TLoginWithPhone) {
+    async loginWithPhone(form: FormData): Promise<Form<ILoginPhone>> {
         try {
-            const formData = new FormData();
-            formData.append("phoneNumber", `+855${data.phoneNumber}`);
-            formData.append("pss", data.pss);
-            const response = await this.post<ILoginPhone>(`log_with_phone`, formData);
-            return response.data;
+            const { data } = await this.post<ILoginPhone>(`log_with_phone`, false, form);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
 
@@ -107,9 +114,9 @@ export class User extends Http {
             throw error;
         }
     }
-    async logoutBaseToken() {
+    async logoutBaseToken(): Promise<void> {
         try {
-            const response = await this.post<IChecker>(UserRoute.LOGOUT, undefined, true);
+            const response = await this.post<IChecker>(UserRoute.LOGOUT);
             if (response.data.success) {
                 console.log();
             }
@@ -118,10 +125,10 @@ export class User extends Http {
         }
     }
 
-    async getUser(token: string | null) {
+    async getUser(token: string | null): Promise<IUserDetail | undefined> {
         try {
             if (token) {
-                const response = await this.get<IUserDetail>(UserRoute.GET_USER, undefined, true);
+                const response = await this.get<IUserDetail>(UserRoute.GET_USER, true);
                 return response.data;
             }
         } catch (error) {
@@ -130,10 +137,10 @@ export class User extends Http {
         }
     }
 
-    async checkAuth(token: string | null) {
+    async checkAuth(token: string | null): Promise<IChecker> {
         try {
             if (token) {
-                const response = await this.get<IChecker>(UserRoute.GET_USER, undefined, true);
+                const response = await this.get<IChecker>(UserRoute.GET_USER, true);
                 return response.data;
             } else {
                 return {
@@ -152,7 +159,7 @@ export class User extends Http {
             formData.append("phoneNumber", `+855${phoneNumber}`);
             formData.append("pss", "12345678");
 
-            const response = await this.post<ILoginPhone>(UserRoute.LOGIN_WITH_PHONE, formData, true);
+            const response = await this.post<ILoginPhone>(UserRoute.LOGIN_WITH_PHONE, true, formData);
             if (response.data.success) {
                 if (response.data.is_new) {
                     return {
@@ -183,7 +190,7 @@ export class User extends Http {
             formData.append("dob", dob);
             formData.append("pss", default_password);
 
-            const response = await this.post<IFormRegister>(UserRoute.REGISTER, formData, true);
+            const response = await this.post<IFormRegister>(UserRoute.REGISTER, true, formData);
 
             if (response.data.success) {
                 Cookie.set("token", response.data.token, 10);
@@ -202,4 +209,4 @@ export class User extends Http {
     }
 }
 
-export const userService = new User();
+export const userService = new UserService();

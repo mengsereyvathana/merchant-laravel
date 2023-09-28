@@ -10,7 +10,6 @@ import Swal from "sweetalert2";
 import { IPayload } from "@/types/Payload";
 import { cartService } from "@/services/api/modules/cart.api";
 import { store } from "@/store";
-import { User } from "@/services/api/modules/user.api";
 
 export const actions: ActionTree<CartStateTypes, IRootState> &
     CartActionsTypes = {

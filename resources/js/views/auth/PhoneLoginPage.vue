@@ -91,7 +91,6 @@ const checkAuth = async () => {
 
 const sendCode = async () => {
     try {
-        console.log(selectedCountry.value?.code)
         if (selectedCountry.value === null || phoneNumber.value === "" || phoneNumber.value.length > 9) {
             return Swal.fire({
                 toast: true,
@@ -205,10 +204,9 @@ const verifyCode = async () => {
                 Swal.close();
                 //Create user in database
                 try {
-                    const data = {
-                        phoneNumber: phoneNumber.value,
-                        pss: "12345678",
-                    }
+                    const formData = new FormData();
+                    formData.append("phoneNumber", `+855${phoneNumber.value}`);
+                    formData.append("pss", "12345678");
 
                     Swal.fire({
                         position: 'center',
@@ -219,20 +217,23 @@ const verifyCode = async () => {
                             window.Swal.showLoading();
                         }
                     });
-                    const response = await userService.loginWithPhone(data)
-                    if (response.success) {
-                        if (response.is_new) {
-                            Swal.close();
-                            store.dispatch(AUTH_STORE.ACTIONS.SET_PASSWORD_PASS, "12345678")
-                            router.push('/form_register/' + phoneNumber.value)
-                        } else {
-                            Swal.close();
-                            httpAuth.defaults.headers.common["Authorization"] = `Bearer ${response.token}`
-                            Cookie.set("token", response.token, 10);
-                            Cookie.set("session_id", Crypt.encrypt(JSON.stringify(response.data.id)), 10);
-                            store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, response.token)
-                            clearInterval(interval)
-                            router.push('/');
+                    const [error, data] = await userService.loginWithPhone(formData)
+                    if (error) console.log(error);
+                    else {
+                        if (data.success) {
+                            if (data.is_new) {
+                                Swal.close();
+                                store.dispatch(AUTH_STORE.ACTIONS.SET_PASSWORD_PASS, "12345678")
+                                router.push('/form_register/' + phoneNumber.value)
+                            } else {
+                                Swal.close();
+                                httpAuth.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
+                                Cookie.set("token", data.token, 10);
+                                Cookie.set("session_id", Crypt.encrypt(JSON.stringify(data.data.id)), 10);
+                                store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, data.token)
+                                clearInterval(interval)
+                                router.push('/');
+                            }
                         }
                     }
                 } catch (error) {

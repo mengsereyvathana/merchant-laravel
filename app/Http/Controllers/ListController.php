@@ -28,8 +28,8 @@ class ListController extends Controller
         if($pg>0){            
             $offset=($pg-1)* $limit;
         }
-         $pg?$data=products::offset($offset)->limit($limit)->orderBy('id', 'DESC')->/* with('category')-> */get()
-         :$data=products::orderBy('id', 'DESC')->/* with('category')-> */get();
+         $pg?$data=products::offset($offset)->limit($limit)->orderBy('id', 'DESC')->with('category')->get()
+         :$data=products::orderBy('id', 'DESC')->with('category')->get();
          $total_page=count(products::all());
 
         if(count($data)==0){
@@ -42,11 +42,11 @@ class ListController extends Controller
             $sum_page = $total_page-($total_page-$offset)+$limit;
         }
         $minutesToAdd = 1;
-        $newTime = strtotime("+$minutesToAdd minutes");
-        date_default_timezone_set('Asia/Bangkok');
-        $date= date('i:s',$newTime);
+        // $newTime = strtotime("+$minutesToAdd minutes");
+        // date_default_timezone_set('Asia/Bangkok');
+        // $date= date('i:s',$newTime);
          return response()->json([
-            'date'=>$date,
+            // 'date'=>$date,
             'success'=>true,
             'data'=>$data,
             
