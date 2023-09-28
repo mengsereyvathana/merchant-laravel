@@ -1,0 +1,1 @@
+export type Form<T> = [null, T] | [Error]

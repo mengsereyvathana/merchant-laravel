@@ -21,11 +21,14 @@ onMounted(() => {
     getProduct();
 })
 const getProduct = async () => {
-    const response = await productService.getProductByCategory(UserID.getUser(), route.params.id as string)
-    if (response.success) {
-        category_name.value = response.category_name;
-        products.value = response.data;
-        product_loaded.value = true;
+    const [error, data] = await productService.getProductByCategory(UserID.getUser(), route.params.id as string)
+    if (error) console.log(error)
+    else {
+        if (data.success) {
+            category_name.value = data.category_name;
+            products.value = data.data;
+            product_loaded.value = true;
+        }
     }
 }
 
