@@ -164,7 +164,7 @@ class ListController extends Controller
                'name'       => $request->name,
                'price'      => round($request->price,4),
                'image'      => $image_url,
-            //    'image'      => 'dd.jpg',
+               'category_id'=> $request->category_id,
                'color'      => $request->color,
                'description'=> $request->description,
                'ram'        => $request->ram,
@@ -266,10 +266,13 @@ class ListController extends Controller
                 }else{
                     $update->action     = $req->action;
                 }
-                // return $update->name;
-
+                if(!$req->category_id){
+                    $update->category_id = $update->category_id;
+                }else{
+                    $update->category_id  = $req->category_id;
+                }
                 $update->created_at = $update->created_at;
-                $update->updated_at =  now('Y-m-d H:i:s');
+                $update->updated_at =  now();
             
                 $result = $update->save();
                 $data   = $update->refresh();

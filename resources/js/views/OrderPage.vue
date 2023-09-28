@@ -16,13 +16,14 @@ onMounted(() => {
 })
 
 const getProductOrder = async () => {
-    const [response] = await orderService.getAllOrders(UserID.getUser());
-    if (response.success) {
-        order_item.value = response.data.reverse();
-        invoice.value = response.invoice.reverse();
-        total.value = response.total.reverse();
-        order_loaded.value = true;
-    } else {
+    const [error, data] = await orderService.getAllOrders(UserID.getUser());
+    if (error) console.log(error);
+    else {
+        if (data.success) {
+            order_item.value = data.data.reverse();
+            invoice.value = data.invoice.reverse();
+            total.value = data.total.reverse();
+        }
         order_loaded.value = true;
     }
 }
