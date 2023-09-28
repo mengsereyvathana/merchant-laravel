@@ -168,6 +168,7 @@ class ListController extends Controller
                'color'      => $request->color,
                'description'=> $request->description,
                'ram'        => $request->ram,
+               'category'   =>$request->category,
                'storage'    => $request->storage,
                'buy'        => round($request->buy,4),
                'margin'     => round($request->price-$request->buy,4),
@@ -265,6 +266,11 @@ class ListController extends Controller
                     $update->action = $update->action;
                 }else{
                     $update->action     = $req->action;
+                }
+                if(!$req->category_id){
+                    $update->category_id = $update->category_id;
+                }else{
+                    $update->category_id  = $req->category_id;
                 }
                 // return $update->name;
 
