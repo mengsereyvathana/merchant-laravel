@@ -15,6 +15,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json([
             'success'=>true,
@@ -23,11 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group (['middleware' => 'auth:sanctum'],function(){
-    //jasldfjasldjf
     // Route::post('/logout',[UserController::class,'logout'])->name('auth.logout');
     Route::get('/user_scheme_price_list',[ListController::class,'user_scheme_price_list']);
     Route::post('/add_list',[ListController::class,'add_list']);
-    Route::put('/update_list/{id}',[ListController::class,'update_list']);
+    Route::get('/detail_list/{id?}',[ListController::class,'detail_list']);
+    Route::put('/update_list/{id?}',[ListController::class,'update_list']);
     Route::delete('delete_list/{id?}',[ListController::class,'delete']);
     Route::post('/sub_to_cart',[ListController::class,'sub_to_cart']);
     Route::delete('/delete_cart',[ListController::class,'delete_cart']);
@@ -42,7 +43,7 @@ Route::group (['middleware' => 'auth:sanctum'],function(){
     Route::post('/add_slide',[ListController::class,'add_slide']);
     Route::delete('/delete_slide',[ListController::class,'delete_slide']);
     Route::post('/add_category',[ListController::class,'add_category']);
-    Route::put('/update_slide',[ListController::class,'update_slide']);////dfdfdklklklklk
+    Route::put('/update_slide',[ListController::class,'update_slide']);
 });
 
 Route::get('/show_cart/{pg?}',[ListController::class,'show_cart']);

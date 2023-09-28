@@ -23,13 +23,14 @@ class ListController extends Controller
 {
 
     public function list($pg=null){
+        // return $user = User::find(1);
         $offset = 0;
         $limit  = 4;
         if($pg>0){            
             $offset=($pg-1)* $limit;
         }
-         $pg?$data=products::offset($offset)->limit($limit)->orderBy('id', 'DESC')->/* with('category')-> */get()
-         :$data=products::orderBy('id', 'DESC')->/* with('category')-> */get();
+         $pg?$data=products::offset($offset)->limit($limit)->orderBy('id', 'DESC')->with('category')->get()
+         :$data=products::orderBy('id', 'DESC')->with('category')->get();
          $total_page=count(products::all());
 
         if(count($data)==0){
@@ -41,18 +42,34 @@ class ListController extends Controller
         }else{
             $sum_page = $total_page-($total_page-$offset)+$limit;
         }
-        $minutesToAdd = 1;
-        $newTime = strtotime("+$minutesToAdd minutes");
-        date_default_timezone_set('Asia/Bangkok');
-        $date= date('i:s',$newTime);
          return response()->json([
-            'date'=>$date,
             'success'=>true,
             'data'=>$data,
-            
             'sum_page'=>$sum_page,
             'total_page'=>$total_page
          ],200);
+    }
+
+    public function detail_list($id=null){
+        $product= products::with('category')->find($id);
+        if($id!=null){
+            if($product){
+                return response()->json([
+                    'success'=>true,
+                    'data'=>$product
+                ],200);
+            }else{
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'Product not found'
+                ],400);
+            }
+        }else{
+            return response()->json([
+                'success'=>false,
+                'message'=>'please input the products Id'
+            ],400);
+        }
     }
 
     public function add_list(AddListRequest $request){
@@ -949,13 +966,14 @@ class ListController extends Controller
              ],400);
          }
      }
-
-<<<<<<< HEAD
-    
      public function list_slide(){
         $slide = slide::orderBy('slide_order', 'asc')->get();
 =======
     public function list_slide(){
+=======
+    
+     public function list_slide(){
+>>>>>>> local
         $slide = slide::orderBy('slide_order', 'asc')->where('action', 1)->get();
 >>>>>>> 5f86854c3a6249d7369fffe36e4864401c76fa34
         if(!$slide){
