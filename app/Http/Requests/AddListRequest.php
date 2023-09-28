@@ -30,7 +30,8 @@ class AddListRequest extends FormRequest
             'storage'=>'required',
             'buy'=>'required',
             'stock'=>'required',
-            'action' => 'required'
+            'action' => 'required',
+            'category_id'=>'required|numeric'
         ];
     }
 

@@ -16,10 +16,13 @@ let product_loaded = ref(false);
 const getProductDetail = async (): Promise<void> => {
     const product_id = route.params.id as string;
     try {
-        const response = await productService.getProductDetail(UserID.getUser(), product_id)
-        if (response?.success) {
-            product_detail.value = response.data;
-            product_loaded.value = true;
+        const [error, data] = await productService.getProductDetail(UserID.getUser(), product_id)
+        if (error) console.log(error)
+        else {
+            if (data.success) {
+                product_detail.value = data.data;
+                product_loaded.value = true;
+            }
         }
     } catch (error) {
         console.log(error)

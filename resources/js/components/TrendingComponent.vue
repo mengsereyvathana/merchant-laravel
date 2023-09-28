@@ -20,10 +20,13 @@ onMounted(() => {
 })
 
 const getProduct = async () => {
-    const response = await productService.getAllProduct(UserID.getUser());
-    if (response?.success) {
-        products.value = response.data
-        product_loaded.value = true
+    const [error, data] = await productService.getAllProducts(UserID.getUser());
+    if (error) console.log(error);
+    else {
+        if (data.success) {
+            products.value = data.data
+            product_loaded.value = true
+        }
     }
 }
 

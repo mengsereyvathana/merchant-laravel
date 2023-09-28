@@ -1,65 +1,50 @@
 import { Crypt, UserID } from "@/services/helper/index";
-import { Http } from "../ApiDataService";
+import { Http } from "../api.service";
 import { IProduct } from "@/types/Product";
 import { IProductDetail } from "@/types/ProductDetail";
 import { IProductCategory } from "@/types/ProductCategory";
 import { ProductRoute } from "../route";
-import { DataService } from "@/types/DataService";
+import { Form } from "./types";
 
-export class Product extends Http {
-    async getAllProduct(user_id: string) {
+interface IProductService {
+    getAllProducts(user_id: string): Promise<Form<IProduct>>;
+    getProductDetail(user_id: string, id: string): Promise<Form<IProductDetail>>;
+    getProductByCategory(user_id: string, id: string): Promise<Form<IProductCategory>>;
+}
+
+export class ProductService extends Http implements IProductService {
+    async getAllProducts(user_id: string): Promise<Form<IProduct>> {
         try {
-            const response = await this.getAll<IProduct>(
-                ProductRoute.LIST_PRODUCT,
-                {
-                    params: { user_id: user_id },
-                },
-                true
-            );
-            return response.data;
+            const { data } = await this.getAll<IProduct>(ProductRoute.LIST_PRODUCT, true, { user_id: user_id });
+            return [null, data];
         } catch (error) {
             console.error(error);
-            throw error;
+            return [error as Error]
         }
     }
 
-    async getProductDetail(user_id: string, id: string) {
+    async getProductDetail(user_id: string, id: string): Promise<Form<IProductDetail>> {
         try {
-            const params = {
+            const { data } = await this.get<IProductDetail>(ProductRoute.PRODUCT_DETAIL, true, {
                 user_id: user_id,
                 product_id: Crypt.decrypt(id),
-            };
-            const response = await this.get<IProductDetail>(
-                ProductRoute.PRODUCT_DETAIL,
-                {
-                    params,
-                },
-                true
-            );
-            return response.data;
+            });
+            return [null, data];
         } catch (error) {
             console.error(error);
-            throw error;
+            return [error as Error]
         }
     }
-    async getProductByCategory(
-        user_id: string,
-        id: string
-    ): Promise<IProductCategory> {
+    async getProductByCategory(user_id: string, id: string): Promise<Form<IProductCategory>> {
         try {
-            const params = {
+            const { data } = await this.getAll<IProductCategory>(ProductRoute.PRODUCT_CATEGORY, true, {
                 user_id: user_id,
                 category_id: Crypt.decrypt(id),
-            };
-            const response = await this.getAll<IProductCategory>(
-                ProductRoute.PRODUCT_CATEGORY,
-                { params },
-                true
-            );
-            return response.data;
+            });
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error]
         }
     }
     async searchProduct(data: any) {
@@ -79,4 +64,4 @@ export class Product extends Http {
     }
 }
 
-export const productService = new Product();
+export const productService = new ProductService();

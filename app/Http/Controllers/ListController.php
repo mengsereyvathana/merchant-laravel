@@ -54,7 +54,197 @@ class ListController extends Controller
             'total_page'=>$total_page
          ],200);
     }
-   
+
+    public function add_list(AddListRequest $request){
+       $currentYear = date('Y');
+       $currentMonth = date('m');
+       $currentDay = date('d');
+       if ($request->hasFile('image')) {
+           $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+
+           if (!file_exists($folder_name)) {
+               mkdir($folder_name, 0777, true);
+           }
+           $file = $request->file('image');
+           $extention = strtolower($file->getClientOriginalExtension());
+           $image_name = time() . rand() . "." . $extention;
+           $uploads_path = $folder_name . "/";
+           $image_url = "/" . $uploads_path . $image_name;
+           $file->move($folder_name . '/', $image_name);
+           $data = new products;
+               $data->name       = $request->name;
+               $data->price      = round($request->price,4);
+               $data->image      = $image_url;
+               $data->category_id= $request->category_id;
+               $data->color      = $request->color;
+               $data->description= $request->description;
+               $data->ram        = $request->ram;
+               $data->storage    = $request->storage;
+               $data->buy        = round($request->buy,4);
+               $data->margin     = round($request->price-$request->buy,4);
+               $data->stock      = $request->stock;
+               $data->action     = $request->action;
+               $get_data = $data->save();
+               $load_data = $data->refresh();
+           if($get_data){
+            return response()->json([
+                'success' => true,
+                'message' => 'The products has been uploaded.',
+                'data'    => $load_data
+               ],201);
+           }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload has been errors.',
+               ],401);
+           }
+          
+       }
+    }
+
+    public function update_list(UpdateListRequest $req,$id){
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+            $currentDay = date('jS');
+            if ($req->hasFile('image')) {
+                $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
+
+                if (!file_exists($folder_name)) {
+                    mkdir($folder_name, 0777, true);
+                }
+                $file = $req->file('image');
+                $extention = strtolower($file->getClientOriginalExtension());
+                $image_name = time() . rand() . "." . $extention;
+                $uploads_path = $folder_name . "/";
+                $image_url = "/" . $uploads_path . $image_name;
+                $file->move($folder_name . '/', $image_name);
+            }
+             $update = products::find($id);
+            // return substr($update->image, 1);
+            
+            if($update){
+
+                if(!$req->name!=null){
+                    $update->name = $update->name;
+                }else{
+                $update->name       = $req->name;
+                }
+                if(!$req->price!=null){
+                    $update->price = $update->price;
+                }else{
+                    $update->price      = $req->price;
+                }
+                if(!$req->image!=null){
+                    $update->image = $update->image;
+                }else{
+                    if (file_exists(substr($update->image, 1))){ //check file's_path
+                        unlink(substr($update->image, 1));
+                    }
+                $update->image      = $image_url;
+                }
+
+                if(!$req->color!=null){
+                    $update->color = $update->color;
+                }else{
+                    $update->color      = $req->color;
+                }
+                if(!$req->description!=null){
+                    $update->description = $update->description;
+                }else{
+                    $update->description= $req->description;
+                }
+                if(!$req->ram!=null){
+                    $update->ram = $update->ram;
+                }else{
+                    $update->ram        = $req->ram;
+                }
+                if(!$req->storage!=null){
+                    $update->storage = $update->storage;
+                }else{
+                    $update->storage    = $req->storage;
+                }
+                if(!$req->buy!=null){
+                    $update->buy = $update->buy;
+                }else{
+                    $update->buy        = $req->buy;
+                }
+                if(!$req->stock!=null){
+                    $update->stock = $update->stock;
+                }else{
+                    $update->stock      = $req->stock;
+                }
+                if(!$req->action!=null){
+                    $update->action = $update->action;
+                }else{
+                    $update->action     = $req->action;
+                }
+                if(!$req->category_id){
+                    $update->category_id = $update->category_id;
+                }else{
+                    $update->category_id  = $req->category_id;
+                }
+                // return $update->name;
+
+                if(!$req->category_id){
+                    $update->category_id = $update->category_id;
+                }else{
+                    $update->category_id  = $req->category_id;
+                }
+                $update->created_at = $update->created_at;
+                $update->updated_at =  now();
+            
+                $result = $update->save();
+                $data   = $update->refresh();
+                if($result){
+                return response()->json([
+                    'success' => true,
+                    'message' => 'You have benn updated',
+                    'data'    => $data
+                ],201);  
+                }
+                else{
+                    return [
+                        'success'=>false
+                    ]; 
+                }
+            }
+            else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No products'
+                ],401);
+            }
+        
+    
+    }
+
+    public function delete($id=null) {
+        // $this->validate($id,[
+        //     'id'=>'required',
+        // ]);
+        if(empty($id)){
+            return response()->json([
+                'success'=>false,
+                'message' => 'Products id not found'
+            ],404);
+            // return 'g';
+        }
+        $article = products::find($id);
+        if($article){
+            $article->delete();
+        return response()->json([
+            'success'=>true,
+            'message'=>'You have been deleted the product.'
+
+        ],200);
+        }else{
+            return response()->json([
+                'success'   =>false,
+                'meassage'  =>'No products'
+            ],404);
+        }
+    }
+
     public function user_scheme_price_list(Request $req,$pg=null){
         $offset = 0;
         $limit  = 4;
@@ -141,192 +331,6 @@ class ListController extends Controller
             ],400);
       
 
-    }
-
-   public function add_list(Request $request){
-       $currentYear = date('Y');
-       $currentMonth = date('m');
-       $currentDay = date('d');
-       if ($request->hasFile('image')) {
-           $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
-
-           if (!file_exists($folder_name)) {
-               mkdir($folder_name, 0777, true);
-           }
-           $file = $request->file('image');
-           $extention = strtolower($file->getClientOriginalExtension());
-           $image_name = time() . rand() . "." . $extention;
-           $uploads_path = $folder_name . "/";
-           $image_url = "/" . $uploads_path . $image_name;
-           $file->move($folder_name . '/', $image_name);
-
-           $data = products::create([
-               'name'       => $request->name,
-               'price'      => round($request->price,4),
-               'image'      => $image_url,
-            //    'image'      => 'dd.jpg',
-               'color'      => $request->color,
-               'description'=> $request->description,
-               'ram'        => $request->ram,
-               'category'   =>$request->category,
-               'storage'    => $request->storage,
-               'buy'        => round($request->buy,4),
-               'margin'     => round($request->price-$request->buy,4),
-               'stock'      => $request->stock,
-               'action'     => $request->action
-           ]);
-           if($data){
-            return response()->json([
-                'success' => true,
-                'message' => 'The products has been uploaded.',
-                'data'    => $data
-               ],201);
-           }else{
-            return response()->json([
-                'success' => false,
-                'message' => 'Upload has been errors.',
-               ],401);
-           }
-          
-       }
-   }
-
-    public function update_list(UpdateListRequest $req,$id){
-            $currentYear = date('Y');
-            $currentMonth = date('m');
-            $currentDay = date('jS');
-            if ($req->hasFile('image')) {
-                $folder_name = 'uploads/product/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
-
-                if (!file_exists($folder_name)) {
-                    mkdir($folder_name, 0777, true);
-                }
-                $file = $req->file('image');
-                $extention = strtolower($file->getClientOriginalExtension());
-                $image_name = time() . rand() . "." . $extention;
-                $uploads_path = $folder_name . "/";
-                $image_url = "/" . $uploads_path . $image_name;
-                $file->move($folder_name . '/', $image_name);
-            }
-             $update = products::find($id);
-            // return substr($update->image, 1);
-            
-            if($update){
-
-                if(!$req->name!=null){
-                    $update->name = $update->name;
-                }else{
-                $update->name       = $req->name;
-                }
-                if(!$req->price!=null){
-                    $update->price = $update->price;
-                }else{
-                    $update->price      = $req->price;
-                }
-                if(!$req->image!=null){
-                    $update->image = $update->image;
-                }else{
-                    if (file_exists(substr($update->image, 1))){ //check file's_path
-                        unlink(substr($update->image, 1));
-                    }
-                $update->image      = $image_url;
-                }
-
-                if(!$req->color!=null){
-                    $update->color = $update->color;
-                }else{
-                    $update->color      = $req->color;
-                }
-                if(!$req->description!=null){
-                    $update->description = $update->description;
-                }else{
-                    $update->description= $req->description;
-                }
-                if(!$req->ram!=null){
-                    $update->ram = $update->ram;
-                }else{
-                    $update->ram        = $req->ram;
-                }
-                if(!$req->storage!=null){
-                    $update->storage = $update->storage;
-                }else{
-                    $update->storage    = $req->storage;
-                }
-                if(!$req->buy!=null){
-                    $update->buy = $update->buy;
-                }else{
-                    $update->buy        = $req->buy;
-                }
-                if(!$req->stock!=null){
-                    $update->stock = $update->stock;
-                }else{
-                    $update->stock      = $req->stock;
-                }
-                if(!$req->action!=null){
-                    $update->action = $update->action;
-                }else{
-                    $update->action     = $req->action;
-                }
-                if(!$req->category_id){
-                    $update->category_id = $update->category_id;
-                }else{
-                    $update->category_id  = $req->category_id;
-                }
-                // return $update->name;
-
-                $update->created_at = $update->created_at;
-                $update->updated_at =  now('Y-m-d H:i:s');
-            
-                $result = $update->save();
-                $data   = $update->refresh();
-                if($result){
-                return response()->json([
-                    'success' => true,
-                    'message' => 'You have benn updated',
-                    'data'    => $data
-                ],201);  
-                }
-                else{
-                    return [
-                        'success'=>false
-                    ]; 
-                }
-            }
-            else{
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No products'
-                ],401);
-            }
-        
-    
-    }
-
-    public function delete($id=null) {
-        // $this->validate($id,[
-        //     'id'=>'required',
-        // ]);
-        if(empty($id)){
-            return response()->json([
-                'success'=>false,
-                'message' => 'Products id not found'
-            ],404);
-            // return 'g';
-        }
-        $article = products::find($id);
-        if($article){
-            $article->delete();
-        return response()->json([
-            'success'=>true,
-            'message'=>'You have been deleted the product.'
-
-        ],200);
-        }else{
-            return response()->json([
-                'success'   =>false,
-                'meassage'  =>'No products'
-            ],404);
-        }
     }
 
     public function search(Request $request,$pg=null){
@@ -946,7 +950,8 @@ class ListController extends Controller
          }
      }
 
-    public function list_slide(){
+    
+     public function list_slide(){
         $slide = slide::orderBy('slide_order', 'asc')->get();
         if(!$slide){
             return response()->json([
@@ -998,120 +1003,6 @@ class ListController extends Controller
         }
        
     }
-
-    // public function update_slide(UpdateSlideRequest $req){
-
-    //     $currentYear = date('Y');
-    //     $currentMonth = date('m');
-    //     $currentDay = date('d');
-    //     //find slide 
-    //     $get_slide = slide::where('id',$req->id)->first(); 
-        
-    //     if($get_slide){
-
-    //         $old_img = $get_slide->image;
-    //         if($req->new_image!=null){
-    //             $folder_name = 'uploads/slide/' . $currentYear . '/' . $currentMonth . '/' . $currentDay;
-    //             if (!file_exists($folder_name)) {
-    //                 mkdir($folder_name, 0777, true);
-    //             }
-    //             $file = $req->file('new_image');
-    //             $extention = strtolower($file->getClientOriginalExtension());
-    //             $image_name = time() . rand() . "." . $extention;
-    //             $uploads_path = $folder_name . "/";
-    //             $image_url = "/" . $uploads_path . $image_name;
-    //             $file->move($folder_name . '/', $image_name);
-    //             //delete old img in local  
-    //             $new_image =  $image_url;
-    //             unlink(substr($get_slide->image, 1));
-    //         }else{
-    //             $new_image = $get_slide->image;
-    //         }
-    //         if($req->new_order!=null){
-    //                     $slide_order = slide::max('slide_order');
-    //                     $where_slide_order = slide::where('id',$req->id)->first();
-    //                     $old_slide_order =$where_slide_order->slide_order;
-    //                     $slide = slide::all();
-    //                 if($old_slide_order==$slide_order ){
-    //                     if($req->new_order>$old_slide_order){
-    //                         return response()->json([
-    //                             'success' => false,
-    //                             'message'=>'The new order is out of the maximum order'
-    //                         ],400);
-    //                     }
-    //                         if($req->new_order==$old_slide_order){
-                                
-    //                             $new_Order = $old_slide_order;
-    //                         }else{
-    //                             slide::where('id',$req->id)->update(['slide_order'=>$req->new_order]);
-    //                             // return $old_slide_order;
-    //                             slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
-    //                         }    
-    //                     }
-    //                     else{
-    //                         if($req->new_order>$slide_order){
-    //                             return response()->json([
-    //                                 'success' => false,
-    //                                 'message'=>'The new order is out of the maximum order'
-    //                             ],400);
-    //                         }
-    //                         if($req->new_order==$slide_order){
-
-    //                             $new_Order = $slide_order;
-    //                             // return $new_Order;
-                                
-
-    //                             slide::where('id',$req->id)->update(['slide_order'=>$new_Order]);
-    //                             // return $old_slide_order;
-    //                             slide::where('id', '!=', $req->id)->where('slide_order',$slide_order)->update(['slide_order'=>$old_slide_order]);
-    //                         }else{
-    //                             slide::where('id',$req->id)->update(['slide_order'=>$req->new_order]);
-    //                             // return $old_slide_order;
-    //                             slide::where('id', '!=', $req->id)->where('slide_order',$req->new_order)->update(['slide_order'=>$old_slide_order]);
-                                
-    //                         }
-    //                     }
-    //                     $get_slide = slide::where('id',$req->id)->first(); 
-    //                     $new_order = $get_slide->slide_order;
-    //         }else{
-    //             $new_order = $get_slide->slide_order;
-    //         }
-    //         if($req->new_title!=null){
-    //             $new_title = $req->new_title;
-    //         }else{
-    //             $new_title = $get_slide->title;
-    //         }
-    //         if($req->new_tage!=null){
-    //            $new_tage = $req->new_tage;
-    //         }else{
-    //             $new_tage = $get_slide->tage;
-    //         }
-    //         if($req->new_link!=null){
-    //             $new_link = $req->new_link;
-    //         }else{
-    //             $new_link = $get_slide->link;
-    //         }
-    //         if($req->action!=null){
-    //             $action = $req->action;
-    //         }else{
-    //             return $req->action;
-    //             $action = $get_slide->action; 
-    //         }
-
-    //         $update_slide = slide::where('id', $req->id)->update(['image'=>$new_image,'slide_order'=>$new_order,'title'=>$new_title,'tage'=>$new_tage,'link'=>$new_link,'action'=>$action]);
-    //         return response()->json([
-    //             'success' => true,
-    //             'meesage'=>'The slide has been updated'
-    //         ],200);
-    //     }else{
-    //         return response()->json([
-    //             'success' =>false,
-    //             'message'=>'The slide ID Not found'
-    //         ],400);
-    //     }
-
-       
-    // }
 
     public function update_slide(UpdateSlideRequest $req){
 
