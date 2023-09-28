@@ -28,6 +28,7 @@ Route::group (['middleware' => 'auth:sanctum'],function(){
     Route::get('/user_scheme_price_list',[ListController::class,'user_scheme_price_list']);
     Route::post('/add_list',[ListController::class,'add_list']);
     Route::put('/update_list/{id}',[ListController::class,'update_list']);
+    Route::get('detail_list/{id?}',[ListController::class,'detail_list']);
     Route::delete('delete_list/{id?}',[ListController::class,'delete']);
     Route::post('/sub_to_cart',[ListController::class,'sub_to_cart']);
     Route::delete('/delete_cart',[ListController::class,'delete_cart']);

@@ -55,6 +55,28 @@ class ListController extends Controller
          ],200);
     }
 
+    public function detail_list($id=null){
+        $product= products::with('category')->find($id);
+        if($id!=null){
+            if($product){
+                return response()->json([
+                    'success'=>true,
+                    'data'=>$product
+                ],200);
+            }else{
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'Product not found'
+                ],400);
+            }
+        }else{
+            return response()->json([
+                'success'=>false,
+                'message'=>'please input the products Id'
+            ],400);
+        }
+    }
+
     public function add_list(AddListRequest $request){
         $currentYear = date('Y');
         $currentMonth = date('m');
@@ -1111,7 +1133,6 @@ class ListController extends Controller
 
        
     // }
-
     public function update_slide(UpdateSlideRequest $req){
 
         $currentYear = date('Y');
