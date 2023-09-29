@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Http } from "@/services/api/ApiDataService";
 import { IRegister } from "@/types/Register";
 import Swal from "sweetalert2";
 

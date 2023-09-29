@@ -45,7 +45,6 @@ const inputs = ["input1", "input2", "input3", "input4", "input5", "input6"];
 const phoneNumber = ref<string>('');
 const verificationId = ref<string | null>(null);
 const errMsg = ref<string>("");
-const token = ref<string | null>("");
 
 let showMsg = ref<string>("");
 let counter = ref<number>(60);
@@ -68,7 +67,6 @@ onMounted(async () => {
 });
 
 const checkAuth = async () => {
-    token.value = store.getters[AUTH_STORE.GETTERS.GET_TOKEN]
     const [error, data] = await userService.checkAuth();
     if (error) console.log(error);
     else {
