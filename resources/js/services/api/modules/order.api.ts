@@ -1,7 +1,7 @@
 import { UserID } from "@/services/helper/index";
 import { Http } from "../api.service";
 import { IAddOrder, IOrder } from "@/types/Order";
-import { OrderRoute } from "../route";
+import { OrderRoute } from "../api.route";
 import { Form } from "./types";
 import { IAddOrderDetail } from "@/types/OrderDetail";
 

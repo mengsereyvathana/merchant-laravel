@@ -1,6 +1,6 @@
 import { Http } from "../api.service";
 import { ICategory } from "@/types/Category";
-import { CategoryRoute } from "../route";
+import { CategoryRoute } from "../api.route";
 import { Form } from "./types";
 
 interface ICategoryService {

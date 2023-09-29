@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Swal from 'sweetalert2';
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
 import { IUser } from '../types/UserDetail'
@@ -6,8 +7,6 @@ import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } 
 import { userService } from '@/services/api/modules/user.api';
 import { useStore } from '@/use/useStore';
 import { AUTH_STORE } from '@/store/constants';
-import Swal from 'sweetalert2';
-import { httpAuth } from '@/services/api/http.common';
 import { Upload } from '@/services/helper';
 
 type Auth = ReturnType<typeof getAuth>
@@ -52,7 +51,6 @@ const handleSignOut = async () => {
     if (result.isConfirmed) {
         const response = await userService.logoutFirebase(auth)
         if (response.success) {
-            delete httpAuth.defaults.headers.common['Authorization'];
             store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, null);
             store.dispatch(AUTH_STORE.ACTIONS.SET_USER_ID, null);
             Swal.fire({

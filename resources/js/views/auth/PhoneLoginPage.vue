@@ -3,14 +3,13 @@ import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, RecaptchaVerifier, AuthError } from "firebase/auth";
 import { Cookie, Crypt } from '@/services/helper/index';
-import { Http } from '@/services/api/ApiDataService'
 import { ILoginPhone } from '@/types/LoginPhone';
 import { useStore } from '@/use/useStore';
 import { AUTH_STORE } from '@/store/constants';
 import { userService } from '@/services/api/modules/user.api';
 import { handleErrorMsg } from '@/services/helper/handleErrorMsg'
 import Swal from 'sweetalert2';
-import { httpAuth } from '@/services/api/http.common';
+// import { httpAuth } from '@/services/api/http.common';
 
 // type FirebaseApp = NonNullable<Parameters<typeof getAuth>[0]>;
 type Auth = ReturnType<typeof getAuth>
@@ -227,7 +226,7 @@ const verifyCode = async () => {
                                 router.push('/form_register/' + phoneNumber.value)
                             } else {
                                 Swal.close();
-                                httpAuth.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
+                                // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
                                 Cookie.set("token", data.token, 10);
                                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(data.data.id)), 10);
                                 store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, data.token)

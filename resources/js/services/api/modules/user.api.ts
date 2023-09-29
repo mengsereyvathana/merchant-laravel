@@ -6,8 +6,8 @@ import { IUserDetail } from "@/types/UserDetail";
 import { RecaptchaVerifier, getAuth, signInWithPhoneNumber, signOut, signInWithCredential, PhoneAuthProvider, AuthErrorCodes, ApplicationVerifier } from "firebase/auth";
 import { ILoginPhone } from "@/types/LoginPhone";
 import { IFormRegister } from "@/types/FormRegister";
-import { UserRoute } from "../route";
-import { httpAuth } from "../http.common";
+import { UserRoute } from "../api.route";
+// import { httpAuth } from "../http.common";
 import { store } from "@/store";
 import { AUTH_STORE } from "@/store/constants";
 import { Form } from "./types";
@@ -26,7 +26,7 @@ interface IUserService {
     login(data: IUserForm): Promise<void>;
     loginWithPhone(form: FormData): Promise<Form<ILoginPhone>>;
     logoutFirebase(auth: Auth): Promise<SuccessChecker>;
-    logoutBaseToken(): Promise<void>;
+    logoutBaseToken(): Promise<Form<IChecker>>
     getUser(token: string | null): Promise<IUserDetail | undefined>
     checkAuth(token: string | null): Promise<IChecker>;
     checkUser(phoneNumber: string): Promise<{ isNewUser: boolean; message: string; token?: string | null } | undefined>;
@@ -96,16 +96,18 @@ export class UserService extends Http implements IUserService {
 
     async logoutFirebase(auth: Auth): Promise<SuccessChecker> {
         try {
-            signOut(auth).then(() => {
-                userService.logoutBaseToken();
-                store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, null);
-                store.dispatch(AUTH_STORE.ACTIONS.SET_USER_ID, null);
-                Cookie.delete("token");
-                Cookie.delete("session_id");
-                return {
-                    success: true,
-                };
-            });
+            await signOut(auth);
+            const [error, data] = await userService.logoutBaseToken();
+            if (error) console.log(error)
+            else {
+                if (data.success) {
+                    Cookie.delete("token");
+                    Cookie.delete("session_id");
+                    return {
+                        success: true,
+                    };
+                }
+            }
             return {
                 success: false,
             };
@@ -114,14 +116,13 @@ export class UserService extends Http implements IUserService {
             throw error;
         }
     }
-    async logoutBaseToken(): Promise<void> {
+    async logoutBaseToken(): Promise<Form<IChecker>> {
         try {
-            const response = await this.post<IChecker>(UserRoute.LOGOUT);
-            if (response.data.success) {
-                console.log();
-            }
+            const { data } = await this.post<IChecker>(UserRoute.LOGOUT, true);
+            return [null, data]
         } catch (error) {
             console.log(error);
+            return [error as Error]
         }
     }
 
@@ -170,7 +171,7 @@ export class UserService extends Http implements IUserService {
                     Cookie.set("token", response.data.token, 10);
                     Cookie.set("session_id", Crypt.encrypt(JSON.stringify(response.data.data.id)), 10);
                     const tokenCookie = Cookie.get("token");
-                    httpAuth.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+                    // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
                     return {
                         isNewUser: false,
                         message: "Welcome back",
@@ -195,7 +196,7 @@ export class UserService extends Http implements IUserService {
             if (response.data.success) {
                 Cookie.set("token", response.data.token, 10);
                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(response.data.data.id)), 10);
-                httpAuth.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+                // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
 
                 return {
                     success: true,

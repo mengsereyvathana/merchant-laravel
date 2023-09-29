@@ -1,5 +1,5 @@
 import { Http } from "../api.service";
-import { CartRoute } from "../route";
+import { CartRoute } from "../api.route";
 import { ICart, IUpdateCart } from "@/types/Cart";
 import { Form } from "./types";
 

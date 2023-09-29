@@ -2,11 +2,10 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Cookie } from "@/services/helper/index";
 import { transition } from "@/store/transition";
-import { Http } from "@/services/api/ApiDataService";
+import { Http } from "@/services/api/api.service";
 import { IUserDetail } from "@/types/UserDetail";
 import { useStore } from "@/use/useStore";
 import { AUTH_STORE } from "@/store/constants";
-import { httpAuth } from "@/services/api/http.common";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -173,7 +172,7 @@ router.beforeEach(async (to, from, next) => {
     store.dispatch(AUTH_STORE.ACTIONS.SET_USER_ID, user_id);
     store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, token);
 
-    httpAuth.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     let toDepth = to.path.split("/").length;
     let fromDepth = from.path.split("/").length;

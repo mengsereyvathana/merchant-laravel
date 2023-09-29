@@ -3,7 +3,7 @@ import { Http } from "../api.service";
 import { IProduct } from "@/types/Product";
 import { IProductDetail } from "@/types/ProductDetail";
 import { IProductCategory } from "@/types/ProductCategory";
-import { ProductRoute } from "../route";
+import { ProductRoute } from "../api.route";
 import { Form } from "./types";
 
 interface IProductService {

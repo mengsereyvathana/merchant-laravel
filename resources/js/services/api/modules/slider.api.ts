@@ -1,6 +1,6 @@
 import { ISlider } from "@/types/Slider";
 import { Http } from "../api.service";
-import { SliderRoute } from "../route";
+import { SliderRoute } from "../api.route";
 import { Form } from "./types";
 
 interface ISlideshowService {
