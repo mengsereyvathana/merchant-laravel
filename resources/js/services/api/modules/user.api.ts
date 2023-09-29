@@ -2,7 +2,7 @@ import { Cookie, Crypt } from "@/services/helper/index";
 import { Http } from "../api.service";
 import { IAuth } from "@/types/Auth";
 import { IChecker } from "@/types/Checker";
-import { IUser, IUserDetail } from "@/types/UserDetail";
+import { IUserDetail } from "@/types/UserDetail";
 import { RecaptchaVerifier, getAuth, signInWithPhoneNumber, signOut, signInWithCredential, PhoneAuthProvider, AuthErrorCodes, ApplicationVerifier } from "firebase/auth";
 import { ILoginPhone } from "@/types/LoginPhone";
 import { IFormRegister } from "@/types/FormRegister";
@@ -46,6 +46,7 @@ export class UserService extends Http implements IUserService {
     async createRecaptchaVerifier(appVerifier: RecaptchaVerifier | null, auth: Auth): Promise<RecaptchaVerifier> {
         return (appVerifier = new RecaptchaVerifier(auth, "recaptcha-container", { size: "invisible" }));
     }
+
     async sendCode(phoneNumber: string, appVerifier: RecaptchaVerifier, auth: Auth): Promise<UserSendCode> {
         try {
             const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier as ApplicationVerifier);
@@ -55,6 +56,7 @@ export class UserService extends Http implements IUserService {
             throw error;
         }
     }
+
     async verifyCode(verificationId: string, code: string, auth: Auth): Promise<UserCredential> {
         try {
             const credential = PhoneAuthProvider.credential(verificationId, code);
@@ -66,6 +68,7 @@ export class UserService extends Http implements IUserService {
             throw error;
         }
     }
+
     async login(data: IUserForm): Promise<void> {
         try {
             const formData = new FormData();
@@ -81,6 +84,7 @@ export class UserService extends Http implements IUserService {
             console.log(error);
         }
     }
+
     async loginWithPhone(form: FormData): Promise<Form<ILoginPhone>> {
         try {
             const { data } = await this.post<ILoginPhone>(`log_with_phone`, false, form);
@@ -113,6 +117,7 @@ export class UserService extends Http implements IUserService {
             throw error;
         }
     }
+
     async logoutBaseToken(): Promise<Form<IChecker>> {
         try {
             const { data } = await this.post<IChecker>(UserRoute.LOGOUT, true);
@@ -185,8 +190,6 @@ export class UserService extends Http implements IUserService {
             if (response.data.success) {
                 Cookie.set("token", response.data.token, 10);
                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(response.data.data.id)), 10);
-                // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
-
                 return {
                     success: true,
                     message: "Successfully registered",

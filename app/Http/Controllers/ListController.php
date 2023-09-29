@@ -123,7 +123,52 @@ class ListController extends Controller
            
         }
     }
-   
+   public function user_scheme_price_list_add(ProductSchemePriceRequest $req){
+        $pro_id = $req->pro_id;
+        $scheme_id = $req->scheme_id;
+        $unit_price = $req->unit_price;
+        $check = product_price_scheme::where('scheme_id',$scheme_id)->where('product_id',$pro_id)->first();
+        if($check){
+            return response()->json([
+                'success'=>false,
+                'message'=>'This products scheme price has been created ',
+                'data'=>$check
+            ],400);
+        }else{
+            $get_product = products::where('id',$pro_id)->first();
+            if($get_product){
+            $price = $get_product->price;
+            $margin = $price - $unit_price;
+            $margin;
+            $insert_pro_scheme_price = new product_price_scheme;
+            $insert_pro_scheme_price->product_id = $pro_id;
+            $insert_pro_scheme_price->scheme_id = $scheme_id;
+            $insert_pro_scheme_price->unit_price = $unit_price;
+            $insert_pro_scheme_price->margin = $margin;
+            $data = $insert_pro_scheme_price->save();
+            $get_data = $insert_pro_scheme_price->refresh();
+            $get_data->setAttribute('margin', 'blablabla');
+            if($data){
+                return response()->json([
+                    'success'=>true,
+                    'message'=>'The Product price scheme has been created successfully',
+                    'data'=>$get_data            
+                ],400);
+            }else{
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'Insert Error'
+                ],400);
+            }
+        }else{
+            return response()->json([
+                'success'=>false,
+                'message'=>'The product ID not found'
+            ],400);
+        }
+        }
+
+    }
     public function user_scheme_price_list(Request $req,$pg=null){
         $offset = 0;
         $limit  = 4;
