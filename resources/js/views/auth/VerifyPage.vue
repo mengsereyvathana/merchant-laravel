@@ -2,7 +2,6 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import 'firebase/compat/auth';
-import { Http } from "@/services/api/ApiDataService";
 import { IChecker } from "@/types/Checker";
 import Swal from 'sweetalert2';
 

@@ -3,8 +3,6 @@ import { onMounted, ref } from 'vue';
 import { Upload, UserID } from '@/services/helper/index';
 import { IOrderItem } from '@/types/Order';
 import { orderService } from '@/services/api/modules/order.api';
-import { store } from '@/store';
-import { AUTH_STORE } from '@/store/constants';
 
 const order_loaded = ref<boolean>(false);
 const invoice = ref<number[]>([]);

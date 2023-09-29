@@ -9,12 +9,28 @@ import { AUTH_STORE } from '@/store/constants';
 import { userService } from '@/services/api/modules/user.api';
 import { handleErrorMsg } from '@/services/helper/handleErrorMsg'
 import Swal from 'sweetalert2';
-// import { httpAuth } from '@/services/api/http.common';
 
 // type FirebaseApp = NonNullable<Parameters<typeof getAuth>[0]>;
 type Auth = ReturnType<typeof getAuth>
 let auth: Auth
 let appVerifier: RecaptchaVerifier | null = null;
+
+const store = useStore();
+const router = useRouter();
+const otpInput = ref<string[]>(["", "", "", "", "", ""]);
+const inputRefs = ref<HTMLInputElement[]>([]);
+const inputs = ["input1", "input2", "input3", "input4", "input5", "input6"];
+const phoneNumber = ref<string>('');
+const verificationId = ref<string | null>(null);
+const errMsg = ref<string>("");
+const isLoggedIn = ref<boolean>(false);
+const isOnVerify = ref<boolean>(false);
+const onResend = ref<boolean>(false);
+
+let showMsg = ref<string>("");
+let counter = ref<number>(60);
+let nextStep = ref<boolean>(false)
+let interval: NodeJS.Timeout;
 
 interface Country {
     code: string;
@@ -34,26 +50,6 @@ const selectedCountry = ref<Country | null>({
     code: '+855',
     name: 'Cambodia',
 });
-
-const store = useStore();
-const router = useRouter();
-
-const otpInput = ref<string[]>(["", "", "", "", "", ""]);
-const inputRefs = ref<HTMLInputElement[]>([]);
-const inputs = ["input1", "input2", "input3", "input4", "input5", "input6"];
-
-const phoneNumber = ref<string>('');
-const verificationId = ref<string | null>(null);
-const errMsg = ref<string>("");
-
-let showMsg = ref<string>("");
-let counter = ref<number>(60);
-let nextStep = ref<boolean>(false)
-let interval: NodeJS.Timeout;
-
-const isLoggedIn = ref<boolean>(false);
-const isOnVerify = ref<boolean>(false);
-const onResend = ref<boolean>(false);
 
 onMounted(async () => {
     auth = getAuth();

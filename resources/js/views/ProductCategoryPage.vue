@@ -12,7 +12,6 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const store = useStore();
-
 const category_name = ref<string>("");
 const products = ref<IProductItem[]>([]);
 const product_loaded = ref<boolean>(false)

@@ -23,12 +23,12 @@ interface CartData {
     discount: number,
 }
 
-interface Data {
+interface IForm {
     token: string | null;
     user_id: string | null;
 }
 
-let form = ref<Data>({
+let form = ref<IForm>({
     user_id: '',
     token: '',
 })

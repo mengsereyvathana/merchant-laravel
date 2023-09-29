@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import { Crypt, Cookie, Upload } from '@/services/helper/index'
-import { Http } from "@/services/api/ApiDataService";
-import { IAuth } from '@/types/Auth';
-import { AUTH_STORE } from "@/store/constants";
-import { useStore } from "@/use/useStore";
+import { Upload } from '@/services/helper/index'
 import { userService } from "@/services/api/modules/user.api";
-import Swal from "sweetalert2";
 
-const store = useStore();
+const router = useRouter();
 const input1 = ref<HTMLInputElement | null>(null);
 const input2 = ref<HTMLInputElement | null>(null);
 
@@ -17,9 +12,6 @@ let message = ref<{ email_validate: string, password_validate: string[] }>({
     email_validate: '',
     password_validate: []
 })
-
-const router = useRouter();
-const token = ref<string | null>('');
 
 interface Form {
     email: string,
@@ -35,12 +27,14 @@ let form: Form = reactive({
 
 
 const checkAuth = async () => {
-    token.value = store.getters[AUTH_STORE.GETTERS.GET_TOKEN]
-    const response = await userService.checkAuth(token.value);
-    if (response.success) {
-        router.replace("/")
-    } else {
-        router.replace("/phone_login")
+    const [error, data] = await userService.checkAuth();
+    if (error) console.log(error);
+    else {
+        if (data.success) {
+            router.replace("/")
+        } else {
+            router.replace("/phone_login")
+        }
     }
 }
 

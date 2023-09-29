@@ -4,6 +4,10 @@ import { useRouter } from 'vue-router';
 import { Upload } from '@/services/helper/index';
 
 const router = useRouter();
+const phoneNumber = ref('+855968184733');
+const messenger = ref('https://m.me/kawaiiiUwU')
+const telegram = ref('https://t.me/Meng_Sereyvathana')
+const map = ref('/map')
 
 const contactMenu = [
     {
@@ -31,11 +35,6 @@ const contactMenu = [
         icon: "map.svg",
     },
 ]
-
-const phoneNumber = ref('+855968184733');
-const messenger = ref('https://m.me/kawaiiiUwU')
-const telegram = ref('https://t.me/Meng_Sereyvathana')
-const map = ref('/map')
 
 function makeAction(action: string) {
     switch (action) {
