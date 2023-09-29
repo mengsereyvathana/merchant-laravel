@@ -15,7 +15,6 @@ let auth: Auth;
 const router = useRouter()
 const store = useStore();
 const isLoggedIn = ref<boolean>(false)
-const token = ref<string | null>('');
 const user = ref<Partial<IUser>>({});
 
 onMounted(async () => {
@@ -30,11 +29,12 @@ onMounted(async () => {
 });
 
 const getUser = async () => {
-    token.value = store.getters[AUTH_STORE.GETTERS.GET_TOKEN]
-    console.log(token.value + "token")
-    const response = await userService.getUser(token.value);
-    if (response?.success) {
-        user.value = response.data
+    const [error, data] = await userService.getUser();
+    if (error) console.log(error);
+    else {
+        if (data.success) {
+            user.value = data.data;
+        }
     }
 };
 

@@ -2,14 +2,11 @@ import { Cookie, Crypt } from "@/services/helper/index";
 import { Http } from "../api.service";
 import { IAuth } from "@/types/Auth";
 import { IChecker } from "@/types/Checker";
-import { IUserDetail } from "@/types/UserDetail";
+import { IUser, IUserDetail } from "@/types/UserDetail";
 import { RecaptchaVerifier, getAuth, signInWithPhoneNumber, signOut, signInWithCredential, PhoneAuthProvider, AuthErrorCodes, ApplicationVerifier } from "firebase/auth";
 import { ILoginPhone } from "@/types/LoginPhone";
 import { IFormRegister } from "@/types/FormRegister";
 import { UserRoute } from "../api.route";
-// import { httpAuth } from "../http.common";
-import { store } from "@/store";
-import { AUTH_STORE } from "@/store/constants";
 import { Form } from "./types";
 
 export type UserSendCode = Pick<IUserForm, "verificationId"> | undefined;
@@ -27,8 +24,8 @@ interface IUserService {
     loginWithPhone(form: FormData): Promise<Form<ILoginPhone>>;
     logoutFirebase(auth: Auth): Promise<SuccessChecker>;
     logoutBaseToken(): Promise<Form<IChecker>>
-    getUser(token: string | null): Promise<IUserDetail | undefined>
-    checkAuth(token: string | null): Promise<IChecker>;
+    getUser(): Promise<Form<IUserDetail>>
+    checkAuth(): Promise<Form<IChecker>>
     checkUser(phoneNumber: string): Promise<{ isNewUser: boolean; message: string; token?: string | null } | undefined>;
     registerUser(full_name: string, dob: string, default_password: string, phoneNumber: string): Promise<{ success: boolean; message: string; token: string | null } | undefined>;
 }
@@ -126,31 +123,23 @@ export class UserService extends Http implements IUserService {
         }
     }
 
-    async getUser(token: string | null): Promise<IUserDetail | undefined> {
+    async getUser(): Promise<Form<IUserDetail>> {
         try {
-            if (token) {
-                const response = await this.get<IUserDetail>(UserRoute.GET_USER, true);
-                return response.data;
-            }
+            const { data } = await this.get<IUserDetail>(UserRoute.GET_USER, true);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
 
-    async checkAuth(token: string | null): Promise<IChecker> {
+    async checkAuth(): Promise<Form<IChecker>> {
         try {
-            if (token) {
-                const response = await this.get<IChecker>(UserRoute.GET_USER, true);
-                return response.data;
-            } else {
-                return {
-                    success: false,
-                };
-            }
+            const { data } = await this.get<IChecker>(UserRoute.GET_USER, true);
+            return [null, data];
         } catch (error) {
             console.log(error);
-            throw error;
+            return [error as Error];
         }
     }
 

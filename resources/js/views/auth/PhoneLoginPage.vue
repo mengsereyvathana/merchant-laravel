@@ -69,22 +69,25 @@ onMounted(async () => {
 
 const checkAuth = async () => {
     token.value = store.getters[AUTH_STORE.GETTERS.GET_TOKEN]
-    const response = await userService.checkAuth(token.value);
-    if (response.success) {
-        Swal.fire({
-            toast: true,
-            position: "top",
-            showClass: {
-                icon: "animated heartBeat delay-1s",
-            },
-            icon: "info",
-            text: "You already have an account.",
-            showConfirmButton: false,
-            timer: 1000,
-        });
-        router.replace("/")
-    } else {
-        router.replace("/phone_login")
+    const [error, data] = await userService.checkAuth();
+    if (error) console.log(error);
+    else {
+        if (data.success) {
+            Swal.fire({
+                toast: true,
+                position: "top",
+                showClass: {
+                    icon: "animated heartBeat delay-1s",
+                },
+                icon: "info",
+                text: "You already have an account.",
+                showConfirmButton: false,
+                timer: 1000,
+            });
+            router.replace("/")
+        } else {
+            router.replace("/phone_login")
+        }
     }
 }
 
