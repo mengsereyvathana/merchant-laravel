@@ -17,6 +17,7 @@ use App\Http\Requests\AddListRequest;
 use App\Http\Requests\UpdateSlideRequest;
 use App\Http\Requests\addCartRequest;
 use App\Http\Requests\UpdateListRequest;
+use App\Http\Requests\ProductSchemePriceRequest;
 use Illuminate\Support\Collection;
 
 class ListController extends Controller
@@ -50,6 +51,7 @@ class ListController extends Controller
             'success'=>true,
             'data'=>$data,
             
+            'per_page' => $limit,
             'sum_page'=>$sum_page,
             'total_page'=>$total_page
          ],200);
