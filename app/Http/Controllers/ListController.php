@@ -155,7 +155,7 @@ class ListController extends Controller
                     'success'=>true,
                     'message'=>'The Product price scheme has been created successfully',
                     'data'=>$get_data            
-                ],400);
+                ],200);
             }else{
                 return response()->json([
                     'success'=>false,
