@@ -53,10 +53,10 @@ class ListController extends Controller
             'success' => true,
             'data' => $data,
 
-            'length' => ceil($total_page / $limit),
             'per_page' => $limit,
+            'total_item' => $total_page,
+            'total_page' => ceil($total_page / $limit),
             'sum_page' => $sum_page,
-            'total_page' => $total_page
         ], 200);
     }
 
