@@ -7,7 +7,7 @@ import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } 
 import { userService } from '@/services/api/modules/user.api';
 import { useStore } from '@/use/useStore';
 import { AUTH_STORE } from '@/store/constants';
-import { Upload } from '@/services/helper';
+import { Cookie, Upload } from '@/services/helper';
 
 type Auth = ReturnType<typeof getAuth>
 let auth: Auth;
@@ -22,8 +22,10 @@ onMounted(async () => {
     await setPersistence(auth, browserLocalPersistence);
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            getUser();
-            isLoggedIn.value = true;
+            if (Cookie.get("token")) {
+                getUser();
+                isLoggedIn.value = true;
+            }
         }
     });
 });
@@ -87,7 +89,7 @@ const handleSignOut = async () => {
                     <p class="text-md font-medium">{{ user.dob }}</p>
                 </div>
                 <div class="border-t border-solid flex gap-4 items-center py-4">
-                    <img :src="Upload.icon('phonenumber.svg')" alt="" class="w-[23px] h-[23px]">
+                    <img :src="Upload.icon('phone-number.svg')" alt="" class="w-[23px] h-[23px]">
                     <p class="text-md font-medium">{{ user.email ?? user.phone }}</p>
                 </div>
             </div>

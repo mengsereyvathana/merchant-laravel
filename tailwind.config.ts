@@ -21,9 +21,15 @@ module.exports = {
                 danger: "#FA4545",
                 letter: "#4E4948",
                 lettermain: "#024EA7",
+                background: "#F5F5F9",
             },
             fontSize: {
+                title: "16px",
+                subtitle: "14px",
+                header: "18px",
+                subheader: "16px",
                 ph: "13px",
+                side: "16px",
             },
             transitionDuration: {
                 0: "0ms",

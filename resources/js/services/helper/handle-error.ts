@@ -4,6 +4,8 @@ export const handleErrorMsg = (errorCode: string) => {
             return { errorMsg: "Invalid OTP" };
         case "auth/invalid-verification-code":
             return { errorMsg: "Invalid OTP" };
+        case "auth/too-many-requests":
+            return { errorMsg: "Too many request. Try again later." };
         default:
             return { errorMsg: "Something went wrong." };
     }

@@ -57,7 +57,6 @@ class AdminUserController extends Controller
 
     public function logout(Request $request)
     {
-        return 'g';
         try {
             if (auth()->check()) {
                 $request->user()->currentAccessToken()->delete();
@@ -77,7 +76,6 @@ class AdminUserController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
-
         // return 'logout'; 
     }
 }

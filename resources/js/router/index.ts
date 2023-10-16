@@ -6,6 +6,7 @@ import { Http } from "@/services/api/api.service";
 import { IUserDetail } from "@/types/UserDetail";
 import { useStore } from "@/use/useStore";
 import { AUTH_STORE } from "@/store/constants";
+import { adminAuthService } from '@/admin/service/api/modules/auth-admin.api';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -54,7 +55,97 @@ const routes: Array<RouteRecordRaw> = [
             },
         ],
         meta: {
-            requireAuth: true,
+            userAuth: true,
+        },
+    },
+    {
+        path: "/admin",
+        component: () => import("../admin/views/AdminView.vue"),
+        children: [
+            {
+                path: "/admin",
+                name: "dashboard",
+                component: () => import("../admin/views/DashboardView.vue"),
+            },
+            // Product
+            {
+                path: "/admin/add_product",
+                name: "add_product",
+                component: () => import("../admin/views/AddProductView.vue"),
+            },
+            {
+                path: "/admin/edit_product/:id",
+                name: "edit_product",
+                component: () => import("../admin/views/EditProductView.vue"),
+            },
+            {
+                path: "/admin/show_product",
+                name: "show_product",
+                component: () => import("../admin/views/ProductView.vue"),
+            },
+            // Product Scheme
+            {
+                path: "/admin/add_product_scheme/:id",
+                name: "add_product_scheme",
+                component: () => import("../admin/views/AddProductSchemeView.vue"),
+            },
+            {
+                path: "/admin/show_product_scheme",
+                name: "show_product_scheme",
+                component: () => import("../admin/views/ProductSchemeView.vue"),
+            },
+            {
+                path: "/admin/edit_product_scheme/:id",
+                name: "edit_product_scheme",
+                component: () => import("../admin/views/EditProductSchemeView.vue"),
+            },
+            // Slideshow
+            {
+                path: "/admin/show_slideshow",
+                name: "show_slideshow",
+                component: () => import("../admin/views/SlideshowView.vue"),
+            },
+            {
+                path: "/admin/add_slideshow",
+                name: "add_slideshow",
+                component: () => import("../admin/views/AddSlideshowView.vue"),
+            },
+            {
+                path: "/admin/edit_slideshow/:id",
+                name: "edit_slideshow",
+                component: () => import("../admin/views/EditSlideshowView.vue"),
+            },
+            // Category
+            {
+                path: "/admin/add_category",
+                name: "add_category",
+                component: () => import("../admin/views/AddCategoryView.vue"),
+            },
+            {
+                path: "/admin/show_category",
+                name: "show_category",
+                component: () => import("../admin/views/CategoryView.vue"),
+            },
+            {
+                path: "/admin/edit_category/:id",
+                name: "edit_category",
+                component: () => import("../admin/views/EditCategoryView.vue"),
+            },
+            // Order
+            {
+                path: "/admin/show_order_delivered",
+                name: "show_order_delivered",
+                component: () => import("../admin/views/OrderDeliveredView.vue"),
+            },
+            //Profile
+            {
+                path: "/admin/show_profile",
+                name: "show_profile",
+                component: () => import("../admin/views/ProfileVIew.vue"),
+            },
+        ],
+        meta: {
+            adminAuth: true,
         },
     },
     // {
@@ -70,7 +161,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "phone_login",
         component: () => import("../views/auth/PhoneLoginPage.vue"),
         meta: {
-            requireAuth: false,
+            userAuth: false,
         },
     },
     {
@@ -78,7 +169,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "register",
         component: () => import("../views/auth/RegisterPage.vue"),
         meta: {
-            requireAuth: false,
+            userAuth: false,
         },
     },
     {
@@ -86,7 +177,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "verify",
         component: () => import("../views/auth/VerifyPage.vue"),
         meta: {
-            requireAuth: false,
+            userAuth: false,
         },
     },
     {
@@ -94,75 +185,63 @@ const routes: Array<RouteRecordRaw> = [
         name: "form_register",
         component: () => import("../views/auth/FormRegister.vue"),
         meta: {
-            requireAuth: false,
+            userAuth: false,
         },
     },
+
+    //admin
+
+    {
+        path: "/admin/login",
+        name: "adminLogin",
+        component: () => import("../admin/views/auth/LoginView.vue"),
+        meta: {
+            adminAuth: false,
+        },
+    },
+
     {
         path: "/:notFound(.*)*",
         component: () => import("../components/NotFoundComponent.vue"),
         meta: {
-            requireAuth: false,
+            userAuth: false,
         },
     },
 ];
-
-// const getCurrentUserWithEmail = async (): Promise<boolean> => {
-//     try {
-//         const response = await HttpAuth.get<IUserDetail>(`user`);
-//         if (response) {
-//             return true;
-//         } else {
-//             return false;
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         return false;
-//     }
-// };
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
 });
 
-const getCurrentUserWithPhone = () => {
+const getCurrentUserWithFirebase = () => {
     return new Promise((resolve, reject) => {
-        const removeListener = onAuthStateChanged(
-            getAuth(),
-            (user) => {
-                removeListener();
-                resolve(user);
-            },
-            reject
+        const removeListener = onAuthStateChanged(getAuth(), (user) => {
+            removeListener();
+            resolve(user?.phoneNumber);
+        },
+            reject,
         );
     });
 };
 
-const getCurrentUserWithEmail = () => {
+const getCurrentUserWithToken = () => {
     return new Promise((resolve, reject) => {
-        try {
-            const httpAuth = new Http();
-            httpAuth
-                .get<IUserDetail>(`user`)
-                .then((response) => {
-                    if (response) {
-                        resolve(response.data.data.phone);
-                        return response.data.data.phone;
-                    } else {
-                        resolve(false);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    resolve(false);
-                });
-        } catch (error) {
+        const httpAuth = new Http();
+        httpAuth.get<IUserDetail>("user", true).then((response) => {
+            if (response) {
+                resolve(response.data.data.phone);
+            } else {
+                reject;
+            }
+        }).catch((error) => {
             console.log(error);
-            resolve(false);
             reject;
-        }
+        });
     });
 };
+
+let isAuth = false;
 
 router.beforeEach(async (to, from, next) => {
     const user_id = Cookie.get("session_id") || null;
@@ -170,9 +249,12 @@ router.beforeEach(async (to, from, next) => {
     const store = useStore();
 
     store.dispatch(AUTH_STORE.ACTIONS.SET_USER_ID, user_id);
-    store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, token);
 
-    // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    if (token && isAuth === false) {
+        if (await getCurrentUserWithFirebase() === await getCurrentUserWithToken()) {
+            isAuth = true;
+        }
+    }
 
     let toDepth = to.path.split("/").length;
     let fromDepth = from.path.split("/").length;
@@ -185,25 +267,23 @@ router.beforeEach(async (to, from, next) => {
     }
     const transitionTo = toDepth < fromDepth ? "slide-right" : "slide-left";
     transition.value = transitionTo;
-    if (to.matched.some((record) => record.meta.requireAuth)) {
-        if (token) {
-            if (store.getters[AUTH_STORE.GETTERS.GET_TOKEN] !== token) {
-                if (
-                    (await getCurrentUserWithPhone()) &&
-                    (await getCurrentUserWithEmail())
-                ) {
-                    next();
-                } else {
-                    next("/phone_login");
-                }
-            } else {
-                next();
-            }
+
+    if (to.matched.some(record => record.meta.adminAuth)) {
+        if (await adminAuthService.isAuthenticated()) {
+            next();
         } else {
-            next("/phone_login");
+            next("admin/login")
         }
     } else {
-        next();
+        if (to.matched.some(record => record.meta.userAuth)) {
+            if (token && isAuth) {
+                next();
+            } else {
+                next("/phone_login");
+            }
+        } else {
+            next();
+        }
     }
 });
 

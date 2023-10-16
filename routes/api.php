@@ -91,7 +91,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::delete('/delete_slide', [AdminListController::class, 'delete_slide']);
         Route::put('/update_slide/{id?}', [AdminListController::class, 'update_slide']);
         Route::get('search_category', [AdminListController::class, 'search_category']);
-        Route::post('/logout', [AdminUserController::class, 'logout'])->middleware('auth::sanctum'); //check uathorization use if(auth()->check())
+        Route::post('/logout', [AdminUserController::class, 'logout'])->middleware('auth:sanctum'); //check uathorization use if(auth()->check())
     });
     //auth
     Route::post('login', [AdminUserController::class, 'login']);

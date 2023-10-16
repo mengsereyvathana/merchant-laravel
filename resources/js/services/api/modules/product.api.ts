@@ -10,6 +10,7 @@ interface IProductService {
     getAllProducts(user_id: string): Promise<Form<IProduct>>;
     getProductDetail(user_id: string, id: string): Promise<Form<IProductDetail>>;
     getProductByCategory(user_id: string, id: string): Promise<Form<IProductCategory>>;
+    searchProducts(params: object): Promise<Form<IProduct>>;
 }
 
 export class ProductService extends Http implements IProductService {
@@ -25,10 +26,7 @@ export class ProductService extends Http implements IProductService {
 
     async getProductDetail(user_id: string, id: string): Promise<Form<IProductDetail>> {
         try {
-            const { data } = await this.get<IProductDetail>(ProductRoute.PRODUCT_DETAIL, true, {
-                user_id: user_id,
-                product_id: Crypt.decrypt(id),
-            });
+            const { data } = await this.get<IProductDetail>(ProductRoute.PRODUCT_DETAIL, true, { user_id: user_id, product_id: Crypt.decrypt(id), });
             return [null, data];
         } catch (error) {
             console.error(error);
@@ -37,26 +35,22 @@ export class ProductService extends Http implements IProductService {
     }
     async getProductByCategory(user_id: string, id: string): Promise<Form<IProductCategory>> {
         try {
-            const { data } = await this.getAll<IProductCategory>(ProductRoute.PRODUCT_CATEGORY, true, {
-                user_id: user_id,
-                category_id: Crypt.decrypt(id),
-            });
+            const { data } = await this.getAll<IProductCategory>(ProductRoute.PRODUCT_CATEGORY, true, { user_id: user_id, category_id: Crypt.decrypt(id), });
             return [null, data];
         } catch (error) {
             console.log(error);
             return [error as Error]
         }
     }
-    async searchProduct(data: any) {
+    async searchProducts(params: object): Promise<Form<IProduct>> {
         try {
-            console.log(data);
-            // const response = await this.get<IProduct>(
-            //     ProductRoute.SEARCH_PRODUCT,
-            //     {
-            //         data,
-            //     }
-            // );
-            // return response.data;
+            try {
+                const { data } = await this.getAll<IProduct>(ProductRoute.SEARCH_PRODUCT, true, params);
+                return [null, data];
+            } catch (error) {
+                console.error(error);
+                return [error as Error]
+            }
         } catch (error) {
             console.log(error);
             throw error;

@@ -133,7 +133,11 @@ class AdminListController extends Controller
         // return substr($update->image, 1);
 
         if ($update) {
-
+            if ($req->category_id != null) {
+                $update->category_id     = $req->category_id;
+            } else {
+                $update->category_id = $update->category_id;
+            }
             if ($req->name != null) {
                 $update->name       = $req->name;
             } else {

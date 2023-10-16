@@ -54,7 +54,7 @@ const getProductOrder = async () => {
                         </div>
                     </div>
                     <div class="flex flex-col justify-between items-end text-xs font-medium">
-                        <p class="border border-solid rounded-full p-2">x{{ items.qty }}</p>
+                        <p class="p-2">x{{ items.qty }}</p>
                         <p class="text-danger">${{ items.total }}</p>
                     </div>
                 </div>
