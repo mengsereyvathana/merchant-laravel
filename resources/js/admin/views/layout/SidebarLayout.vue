@@ -2,6 +2,10 @@
 import { computed, ref, defineProps, defineEmits } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { Upload } from '../../service/helpers';
+import { toggleMenu, removeRail } from '@/admin/store/toggle';
+
+let drawer = ref(toggleMenu)
+let rail = ref(removeRail)
 
 const props = defineProps(['openSide']);
 const emit = defineEmits(['closeSide']);
@@ -22,7 +26,7 @@ const menus = [
         title: 'Dashboard',
         path: '/admin',
         page_name: 'dashboard',
-        icon: "pie-chart.svg",
+        icon: "mdi-view-dashboard",
         hasSub: false
     },
     {
@@ -40,7 +44,7 @@ const menus = [
             // },
         ],
 
-        icon: "shopping-bag.svg",
+        icon: "mdi-truck",
         hasSub: true
     },
     {
@@ -57,7 +61,7 @@ const menus = [
                 page_name: 'show_category',
             }
         ],
-        icon: "box.svg",
+        icon: "mdi-shape",
         hasSub: true
     },
     {
@@ -79,11 +83,11 @@ const menus = [
                 page_name: 'show_product_scheme',
             },
         ],
-        icon: "shopping-cart.svg",
+        icon: "mdi-cart",
         hasSub: true
     },
     {
-        title: "Slideshow",
+        title: "Slideshows",
         children: [
             {
                 title: 'Add Slideshow',
@@ -96,7 +100,7 @@ const menus = [
                 page_name: 'show_slideshow',
             }
         ],
-        icon: "monitor.svg",
+        icon: "mdi-monitor",
         hasSub: true
     },
 ];
@@ -104,63 +108,37 @@ const menus = [
 /*=========== init open sub meu ===========*/
 let open = ref([false, false, false, false, false, false, false]);
 
-function toggleMenu(index: number) {
-    for (let i = 0; i < open.value.length; i++) {
-        if (index != i) open.value[i] = false;
-    }
-    open.value[index] = !open.value[index];
-}
 
-
-function closeSidebar() {
-    if (props.openSide) {
-        emit('closeSide', false);
-    }
-}
 
 </script>
 
 <template>
-    <div class="overflow-hidden p-[0.75rem] flex flex-col fixed z-10 left-0 w-full lg:w-[250px] bg-white lg:border-r h-[0%] lg:h-[100%] lg:overflow-y-auto overflow-x-hidden transition-all border-t-0 shadow-[#E1E1E1_0px_0px_8px] gap-1"
-        :class="openSide ? 'h-[90%]' : 'py-[0rem] lg:p-[0.75rem] h-[0%]'">
-        <div v-for="(item, index) in menus" :key="index">
-            <div v-if="item.hasSub" class="flex flex-col gap-1">
-                <div @click="toggleMenu(index)"
-                    class="flex justify-between items-center cursor-pointer py-[12px] px-3 rounded-md hover:bg-hover_menu">
-                    <div class='flex items-center'>
-                        <h1 class='mr-2'><img class="w-4 h-4" :src="Upload.icon(item.icon)" alt=""></h1>
-                        <p :class="item.children?.some(p => p.page_name == routeName) && !open[index] ? 'text-primary' : ''"
-                            class="text-side font-semibold">{{ item.title }}</p>
-                    </div>
-                    <div>
-                        <img :src="Upload.icon('right.svg')" alt="" :class="open[index] ? 'rotate-90' : 'rotate-0'">
-                    </div>
-                    <!-- <i class="mr-1 text-sm font-extrabold fa-solid fa-angle-right"></i> -->
-                </div>
-                <div class="flex flex-col gap-1" v-if="open[index]">
+    <v-navigation-drawer v-model="drawer" :rail="rail" @click="rail = false">
+        <v-list-item prepend-avatar="../images/merchant-app.png" title="Merchant" nav>
+            <template v-slot:append>
+                <v-btn class="hidden lg:block" variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
+                <v-btn class="block lg:hidden" variant="text" icon="mdi-close"
+                    @click.stop="toggleMenu = !toggleMenu"></v-btn>
+            </template>
+        </v-list-item>
+        <v-list v-model:opened="open" density="compact" nav>
+            <div v-for="(item, index) in menus" :key="index">
+                <v-list-group v-if="item.hasSub" :value="item.title">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item v-bind="props" :title="item.title" :prepend-icon="item.icon"></v-list-item>
+                    </template>
                     <div v-for="sub in item.children" :key="sub.page_name">
                         <RouterLink :to="'/admin/' + sub.page_name">
-                            <div class="py-[12px] px-3 cursor-pointer rounded-md hover:bg-hover_menu"
-                                :class="routeName == sub.page_name ? 'text-primary bg-active_menu' : ''"
-                                @click="closeSidebar">
-                                <p class="text-side font-semibold pl-12">{{ sub.title }}</p>
-                            </div>
+                            <v-list-item :title="sub.title" prepend-icon="mdi-arrow-right-bold-circle-outline"
+                                :value="sub.title"></v-list-item>
                         </RouterLink>
                     </div>
-                </div>
-            </div>
-            <div v-else>
-                <RouterLink :to="'/admin/' + (item.page_name == 'dashboard' ? '' : item.page_name)">
-                    <div class='flex items-center py-[12px] px-3 rounded-md hover:bg-hover_menu'
-                        :class="routeName == item.page_name ? 'text-primary lg:bg-active_menu' : ''" @click="closeSidebar">
-                        <h1 class='mr-2'><img class="w-4 h-4" :src="Upload.icon(item.icon)" alt=""></h1>
-                        <p class=" text-side font-semibold">{{
-                            item.title
-                        }}
-                        </p>
-                    </div>
+                </v-list-group>
+                <RouterLink v-else :to="'/admin/' + (item.page_name == 'dashboard' ? '' : item.page_name)">
+                    <v-list-item :prepend-icon="item.icon" :title="item.title" :value="item.title"
+                        class="mb-[4px] mx-0"></v-list-item>
                 </RouterLink>
             </div>
-        </div>
-    </div>
+        </v-list>
+    </v-navigation-drawer>
 </template>

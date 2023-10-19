@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import HeaderLayout from "./layout/HeaderLayout.vue";
-import TruncatedPagination from "../components/TruncatedPagination.vue";
-import { ref } from 'vue';
-
-const open = ref(false); 
+import SidebarLayout from "./layout/SidebarLayout.vue";
 </script>
 
 <template>
-    <HeaderLayout />
-    <div class="lg:ml-[250px]" @click="open = !open">
-        <RouterView></RouterView>
-    </div>
+    <v-layout>
+        <SidebarLayout />
+        <v-main>
+            <HeaderLayout />
+            <RouterView></RouterView>
+        </v-main>
+    </v-layout>
 </template>

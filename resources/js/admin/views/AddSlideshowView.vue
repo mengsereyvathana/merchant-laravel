@@ -102,8 +102,9 @@ const removeImage = () => {
     <div class='lg:py-6 lg:px-8 p-5'>
         <div class="flex justify-between items-end rounded-md">
             <h1 class='text-xl font-bold text-black_500'>Add a slideshow</h1>
-            <button class='px-4 py-3 rounded-md bg-primary text-white font-semibold text-sm cursor-pointer'
-                @click="saveSlideshow()">Publish</button>
+            <v-btn @click="saveSlideshow()" color="success">
+                publish
+            </v-btn>
         </div>
         <div class="mt-8 flex flex-col gap-8 md:flex-row shadow-[#E1E1E1_0px_1px_8px] p-6 rounded-md">
             <div class='flex-[4]'>

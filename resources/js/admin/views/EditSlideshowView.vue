@@ -121,7 +121,7 @@ function previewImage() {
     if (form.value.image) {
         return URL.createObjectURL(form.value.image);
     }
-    return API_URL + imagePreview.value;
+    return imagePreview.value;
 }
 
 function browseImage(e: Event) {

@@ -6,6 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@mdi/font": "^7.3.67",
         "@types/crypto-js": "^4.1.2",
         "@types/firebase": "^3.2.1",
         "@types/lodash": "^4.14.198",

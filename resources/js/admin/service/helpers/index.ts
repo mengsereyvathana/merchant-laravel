@@ -4,6 +4,6 @@ export class Upload {
         return "/icons/" + value;
     }
     static image(value: string | undefined): string {
-        return API_URL + value;
+        return value ?? '';
     }
 }

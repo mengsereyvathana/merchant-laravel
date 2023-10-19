@@ -166,95 +166,94 @@ const updateEnable = async (id: number, action: string) => {
         <div class='flex justify-between items-center mb-4'>
             <h1 class='text-header font-bold text-gray-600'>Slideshow</h1>
             <RouterLink to="/admin/add_slideshow">
-                <button
-                    class='flex items-center gap-1 px-4 py-3 rounded-md bg-main text-white text-sm cursor-pointer font-medium'>
-                    <img :src="Upload.icon('plus.svg')" alt="" />Add Slideshow
-                </button>
+                <v-btn prepend-icon="mdi-plus" color="success">
+                    Add Slideshow
+                </v-btn>
             </RouterLink>
         </div>
-        <div
-            class='relative overflow-hidden border-solid border-b border-gray-200 pt-3 shadow-[#E1E1E1_0px_1px_8px] rounded-md'>
-            <div class="flex gap-4 flex-col md:flex-row lg:items-center justify-between px-3 mb-4">
-                <SearchComponent :search-option="searchOption" @current-search-updated="currentSearchUpdated" />
-            </div>
-            <div
-                class="w-full px-2 overflow-x-auto overflow-y-none scroll-smooth scrollbar-thin scrollbar-track-gray-200 scrollbar-track-rounded-xl scrollbar-thumb-current scrollbar-thumb-rounded-xl ">
-                <table v-if="isLoaded && isFound" class='w-[1100px] md:w-full'>
-                    <thead class='border-solid border-b border-gray-300'>
-                        <tr>
-                            <th class='text-start text-gray-600 text-md w-[50px] py-2 px-3'>
-                                <input type="checkbox" name="" id=""
-                                    class='w-4 h-4 border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
-                            </th>
-                            <th v-for="(item, index) in header" :key="index"
-                                :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
-                                class="text-gray-600 text-sm py-2 px-3">{{ item }}</th>
-                            <th class='text-end text-gray-600 text-sm py-2 px-3 pr-4'></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class='group relative border-solid border-b border-gray-300' v-for="item in slideshows"
-                            :key="item.id">
-                            <td class='text-sm text-gray-700 py-2 px-3'>
-                                <input type="checkbox" name="" id=""
-                                    class='w-4 h-4 cursor-pointer border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
-                            </td>
-                            <td class='py-2 px-3 flex items-center gap-1'>
-                                <img :src="Upload.image(item.image)" alt=""
-                                    class='w-[45px] h-[45px] border-solid border border-gray-300 rounded-md object-cover' />
-                                <RouterLink :to="'/admin/edit_slideshow/' + item.id">
-                                    <p
-                                        class='w-[230px] text-ph font-semibold truncate text-main py-2 px-3 cursor-pointer hover:underline'>
-                                        {{ item.title }}
-                                    </p>
-                                </RouterLink>
-                            </td>
-                            <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.tage }}</td>
-                            <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.link }}</td>
-                            <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.slide_order }}</td>
-                            <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.created_at }}</td>
-                            <td class='text-lg w-4 text-gray-700 py-2 px-3 pr-5'>
-                                <div class="w-4 h-4"><img :src="Upload.icon('more.svg')" alt="" /></div>
-                            </td>
+        <v-layout>
+            <v-responsive class="">
+                <v-row>
+                    <v-col>
+                        <SearchComponent :search-option="searchOption" @current-search-updated="currentSearchUpdated" />
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-table v-if="isLoaded && isFound" class='w-[1100px] md:w-full'>
+                            <thead>
+                                <tr>
+                                    <th class='text-start'>
+                                        <input type="checkbox" name="" id=""
+                                            class='w-4 h-4 border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
+                                    </th>
+                                    <th v-for="(item, index) in header" :key="index"
+                                        :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
+                                        class=" py-2 px-3">{{ item }}</th>
+                                    <th class=' py-2 px-3 pr-4'>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class='group relative' v-for="item in slideshows" :key="item.id">
+                                    <td class='text-sm text-gray-700 py-2 px-3'>
+                                        <input type="checkbox" name="" id=""
+                                            class='w-4 h-4 cursor-pointer rounded-[4px] checked:rounded-[4px]' />
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-row align-center">
+                                            <v-img :src="Upload.image(item.image)" alt="" aspect-ratio="1/1"
+                                                class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
+                                            <RouterLink :to="'/admin/edit_slideshow/' + item.id">
+                                                <p class=''>
+                                                    {{ item.title }}
+                                                </p>
+                                            </RouterLink>
+                                        </div>
+                                    </td>
+                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.tage }}</td>
+                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.link }}</td>
+                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.slide_order }}
+                                    </td>
+                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.created_at }}</td>
+                                    <td class=' text-lg w-4 text-gray-700 py-2 px-3 pr-5'>
+                                        <v-btn icon="mdi-dots-horizontal" variant="text"></v-btn>
+                                    </td>
 
-                            <div
-                                class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
-                                <!-- <button @click="moveUp()"
-                                    class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                    <img :src="Upload.icon('up.svg')" alt="" class="w-[14px] h-[14px]">
-                                </button>
-                                <button @click="moveDown()"
-                                    class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                    <img :src="Upload.icon('down.svg')" alt="" class="w-[14px] h-[14px]">
-                                </button> -->
-                                <div @click="updateEnable(item.id, item.action)"
-                                    class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                    <img :src="Upload.icon(item.action === '1' ? 'eyeon.svg' : 'eyeoff.svg')" alt=""
-                                        class="w-[14px] h-[14px]">
-                                </div>
-                                <RouterLink :to="'/admin/edit_slideshow/' + item.id">
                                     <div
-                                        class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                        <img :src="Upload.icon('edit.svg')" alt="" class="w-[14px] h-[14px]">
+                                        class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
+                                        <!-- <button @click="moveUp()"
+                                                class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
+                                                <img :src="Upload.icon('up.svg')" alt="" class="w-[14px] h-[14px]">
+                                            </button>
+                                            <button @click="moveDown()"
+                                                class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
+                                                <img :src="Upload.icon('down.svg')" alt="" class="w-[14px] h-[14px]">
+                                            </button> -->
+                                        <v-btn @click="updateEnable(item.id, item.action)" size="small"
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green">
+                                        </v-btn>
+                                        <RouterLink :to="'/admin/edit_slideshow/' + item.id">
+                                            <v-btn size="small" icon="mdi-pencil" color="blue"></v-btn>
+                                        </RouterLink>
+                                        <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete"
+                                            color="red"></v-btn>
                                     </div>
-                                </RouterLink>
-                                <div @click="deleteProduct(item.id)"
-                                    class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                    <img :src="Upload.icon('trash.svg')" alt="" class="w-[14px] h-[14px]">
-                                </div>
-                            </div>
-                        </tr>
-                    </tbody>
-                </table>
-                <div v-else-if="isLoaded && isFound === false">
-                    <h1 class="font-semibold text-center">No Product founded</h1>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between border-t border-gray-200 bg-white px-2 py-3 sm:px-2">
-                <PaginationComponent v-if="isLoaded" :current-page="currentPage" :items-per-page="itemsPerPage"
-                    :total-items="totalItems" :total-pages="totalPages" @current-page-updated="currentPageUpdated" />
-            </div>
-        </div>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                        <div v-else-if="isLoaded && isFound === false">
+                            <h1 class="font-semibold text-center">No Product founded</h1>
+                        </div>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <PaginationComponent v-if="isLoaded" :current-page="currentPage" :items-per-page="itemsPerPage"
+                            :total-items="totalItems" :total-pages="totalPages"
+                            @current-page-updated="currentPageUpdated" />
+                    </v-col>
+                </v-row>
+            </v-responsive>
+        </v-layout>
     </div>
 </template>
