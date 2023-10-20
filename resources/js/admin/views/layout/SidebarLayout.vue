@@ -116,8 +116,8 @@ let open = ref([false, false, false, false, false, false, false]);
     <v-navigation-drawer v-model="drawer" :rail="rail" @click="rail = false">
         <v-list-item prepend-avatar="../images/merchant-app.png" title="Merchant" nav>
             <template v-slot:append>
-                <v-btn class="hidden lg:block" variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
-                <v-btn class="block lg:hidden" variant="text" icon="mdi-close"
+                <v-btn class="d-none d-lg-block" variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
+                <v-btn class="block d-lg-none" variant="text" icon="mdi-close"
                     @click.stop="toggleMenu = !toggleMenu"></v-btn>
             </template>
         </v-list-item>

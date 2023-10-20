@@ -162,17 +162,17 @@ const updateEnable = async (id: number, action: string) => {
 </script>
 
 <template>
-    <div class="lg:py-3 lg:px-8 p-3">
-        <div class='flex justify-between items-center mb-4'>
-            <h1 class='text-header font-bold text-gray-600'>Slideshow</h1>
+    <div>
+        <div class='d-flex flex-row justify-space-between align-center flex-wrap mb-4'>
+            <h1 class='text-header text-grey-darken-2 font-weight-medium'>Slideshow</h1>
             <RouterLink to="/admin/add_slideshow">
-                <v-btn prepend-icon="mdi-plus" color="success">
+                <v-btn prepend-icon="mdi-plus" color="success" flat>
                     Add Slideshow
                 </v-btn>
             </RouterLink>
         </div>
         <v-layout>
-            <v-responsive class="">
+            <v-responsive>
                 <v-row>
                     <v-col>
                         <SearchComponent :search-option="searchOption" @current-search-updated="currentSearchUpdated" />
@@ -183,60 +183,55 @@ const updateEnable = async (id: number, action: string) => {
                         <v-table v-if="isLoaded && isFound" class='w-[1100px] md:w-full'>
                             <thead>
                                 <tr>
-                                    <th class='text-start'>
-                                        <input type="checkbox" name="" id=""
-                                            class='w-4 h-4 border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
+                                    <th class='px-3'>
+                                        <v-checkbox hide-details></v-checkbox>
                                     </th>
                                     <th v-for="(item, index) in header" :key="index"
                                         :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
-                                        class=" py-2 px-3">{{ item }}</th>
-                                    <th class=' py-2 px-3 pr-4'>Actions</th>
+                                        class="text-grey-darken-2 py-2 px-3">{{ item }}</th>
+                                    <th class='text-grey-darken-2 py-2 px-3 pr-4'>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class='group relative' v-for="item in slideshows" :key="item.id">
-                                    <td class='text-sm text-gray-700 py-2 px-3'>
-                                        <input type="checkbox" name="" id=""
-                                            class='w-4 h-4 cursor-pointer rounded-[4px] checked:rounded-[4px]' />
+                                <tr class='group relative ' v-for="item in slideshows" :key="item.id">
+                                    <td class="px-3">
+                                        <v-checkbox hide-details class="w-[40px]"></v-checkbox>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row align-center">
                                             <v-img :src="Upload.image(item.image)" alt="" aspect-ratio="1/1"
                                                 class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
                                             <RouterLink :to="'/admin/edit_slideshow/' + item.id">
-                                                <p class=''>
-                                                    {{ item.title }}
-                                                </p>
+                                                <v-hover>
+                                                    <template v-slot:default="{ isHovering, props }">
+                                                        <span v-bind="props" class="text-grey-darken-3"
+                                                            :class="isHovering ? 'text-grey-darken-4' : ''">{{ item.title
+                                                            }}</span>
+                                                    </template>
+                                                </v-hover>
+
                                             </RouterLink>
                                         </div>
                                     </td>
-                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.tage }}</td>
-                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.link }}</td>
-                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.slide_order }}
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.tage }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.link }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.slide_order }}
                                     </td>
-                                    <td class='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.created_at }}</td>
-                                    <td class=' text-lg w-4 text-gray-700 py-2 px-3 pr-5'>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.created_at }}</td>
+                                    <td class='py-2 px-3 pr-5'>
                                         <v-btn icon="mdi-dots-horizontal" variant="text"></v-btn>
                                     </td>
 
                                     <div
                                         class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
-                                        <!-- <button @click="moveUp()"
-                                                class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                                <img :src="Upload.icon('up.svg')" alt="" class="w-[14px] h-[14px]">
-                                            </button>
-                                            <button @click="moveDown()"
-                                                class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                                <img :src="Upload.icon('down.svg')" alt="" class="w-[14px] h-[14px]">
-                                            </button> -->
                                         <v-btn @click="updateEnable(item.id, item.action)" size="small"
-                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green">
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green" flat>
                                         </v-btn>
                                         <RouterLink :to="'/admin/edit_slideshow/' + item.id">
-                                            <v-btn size="small" icon="mdi-pencil" color="blue"></v-btn>
+                                            <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
-                                        <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete"
-                                            color="red"></v-btn>
+                                        <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
+                                            flat> </v-btn>
                                     </div>
                                 </tr>
                             </tbody>

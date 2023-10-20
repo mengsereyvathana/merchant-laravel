@@ -84,7 +84,7 @@ const pageItems = computed<number[]>(() => {
 
                 <div v-for="page in pageItems" :key="page">
                     <v-btn v-if="page !== -1" @click="emitPage(page)" variant="tonal" class="text-none text-grey-darken-1"
-                        :class="page == currentPage ? 'bg-success' : ''" max-width="50">
+                        :class="page == currentPage ? 'bg-success' : ''" min-width="20">
                         {{ page }}
                     </v-btn>
                     <span v-else class="mx-2">...</span>

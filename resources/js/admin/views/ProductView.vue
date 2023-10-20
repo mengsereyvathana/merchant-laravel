@@ -152,105 +152,98 @@ const updateEnable = async (id: number, enable: string) => {
 </script>
 
 <template>
-    <div class='lg:py-3 lg:px-8 p-3'>
-        <div class='flex justify-between items-center mb-4'>
-            <h1 class='text-xl font-bold text-gray-600'>Product</h1>
+    <div>
+        <div class='d-flex flex-row justify-space-between align-center flex-wrap mb-4'>
+            <h1 class='text-header text-grey-darken-2 font-weight-medium'>Product</h1>
             <RouterLink to="/admin/add_product">
-                <button class='flex items-center gap-1 px-4 py-3 rounded-md bg-main text-white text-sm cursor-pointer'>
-                    <img :src="Upload.icon('plus.svg')" alt="" />Add Product
-                </button>
+                <v-btn prepend-icon="mdi-plus" color="success" flat>
+                    Add Product
+                </v-btn>
             </RouterLink>
         </div>
-        <div
-            class='relative overflow-hidden border-solid border-b border-gray-200 pt-3 shadow-[#E1E1E1_0px_1px_8px] rounded-md'>
-            <div class="flex gap-4 flex-col md:flex-row lg:items-center justify-between px-3 mb-4">
-                <SearchComponent :search-option="searchOption" @current-search-updated="currentSearchUpdated" />
-            </div>
-            <div
-                class="w-full px-2 overflow-x-auto overflow-y-none scroll-smooth scrollbar-thin scrollbar-track-gray-200 scrollbar-track-rounded-xl scrollbar-thumb-current scrollbar-thumb-rounded-xl ">
-                <table class='w-[1100px] md:w-full'>
-                    <thead class='border-solid border-b border-gray-300'>
-                        <tr>
-                            <th class='text-start text-gray-600 text-md w-[50px] py-2 px-3'>
-                                <input type="checkbox" name="" id=""
-                                    class='w-4 h-4 border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
-                            </th>
-                            <th v-for="(item, index) in header" :key="index"
-                                :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
-                                class="text-gray-600 text-sm py-2 px-3">{{ item }}</th>
-                            <th class='text-end text-gray-600 text-sm py-2 px-3 pr-4'></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class='group relative border-solid border-b border-gray-300' v-for="item in products"
-                            :key="item.id">
-                            <td className='text-sm text-gray-700 py-2 px-3'>
-                                <input type="checkbox" name="" id=""
-                                    className='w-4 h-4 cursor-pointer border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
-                            </td>
-                            <td className='py-2 px-3 flex items-center gap-1'>
-                                <img :src="Upload.image(item.image)" alt=""
-                                    className='w-[45px] h-[45px] border-solid border border-gray-300 rounded-md object-cover' />
-                                <RouterLink :to="'/admin/edit_product/' + item.id">
-                                    <p
-                                        className='w-[230px] text-ph font-semibold truncate text-main py-2 px-3 cursor-pointer hover:underline'>
-                                        {{ item.name }}
-                                    </p>
-                                </RouterLink>
-                            </td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.description
-                            }}
-                            </td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>${{ item.price }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>${{ item.buy }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>${{ item.margin }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.stock }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.ram }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.storage }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.color }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.category?.name }}</td>
-                            <td className='text-ph font-semibold text-gray-700 py-2 px-3'>{{ item.created_at }}</td>
-                            <td class='text-lg w-4 text-gray-700 py-2 px-3 pr-5'>
-                                <div class="w-4 h-4"><img :src="Upload.icon('more.svg')" alt="" /></div>
-                            </td>
+        <v-layout>
+            <v-responsive>
+                <v-row>
+                    <v-col>
+                        <SearchComponent :search-option="searchOption" @current-search-updated="currentSearchUpdated" />
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-table class='w-[1100px] md:w-full'>
+                            <thead>
+                                <tr>
+                                    <th class='px-3'>
+                                        <v-checkbox hide-details></v-checkbox>
+                                    </th>
+                                    <th v-for="(item, index) in header" :key="index"
+                                        :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
+                                        class="text-grey-darken-2 py-2 px-3">{{ item }}</th>
+                                    <th class='text-grey-darken-2 py-2 px-3 pr-4'>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class='group relative ' v-for="item in products" :key="item.id">
+                                    <td class="px-3">
+                                        <v-checkbox hide-details class="w-[40px]"></v-checkbox>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-row align-center">
+                                            <v-img :src="Upload.image(item.image)" alt="" aspect-ratio="1/1"
+                                                class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
+                                            <RouterLink :to="'/admin/edit_slideshow/' + item.id">
+                                                <v-hover>
+                                                    <template v-slot:default="{ isHovering, props }">
+                                                        <span v-bind="props" class="text-grey-darken-3"
+                                                            :class="isHovering ? 'text-grey-darken-4' : ''">{{ item.name
+                                                            }}</span>
+                                                    </template>
+                                                </v-hover>
 
-                            <div
-                                class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1 items-center'>
-                                <RouterLink :to="'/admin/add_product_scheme/' + item.id">
-                                    <div
-                                        class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                        <span class="text-xs">Add Scheme</span>
-                                    </div>
-                                </RouterLink>
-                                <button @click="updateEnable(item.id, item.action)">
-                                    <div
-                                        class="inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200">
-                                        <img :src="Upload.icon(item.action === '1' ? 'eyeon.svg' : 'eyeoff.svg')" alt=""
-                                            class="w-[14px] h-[14px]">
-                                    </div>
-                                </button>
-                                <RouterLink :to="'/admin/edit_product/' + item.id">
-                                    <div
-                                        class='inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200'>
-                                        <img :src="Upload.icon('edit.svg')" alt="" class="w-[14px] h-[14px]">
-                                    </div>
-                                </RouterLink>
-                                <button @click="deleteProduct(item.id)">
-                                    <div
-                                        class="inline-flex px-[10px] py-[6px] bg-body border-solid border border-gray-300 rounded-md cursor-pointer hover:bg-gray-200">
-                                        <img :src="Upload.icon('trash.svg')" alt="" class="w-[14px] h-[14px]">
-                                    </div>
-                                </button>
-                            </div>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                            </RouterLink>
+                                        </div>
+                                    </td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.description }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.price }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.buy }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.margin }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.stock }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.ram }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.storage }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.color }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.category?.name }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.created_at }}</td>
+                                    <td class='py-2 px-3 pr-5'>
+                                        <v-btn icon="mdi-dots-horizontal" variant="text"></v-btn>
+                                    </td>
 
-            <div class="flex items-center justify-between border-t border-gray-200 bg-white px-2 py-3 sm:px-2">
-                <PaginationComponent v-if="paginationLoaded" :current-page="currentPage" :items-per-page="itemsPerPage"
-                    :total-items="totalItems" :total-pages="totalPages" @current-page-updated="currentPageUpdated" />
-            </div>
-        </div>
+                                    <div
+                                        class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
+                                        <RouterLink :to="'/admin/add_product_scheme/' + item.id">
+                                            <v-btn size="small" icon="mdi-plus" color="blue" flat></v-btn>
+                                        </RouterLink>
+                                        <v-btn @click="updateEnable(item.id, item.action)" size="small"
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green" flat>
+                                        </v-btn>
+                                        <RouterLink :to="'/admin/edit_product/' + item.id">
+                                            <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
+                                        </RouterLink>
+                                        <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
+                                            flat> </v-btn>
+                                    </div>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <PaginationComponent v-if="paginationLoaded" :current-page="currentPage"
+                            :items-per-page="itemsPerPage" :total-items="totalItems" :total-pages="totalPages"
+                            @current-page-updated="currentPageUpdated" />
+                    </v-col>
+                </v-row>
+            </v-responsive>
+        </v-layout>
     </div>
 </template>

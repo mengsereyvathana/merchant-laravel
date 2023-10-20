@@ -150,12 +150,61 @@ const removeImage = () => {
 </script>
 
 <template>
-    <div class='lg:py-6 lg:px-8 p-5'>
-        <div class="flex justify-between items-end">
+    <div>
+        <!-- <div class="flex justify-between items-end">
             <h1 class='text-xl font-bold text-black_500'>Add a product</h1>
             <button @click="saveProduct()"
                 class='px-4 py-3 rounded-md bg-primary text-white text-sm cursor-pointer'>Publish</button>
+        </div> -->
+        <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
+            <h1 class='text-header font-weight-medium'>Add a product</h1>
+            <v-btn @click="saveProduct()" color="success" flat>
+                publish
+            </v-btn>
         </div>
+        <v-layout>
+            <v-row>
+                <v-col cols="12" md="8">
+                    <div class="d-flex justify-space-between align-center">
+                        <div class="font-weight-medium text-grey-darken-4">Product Name</div>
+                        <div class="flex items-center gap-2">
+                            <v-checkbox v-model="form.enable" label="enable" density="compact" color="success"
+                                hide-details></v-checkbox>
+                        </div>
+                    </div>
+                    <div>
+                        <v-text-field v-model="form.name" density="compact" placeholder="Write name here..."
+                            variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
+                        <v-text-field v-model="form.description" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
+                        <v-text-field v-model="form.description" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
+                        <div class="gap-4 mt-1" v-if="form.image">
+                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" alt="" cover></v-img>
+                        </div>
+                        <div
+                            class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
+                            <v-icon>mdi-upload</v-icon>
+                            <p class='text-body-2 font-weight-medium text-grey-darken-4'>Browse slideshow image</p>
+                            <input class='absolute w-full h-full opacity-0 cursor-pointer' type="file" name="" id=""
+                                accept="image/*" @change="browseImage" />
+                        </div>
+                    </div>
+                </v-col>
+                <v-col cols="12" md="4">
+
+                </v-col>
+            </v-row>
+        </v-layout>
         <div class="mt-8 flex flex-col gap-8 md:flex-row shadow-[#E1E1E1_0px_1px_8px] p-6 rounded-md">
             <div class='flex-[4]'>
                 <div class="flex justify-between">
@@ -177,7 +226,6 @@ const removeImage = () => {
                             class='text-sm h-[200px] input w-full resize-none' v-model="form.description"></textarea>
                     </div>
                 </div>
-
                 <div class="mt-7">
                     <h1 class='text-xl font-semibold text-gray-800'>Display images</h1>
                     <div class="inline-flex gap-4 mt-2" v-if="form.image">

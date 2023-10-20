@@ -7,8 +7,10 @@ import SidebarLayout from "./layout/SidebarLayout.vue";
     <v-layout>
         <SidebarLayout />
         <v-main>
-            <HeaderLayout />
-            <RouterView></RouterView>
+            <div class="lg:py-3 lg:px-5 p-3">
+                <HeaderLayout />
+                <RouterView></RouterView>
+            </div>
         </v-main>
     </v-layout>
 </template>

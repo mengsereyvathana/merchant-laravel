@@ -99,65 +99,54 @@ const removeImage = () => {
 </script>
 
 <template>
-    <div class='lg:py-6 lg:px-8 p-5'>
-        <div class="flex justify-between items-end rounded-md">
-            <h1 class='text-xl font-bold text-black_500'>Add a slideshow</h1>
-            <v-btn @click="saveSlideshow()" color="success">
+    <div>
+        <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
+            <h1 class='text-header font-weight-medium'>Add a slideshow</h1>
+            <v-btn @click="saveSlideshow()" color="success" flat>
                 publish
             </v-btn>
         </div>
-        <div class="mt-8 flex flex-col gap-8 md:flex-row shadow-[#E1E1E1_0px_1px_8px] p-6 rounded-md">
-            <div class='flex-[4]'>
-                <div class="flex justify-between">
-                    <h1 class='text-xl font-semibold text-gray-800'>Title</h1>
-                    <div class="flex items-center gap-2">
-                        <input v-model="form.enable" type="checkbox" id="enable"
-                            class="accent-current border border-solid border-gray-300 rounded-sm cursor-pointer focus:ring-primary">
-                        <label for="enable">Enable</label>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <input type="text" name="" id="" class='input text-sm w-full' placeholder='Write title here...'
-                        v-model="form.title" />
-                </div>
-                <div class="mt-7">
-                    <h1 class='text-xl font-semibold text-gray-800'>Tag</h1>
-                    <div class='mt-3'>
-                        <textarea name="" id="" placeholder='Write a text here...'
-                            class='text-sm h-[200px] input w-full resize-none' v-model="form.tage"></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-between">
-                    <h1 class='text-xl font-semibold text-gray-800'>Link</h1>
-                </div>
-                <div class="mt-3">
-                    <input type="text" name="" id="" class='input text-sm w-full' placeholder='Write link here...'
-                        v-model="form.link" />
-                </div>
-                <div class="mt-7">
-                    <h1 class='text-xl font-semibold text-gray-800'>Display images</h1>
-
-                    <div class="inline-flex gap-4 mt-2" v-if="form.image">
-                        <div
-                            class='relative w-[100px] h-[100px] p-[2px] rounded-lg border-solid border border-gray-300 overflow-hidden'>
-                            <!-- <div class='absolute right-[2px] top-[2px] cursor-pointer' @click="removeImage()">
-                                <IoClose color='white' class='bg-red-500 w-4 h-4 rounded-full p-[0.1rem]' />
-                                delete
-                            </div> -->
-                            <img :src="previewImage()" alt="" class='w-full h-full rounded-lg object-cover' />
+        <v-layout>
+            <v-row>
+                <v-col>
+                    <div class="d-flex justify-space-between align-center">
+                        <div class="font-weight-medium text-grey-darken-4">Title</div>
+                        <div class="flex items-center gap-2">
+                            <v-checkbox v-model="form.enable" label="enable" color="success" density="compact"
+                                hide-details></v-checkbox>
                         </div>
                     </div>
-
-                    <div
-                        class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
-                        <i class="fas fa-cloud-upload text-primary text-[46px]"></i>
-                        <p class='text-[15px] text-gray-600'>Browse slideshow image</p>
-                        <input class='absolute w-full h-full opacity-0 cursor-pointer' type="file" name="" id=""
-                            accept="image/*" @change="browseImage" />
+                    <div>
+                        <v-text-field v-model="form.title" density="compact" placeholder="Write title here..."
+                            variant="outlined" hide-details></v-text-field>
                     </div>
-                </div>
-            </div>
-        </div>
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Tag</div>
+                        <v-text-field v-model="form.tage" density="compact" placeholder="Write tag here..."
+                            variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Link</div>
+                        <v-text-field v-model="form.link" density="compact" placeholder="Write link here..."
+                            variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
 
+                        <div class="gap-4 mt-1" v-if="form.image">
+                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" alt="" cover></v-img>
+                        </div>
+
+                        <div
+                            class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
+                            <v-icon>mdi-upload</v-icon>
+                            <p class='text-body-2 font-weight-medium text-grey-darken-4'>Browse slideshow image</p>
+                            <input class='absolute w-full h-full opacity-0 cursor-pointer' type="file" name="" id=""
+                                accept="image/*" @change="browseImage" />
+                        </div>
+                    </div>
+                </v-col>
+            </v-row>
+        </v-layout>
     </div>
 </template>
