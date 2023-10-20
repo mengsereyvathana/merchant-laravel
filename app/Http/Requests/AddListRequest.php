@@ -27,20 +27,21 @@ class AddListRequest extends FormRequest
             'color' => 'required|',
             'description' => 'required|max:500|min:2',
             'ram' => 'required|numeric|digits_between:1,2',
-            'storage'=>'required',
-            'buy'=>'required',
-            'stock'=>'required',
+            'storage' => 'required',
+            'buy' => 'required',
+            'stock' => 'required',
+            'category_id' => 'required',
             'action' => 'required'
         ];
     }
 
     /* for response message when the process error */
     public function failedValidation(Validator $validator)
-{
-   throw new HttpResponseException(response()->json([
-     'success'   => false,
-     'message'   => 'Validation errors',
-     'data'      => $validator->errors()
-   ],400));
-}
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message'   => 'Validation errors',
+            'data'      => $validator->errors()
+        ], 400));
+    }
 }

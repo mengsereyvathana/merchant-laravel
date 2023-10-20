@@ -83,7 +83,7 @@ const getProduct = async () => {
     }
 }
 
-const updateSlideshow = async () => {
+const updateProduct = async () => {
     if (form.value.name == "" || form.value.description == "" || form.value.price === 0 || form.value.buy === 0 || form.value.stock === 0 || form.value.ram == "" || form.value.storage == "" || form.value.color == "" || form.value.category.id === undefined) return Swal.fire({
         toast: true,
         position: 'top',
@@ -137,7 +137,7 @@ function previewImage() {
     if (form.value.image) {
         return URL.createObjectURL(form.value.image);
     }
-    return API_URL + imagePreview.value;
+    return imagePreview.value;
 }
 
 function browseImage(e: Event) {
@@ -152,103 +152,100 @@ function browseImage(e: Event) {
 </script>
 
 <template>
-    <div class='lg:py-7 lg:px-10 p-5'>
-        <div class="flex justify-between items-end">
-            <h1 class='text-xl font-bold text-black_500'>Edit a product</h1>
-            <button class='px-4 py-3 rounded-md bg-primary text-white text-sm cursor-pointer'
-                @click="updateSlideshow()">Edit product</button>
+    <div>
+        <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
+            <h1 class='text-header font-weight-medium'>Edit a product</h1>
+            <v-btn @click="updateProduct()" color="success" flat>
+                publish
+            </v-btn>
         </div>
-        <div class="mt-8 flex flex-col gap-8 md:flex-row shadow-[#E1E1E1_0px_1px_8px] p-6 rounded-md">
-            <div class='flex-[4]'>
-                <div class="flex justify-between">
-                    <h1 class='text-xl font-semibold text-gray-800'>Product Name</h1>
-                    <div class="flex items-center gap-2">
-                        <input v-model="form.enable" type="checkbox" id="enable"
-                            class="accent-current border border-solid border-gray-300 rounded-sm cursor-pointer focus:ring-primary">
-                        <label for="enable">Enable</label>
+        <v-layout>
+            <v-row>
+                <v-col cols="12" md="8">
+                    <div class="d-flex justify-space-between align-center">
+                        <div class="font-weight-medium text-grey-darken-4">Product Name</div>
+                        <div class="flex items-center gap-2">
+                            <v-checkbox v-model="form.enable" label="enable" density="compact" color="success"
+                                hide-details></v-checkbox>
+                        </div>
                     </div>
-                </div>
-                <div class="mt-3">
-                    <input type="text" name="" id="" class='input text-sm w-full' placeholder='Write name here...'
-                        v-model="form.name" />
-                </div>
-                <div class="mt-7">
-                    <h1 class='text-xl font-semibold text-gray-800'>Product Description</h1>
-                    <div class='mt-3'>
-                        <textarea name="" id="" placeholder='Write a description here...'
-                            class='text-sm h-[200px] input w-full resize-none' v-model="form.description"></textarea>
+                    <div>
+                        <v-text-field v-model="form.name" density="compact" placeholder="Write name here..."
+                            variant="outlined" hide-details></v-text-field>
                     </div>
-                </div>
-
-                <div class="mt-7">
-                    <h1 class='text-xl font-semibold text-gray-800'>Display images</h1>
-                    <div class="inline-flex gap-4 mt-2" v-if="imagePreview != ''">
-                        <div
-                            class='relative w-[100px] h-[100px] p-[2px] rounded-lg border-solid border border-gray-300 overflow-hidden'>
-                            <div class='absolute right-[2px] top-[2px] cursor-pointer'>
-                                <!-- <IoClose color='white' class='bg-red-500 w-4 h-4 rounded-full p-[0.1rem]' /> -->
-                                <!-- delete -->
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
+                        <v-text-field v-model="form.description" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <div class="mt-7 p-3 border border-solid rounded-md">
+                        <div class="d-flex flex-column flex-md-row justify-space-between">
+                            <div class="w-100 mr-3">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Price</div>
+                                <v-text-field v-model="form.price" density="compact" placeholder="Write price here..."
+                                    variant="outlined" hide-details></v-text-field>
                             </div>
-                            <img :src="previewImage()" alt="" class='w-full h-full rounded-lg object-cover' />
+                            <div class="w-100 mt-3 mt-md-0">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Buy</div>
+                                <v-text-field v-model="form.buy" density="compact" placeholder="Write buy here..."
+                                    variant="outlined" hide-details></v-text-field>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex flex-column flex-md-row justify-space-between">
+                            <div class="w-100 mr-3">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Ram</div>
+                                <v-text-field v-model="form.ram" density="compact" placeholder="Write ram here..."
+                                    variant="outlined" hide-details></v-text-field>
+                            </div>
+                            <div class="w-100 mt-3 mt-md-0">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Storage</div>
+                                <v-text-field v-model="form.storage" density="compact" placeholder="Write storage here..."
+                                    variant="outlined" hide-details></v-text-field>
+                            </div>
+                        </div>
+                        <div class="mt-3 w-100 mr-3">
+                            <div class="mb-2 font-weight-medium text-grey-darken-4">Stock</div>
+                            <v-text-field v-model="form.stock" density="compact" placeholder="Write stock here..."
+                                variant="outlined" hide-details></v-text-field>
                         </div>
                     </div>
-
-                    <div
-                        class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
-                        <i class="fas fa-cloud-upload text-primary text-[46px]"></i>
-                        <p class='text-[15px] text-gray-600'>Browse slideshow image</p>
-                        <input class='absolute w-full h-full opacity-0 cursor-pointer' type="file" name="" id=""
-                            accept="image/*" @change="browseImage" />
-                    </div>
-                </div>
-
-                <div class="border border-solid border-gray-300 rounded-lg p-4 mt-8 bg-white">
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Price</p>
-                            <input type="text" placeholder='$$$' class='input w-full' v-model="form.price" />
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
+                        <div class="gap-4 mt-1" v-if="imagePreview != ''">
+                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" :height="100" alt="" cover></v-img>
                         </div>
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Buy</p>
-                            <input type="text" placeholder='$$$' class='input w-full' v-model="form.buy" />
+                        <div
+                            class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
+                            <v-icon>mdi-upload</v-icon>
+                            <p class='text-body-2 font-weight-medium text-grey-darken-4'>Browse slideshow image</p>
+                            <input class='absolute w-full h-full opacity-0 cursor-pointer' type="file" name="" id=""
+                                accept="image/*" @change="browseImage" />
                         </div>
                     </div>
-                    <div class='w-full mt-4'>
-                        <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Add to stock</p>
-                        <input type="text" placeholder='Quantity' class='input w-full' v-model="form.stock" />
-                    </div>
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mt-4">
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Ram</p>
-                            <input type="text" placeholder='...' class='input w-full' v-model="form.ram" />
+                </v-col>
+                <v-col cols="12" md="4">
+                    <div class="border-solid border border-gray-300 rounded-lg p-4 h-[305px] bg-white mt-2 md:mt-10">
+                        <div class="d-flex flex-wrap justify-space-between align-center">
+                            <div class='font-weight-medium text-grey-darken-4'>Category</div>
+                            <RouterLink :to="'/admin/add_category'">
+                                <v-btn color="blue" class='text-none' variant="tonal" flat>Add
+                                    category
+                                </v-btn>
+                            </RouterLink>
                         </div>
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Storage</p>
-                            <input type="text" placeholder='...' class='input w-full' v-model="form.storage" />
+                        <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.category.id">
+                            <option v-for="item in categories" :value="item.id" :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                        <div class="mt-7 d-flex flex-wrap justify-space-between align-center">
+                            <div class='font-weight-medium text-grey-darken-4'>Color</div>
                         </div>
+                        <!-- <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.color_id">
+                            <option v-for="item in colors" :value="item.id" :key="item.id">{{ item.name }}</option>
+                        </select> -->
                     </div>
-                    <div class='w-full mt-4'>
-                        <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Color</p>
-                        <input type="text" placeholder='Quantity' class='input w-full' v-model="form.color" />
-                    </div>
-                </div>
-            </div>
-
-            <div class='flex-[2]'>
-                <div class="border-solid border border-gray-300 rounded-lg p-4 h-[305px] bg-white mt-2 md:mt-10">
-                    <div class="flex justify-between items-center">
-                        <p class='text-xl font-semibold text-gray-800'>Category</p>
-                        <RouterLink :to="'/admin/add_category'">
-                            <p class='text-sm cursor-pointer font-semibold text-primary hover:underline'>Add new category
-                            </p>
-                        </RouterLink>
-                    </div>
-                    <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.category.id">
-                        <option v-for="item in categories" :value="item.id" :key="item.id">{{ item.name }}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
+                </v-col>
+            </v-row>
+        </v-layout>
     </div>
 </template>

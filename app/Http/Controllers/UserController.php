@@ -378,7 +378,7 @@ class UserController extends Controller
         $factory = (new Factory)->withServiceAccount($keyPath);
         $auth = $factory->createAuth();
         // Create a temporary ID token for the user
-        $idToken = $auth->createCustomToken($request->phoneNumber)->toString();
+        // $idToken = $auth->createCustomToken($request->phoneNumber)->toString();
         try {
             // change $examplePhoneNumber to yours
             $examplePhoneNumber = $request->phoneNumber;
@@ -409,7 +409,7 @@ class UserController extends Controller
                 } else {
                     $getuser = User::where('phone', $phone)->delete();
                     return response()->json([
-                        'success' => true,
+                        'success' => false,
                         'message' => 'incorrect pss'
                     ], 400);
                 }

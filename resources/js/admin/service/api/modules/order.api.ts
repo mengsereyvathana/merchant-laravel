@@ -14,7 +14,7 @@ interface IOrderService {
 class OrderService extends Http implements IOrderService {
     async getAllOrders(pageNumber: number): Promise<Form<IOrder>> {
         try {
-            const { data } = await this.getAll<IOrder>(OrderRoute.GET_ALL, true);
+            const { data } = await this.getAll<IOrder>(OrderRoute.GET_ALL, true, { page: pageNumber });
             return [null, data];
         } catch (error) {
             console.error(error)

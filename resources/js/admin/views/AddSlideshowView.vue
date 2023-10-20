@@ -133,8 +133,8 @@ const removeImage = () => {
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
 
-                        <div class="gap-4 mt-1" v-if="form.image">
-                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" alt="" cover></v-img>
+                        <div class="mt-1" v-if="form.image">
+                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" :height="100" alt="" cover></v-img>
                         </div>
 
                         <div

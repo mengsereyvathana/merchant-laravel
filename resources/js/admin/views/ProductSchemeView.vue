@@ -146,7 +146,7 @@ const updateEnable = async (id: number, action: string) => {
     if (error) console.log(error)
     else {
         if (data.success) {
-            await getProductScheme()
+            await getProductScheme(currentPage.value)
             Swal.fire({
                 toast: true,
                 position: 'top',
@@ -203,7 +203,7 @@ const updateEnable = async (id: number, action: string) => {
                                         <div class="d-flex flex-row align-center">
                                             <v-img :src="Upload.image(item.products?.image)" alt="" aspect-ratio="1/1"
                                                 class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
-                                            <RouterLink :to="'/admin/edit_slideshow/' + item.id">
+                                            <RouterLink :to="'/admin/edit_product_scheme/' + item.id">
                                                 <v-hover>
                                                     <template v-slot:default="{ isHovering, props }">
                                                         <span v-bind="props" class="text-grey-darken-3"

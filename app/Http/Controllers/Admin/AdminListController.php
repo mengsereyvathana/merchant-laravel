@@ -64,7 +64,7 @@ class AdminListController extends Controller
         ], 200);
     }
 
-    public function add_list(Request $request)
+    public function add_list(AddListRequest $request)
     {
         $currentYear = date('Y');
         $currentMonth = date('m');
@@ -83,7 +83,9 @@ class AdminListController extends Controller
             $file->move($folder_name . '/', $image_name);
 
             $data = products::create([
+                'category_id' => $request->category_id,
                 'name'       => $request->name,
+
                 'price'      => round($request->price, 4),
                 'image'      => $image_url,
                 //    'image'      => 'dd.jpg',
@@ -94,8 +96,10 @@ class AdminListController extends Controller
                 'buy'        => round($request->buy, 4),
                 'margin'     => round($request->price - $request->buy, 4),
                 'stock'      => $request->stock,
+
                 'action'     => $request->action
             ]);
+            // return $request->categoryid;
             if ($data) {
                 return response()->json([
                     'success' => true,

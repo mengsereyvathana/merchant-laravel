@@ -121,124 +121,85 @@ const saveProduct = async () => {
 }
 
 function previewImage() {
-    return API_URL + imagePreview.value;
+    return imagePreview.value;
 }
 </script>
 
 <template>
-    <div class='lg:py-6 lg:px-8 p-5'>
-        <div class="flex justify-between items-end rounded-md">
-            <h1 class='text-xl font-bold text-black_500'>Add a product scheme</h1>
-            <button class='px-4 py-3 rounded-md bg-primary text-white text-sm cursor-pointer'
-                @click="saveProduct()">Publish</button>
+    <div>
+        <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
+            <h1 class='text-header font-weight-medium'>Add a product scheme</h1>
+            <v-btn @click="saveProduct()" color="success" flat>
+                publish
+            </v-btn>
         </div>
-        <div class="mt-8 flex flex-col gap-8 md:flex-row shadow-[#E1E1E1_0px_1px_8px] p-6 rounded-md">
-            <div class='flex-[4]'>
-                <div class="flex justify-between">
-                    <h1 class='text-xl font-semibold text-gray-800'>Unit Price</h1>
-                    <div class="flex items-center gap-2">
-                        <!-- <input v-model="form.id" type="checkbox" id="enable"
-                            class="accent-current border border-solid border-gray-300 rounded-sm cursor-pointer focus:ring-primary">
-                        <label for="enable">Enable</label> -->
+        <v-layout>
+            <v-row>
+                <v-col cols="12" md="8">
+                    <div class="mt-7">
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Unit Price</div>
+                        <v-text-field v-model="form.unit_price" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-text-field>
                     </div>
-                </div>
-                <div class="mt-3">
-                    <input type="text" name="" id="" class='input text-sm w-full' placeholder='Write unit price here...'
-                        v-model="form.unit_price" />
-                </div>
-
-                <div class="flex justify-between mt-7">
-                    <h1 class='text-xl font-semibold text-gray-800'>Product Select :</h1>
-                </div>
-                <div class="border border-solid border-gray-300 rounded-lg p-4 bg-white mt-3" v-if="form.products">
-                    <div class="flex flex-row md:flex-row items-center justify-between gap-4">
-                        <div class="flex flex-row gap-4 w-full">
-                            <div class='w-full'>
-                                <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Name</p>
-                                <input type="text" placeholder='$$$' class='input w-full opacity-70' disabled
-                                    v-model="form.products.name" />
-                            </div>
-                            <!-- <div class="flex items-center gap-2 mt-7">
-                                <input v-model="form.enable" type="checkbox" id="enable"
-                                    class="w-[30px] h-[20px] accent-current border border-solid border-gray-300 rounded-sm cursor-pointer focus:ring-primary"
-                                    disabled>
-                                <label for="enable">Enable</label>
-                            </div> -->
-                            <!-- <div class='w-full'>
-                                <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Price</p>
-                                <input type="text" placeholder='$$$' class='input w-full' v-model="form.products.price" />
-                            </div> -->
-                        </div>
-                        <div class="inline-flex gap-4 mt-2" v-if="imagePreview != ''">
-                            <div
-                                class='relative w-[100px] h-[100px] p-[2px] rounded-lg border-solid border border-gray-300 overflow-hidden'>
-                                <div class='absolute right-[2px] top-[2px] cursor-pointer'>
-                                    <!-- <IoClose color='white' class='bg-red-500 w-4 h-4 rounded-full p-[0.1rem]' /> -->
-                                    <!-- delete -->
+                    <div class="mt-7 p-3 border border-solid rounded-md" v-if="form.products">
+                        <div class="d-flex flex-column flex-md-row justify-space-between">
+                            <div class="d-flex flex-row justify-space-between w-100 mr-3">
+                                <v-responsive class="mr-3">
+                                    <div class="mb-2 font-weight-medium text-grey-darken-4">Name</div>
+                                    <v-text-field v-model="form.products.name" density="compact" placeholder="Write here..."
+                                        variant="outlined" hide-details disabled></v-text-field>
+                                </v-responsive>
+                                <div>
+                                    <div class="gap-4 mt-1" v-if="imagePreview != ''">
+                                        <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" alt="" cover></v-img>
+                                    </div>
                                 </div>
-                                <img :src="previewImage()" alt="" class='w-full h-full rounded-lg object-cover' />
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex flex-column flex-md-row justify-space-between">
+                            <div class="w-100 mr-3">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Price</div>
+                                <v-text-field v-model="form.products.price" density="compact"
+                                    placeholder="Write ram here..." variant="outlined" hide-details disabled></v-text-field>
+                            </div>
+                            <div class="w-100 mt-3 mt-md-0">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Stock</div>
+                                <v-text-field v-model="form.products.stock" density="compact"
+                                    placeholder="Write storage here..." variant="outlined" hide-details
+                                    disabled></v-text-field>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex flex-column flex-md-row justify-space-between">
+                            <div class="w-100 mr-3">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Ram</div>
+                                <v-text-field v-model="form.products.ram" density="compact" placeholder="Write ram here..."
+                                    variant="outlined" hide-details disabled></v-text-field>
+                            </div>
+                            <div class="w-100 mt-3 mt-md-0">
+                                <div class="mb-2 font-weight-medium text-grey-darken-4">Stock</div>
+                                <v-text-field v-model="form.products.storage" density="compact"
+                                    placeholder="Write storage here..." variant="outlined" hide-details
+                                    disabled></v-text-field>
                             </div>
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4 mt-3">
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Price</p>
-                            <input type="text" placeholder='...' class='input w-full opacity-70' disabled
-                                v-model="form.products.price" />
+                </v-col>
+                <v-col cols="12" md="4">
+                    <div class="border-solid border border-gray-300 rounded-lg p-4 h-[305px] bg-white mt-2 md:mt-10">
+                        <div class="d-flex flex-wrap justify-space-between align-center">
+                            <div class='font-weight-medium text-grey-darken-4'>Product Scheme</div>
+                            <!-- <RouterLink :to="'/admin/add_category'">
+                                <v-btn color="blue" class='text-none' variant="tonal" flat>Add
+                                    category
+                                </v-btn>
+                            </RouterLink> -->
                         </div>
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Stock</p>
-                            <input type="text" placeholder='...' class='input w-full opacity-70' disabled
-                                v-model="form.products.stock" />
-                        </div>
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Ram</p>
-                            <input type="text" placeholder='...' class='input w-full opacity-70' disabled
-                                v-model="form.products.ram" />
-                        </div>
-                        <div class='w-full'>
-                            <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Storage</p>
-                            <input type="text" placeholder='...' class='input w-full opacity-70' disabled
-                                v-model="form.products.storage" />
-                        </div>
+                        <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.scheme_id">
+                            <option v-for="item in schemeList" :value="item.id" :key="item.id">{{ item.name }}</option>
+                        </select>
                     </div>
-                    <div class='w-full mt-4'>
-                        <p class='mb-2 text-gray-800 text-[15px] font-semibold'>Color</p>
-                        <input type="text" placeholder='...' class='input w-full opacity-70' disabled
-                            v-model="form.products.color" />
-                    </div>
-
-                </div>
-                <!-- <div class="mt-7">
-                    <h1 class='text-xl font-semibold text-gray-800'>Tag</h1>
-                    <div class='mt-3'>
-                        <textarea name="" id="" placeholder='Write a text here...'
-                            class='text-sm h-[200px] input w-full resize-none' v-model="form.scheme_id"></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-between">
-                    <h1 class='text-xl font-semibold text-gray-800'>Link</h1>
-                </div>
-                <div class="mt-3">
-                    <input type="text" name="" id="" class='input text-sm w-full' placeholder='Write link here...'
-                        v-model="form.unit_price" />
-                </div> -->
-            </div>
-            <div class='flex-[2]'>
-                <div class="border-solid border border-gray-300 rounded-lg p-4 h-[305px] bg-white mt-2 md:mt-10">
-                    <div class="flex justify-between items-center">
-                        <p class='text-xl font-semibold text-gray-800'>Product Scheme</p>
-                        <!-- <RouterLink :to="'/admin/add_category'">
-                            <p class='text-sm cursor-pointer font-semibold text-primary hover:underline'>Add new category
-                            </p>
-                        </RouterLink> -->
-                    </div>
-                    <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.scheme_id">
-                        <option v-for="item in schemeList" :value="item.id" :key="item.id">{{ item.name }}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+                </v-col>
+            </v-row>
+        </v-layout>
     </div>
 </template>

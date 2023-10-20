@@ -235,6 +235,8 @@ const getCurrentUserWithToken = () => {
                 reject;
             }
         }).catch((error) => {
+            Cookie.delete('token');
+            Cookie.delete('session_id');
             console.log(error);
             reject;
         });

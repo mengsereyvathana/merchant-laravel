@@ -56,7 +56,7 @@ export class Cookie {
         }
         return null;
     }
-    static delete(name: string): void {
+    static delete(name: CookieType): void {
         document.cookie = `${name}=; expires=${new Date(0).toUTCString()}`;
     }
 }

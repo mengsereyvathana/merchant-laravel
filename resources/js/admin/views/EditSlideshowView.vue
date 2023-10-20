@@ -172,13 +172,13 @@ function browseImage(e: Event) {
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
 
                         <div class="gap-4 mt-1" v-if="imagePreview !== ''">
-                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" alt="" cover></v-img>
+                            <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" :height="100" alt="" cover></v-img>
                         </div>
 
                         <div
                             class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
                             <v-icon>mdi-upload</v-icon>
-                            <p class='font-weight-medium text-grey-darken-4'>Browse slideshow image</p>
+                            <p class='font-weight-medium text-grey-darken-4'>Browse image</p>
                             <input class='absolute w-full h-full opacity-0 cursor-pointer' type="file" name="" id=""
                                 accept="image/*" @change="browseImage" />
                         </div>
@@ -188,7 +188,7 @@ function browseImage(e: Event) {
                     <div class="border-solid border border-gray-300 rounded-lg p-4 h-[305px] bg-white mt-2 md:mt-10">
                         <div class="d-flex flex-wrap justify-space-between align-center">
                             <div class='font-weight-medium text-grey-darken-4'>Current order: {{ currentSlideOrder }}</div>
-                            <RouterLink :to="'/admin/add_category'">
+                            <RouterLink :to="'/admin/add_slideshow'">
                                 <v-btn color="blue" class='text-none' variant="tonal" flat>Add
                                     slideshow
                                 </v-btn>

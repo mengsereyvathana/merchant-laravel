@@ -14,14 +14,17 @@ class products extends Model
     protected $table = 'tbl_products';
     // public $timestamp = false;
     // protected $guarded = ['updated_at'];
-    protected $fillable = ['name','price','image','color','description','ram','storage','buy','margin','stock','action'];
-    public function category(){
-        return $this->belongsTo(category::class, 'category_id');//this products fectch witch on of category
+    protected $fillable = ['name', 'price', 'image', 'color', 'description', 'ram', 'storage', 'buy', 'margin', 'stock', 'category_id', 'action'];
+    public function category()
+    {
+        return $this->belongsTo(category::class, 'category_id'); //this products fectch witch on of category
     }
-    public function cart(){
-        return $this->hasMany(Cart::class);//this products_id has many cart 
+    public function cart()
+    {
+        return $this->hasMany(Cart::class); //this products_id has many cart 
     }
-    public function orderDetail(){
-        return $this->hasMany(orderDetail::class,'products_id');//this products_id has many cart 
+    public function orderDetail()
+    {
+        return $this->hasMany(orderDetail::class, 'products_id'); //this products_id has many cart 
     }
 }
