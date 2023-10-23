@@ -53,7 +53,7 @@ class ProductSchemeService extends Http implements IProductSchemeService {
     }
     async editProductScheme(id: number, form: FormData): Promise<Form<GenericResponse>> {
         try {
-            const { data } = await this.post<GenericResponse>(`${ProductSchemeRoute.EDIT}/${id}`, true, form);
+            const { data } = await this.post<GenericResponse>(ProductSchemeRoute.EDIT + id, true, form);
             return [null, data];
         } catch (error) {
             console.error(error)

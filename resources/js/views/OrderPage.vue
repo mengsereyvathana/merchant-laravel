@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PaginationComponent from '@/admin/components/PaginationComponent.vue';
 import { onMounted, ref } from 'vue';
 import { Upload, UserID } from '@/services/helper/index';
 import { IOrderItem } from '@/types/Order';
@@ -7,20 +8,42 @@ import { orderService } from '@/services/api/modules/order.api';
 const order_loaded = ref<boolean>(false);
 const invoice = ref<number[]>([]);
 const total = ref<number[]>([]);
+const invoiceDate = ref<string[]>([]);
 const order_item = ref<Array<IOrderItem[]>>([]);
+
+//paginate
+let currentPage = ref<number>(1);
+let itemsPerPage = ref<number>(0);
+let totalItems = ref<number>(0);
+let totalPages = ref<number>(0);
+let paginationLoaded = ref<boolean>(false);
 
 onMounted(() => {
     getProductOrder();
 })
 
-const getProductOrder = async () => {
-    const [error, data] = await orderService.getAllOrders(UserID.getUser());
+const setPagination = (pn: number, ipp: number, ti: number, tp: number) => {
+    currentPage.value = pn;
+    itemsPerPage.value = ipp;
+    totalItems.value = ti;
+    totalPages.value = tp;
+}
+
+const currentPageUpdated = (value: number): void => {
+    getProductOrder(value);
+};
+
+const getProductOrder = async (pageNumber = 1) => {
+    const [error, data] = await orderService.getAllOrders(UserID.getUser(), pageNumber);
     if (error) console.log(error);
     else {
         if (data.success) {
-            order_item.value = data.data.reverse();
-            invoice.value = data.invoice.reverse();
-            total.value = data.total.reverse();
+            order_item.value = data.data;
+            invoice.value = data.invoice;
+            total.value = data.total;
+            invoiceDate.value = data.invoice_date;
+            setPagination(pageNumber, data.per_page, data.total_invocie, data.total_page)
+            paginationLoaded.value = true;
         }
         order_loaded.value = true;
     }
@@ -31,12 +54,20 @@ const getProductOrder = async () => {
     <div v-if="order_loaded && order_item.length > 0" class="flex flex-col p-4 gap-3 bg-white border-l border-solid">
         <div v-for="(item, index) in order_item" class="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-lg"
             :key="index">
-            <div class="p-4">
-                <h3 class="border-b border-solid border-gray-200 uppercase pb-4 font-semibold">Invoice #{{ invoice[index] }}
-                </h3>
+            <div class="flex justify-between border-b border-solid border-gray-200">
+                <div class="p-4">
+                    <h3 class="uppercase pb-4 font-semibold">Invoice #{{
+                        invoice[index] }}
+                    </h3>
+                </div>
+                <div class="p-4">
+                    <h3 class="uppercase pb-4 font-semibold">Invoice Date #{{
+                        invoiceDate[index] }}
+                    </h3>
+                </div>
             </div>
             <div class="overflow-x-auto scrollbar-thin">
-                <div v-for="(items, indexs) in item" class="flex justify-between p-4 first:pt-0 gap-2" :key="indexs">
+                <div v-for="(items, indexs) in item" class="flex justify-between p-4  gap-2" :key="indexs">
                     <div v-if="items.product" class="flex gap-3">
                         <div class="min-w-[4rem] h-[4rem] w-[4rem]">
                             <img :src="Upload.image(items.product.image)"
@@ -66,6 +97,8 @@ const getProductOrder = async () => {
                 </div>
             </div>
         </div>
+        <PaginationComponent v-if="paginationLoaded" :current-page="currentPage" :items-per-page="itemsPerPage"
+            :total-items="totalItems" :total-pages="totalPages" @current-page-updated="currentPageUpdated" />
     </div>
     <div v-else-if="order_loaded && order_item.length === 0"
         class="mycontainer h-[75vh] flex justify-center items-center flex-col">

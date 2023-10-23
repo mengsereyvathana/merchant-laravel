@@ -1,8 +1,12 @@
 export interface IOrder {
-    status: number;
     success: boolean;
     data: Array<IOrderItem[]>;
+    per_page: number;
+    sum_page: number;
+    total_invocie: number;
+    total_page: number;
     invoice: number[];
+    invoice_date: string[];
     total: number[];
 }
 
@@ -16,11 +20,11 @@ export interface IOrderItem {
     total: number;
     created_at: Date;
     updated_at: Date;
-    order: IOrderClass;
-    product: IProduct;
+    order: Order;
+    product: Product;
 }
 
-export interface IOrderClass {
+export interface Order {
     id: number;
     invoice: number;
     user_id: string;
@@ -31,50 +35,20 @@ export interface IOrderClass {
     updated_at: Date;
 }
 
-export interface IProduct {
+export interface Product {
     id: number;
     name: string;
     image: string;
     color: string;
     description: string;
     price: number;
-    category_id: number;
+    category_id: null;
     ram: string;
     storage: string;
     buy: number;
     margin: number;
     stock: number;
     action: string;
-    created_at: Date;
-    updated_at: Date;
-}
-
-export interface IAddOrder {
-    success: boolean;
-    data: Data;
-}
-
-export interface Data {
-    invoice: number;
-    user_id: string;
-    address_id: string;
-    pay_by: string;
-    updated_at: Date;
-    created_at: Date;
-    id: number;
-    user: User;
-}
-
-export interface User {
-    id: number;
-    name: string;
-    image: null;
-    phone: null;
-    email: string;
-    email_verified_at: null;
-    scheme_id: number;
-    role: null;
-    verify: number;
     created_at: Date;
     updated_at: Date;
 }

@@ -15,6 +15,7 @@ const routeName = computed(() => {
     let name = useRoute().name;
     if (name == "edit_category") name = "show_category";
     if (name == "edit_product") name = "show_product";
+    if (name == "edit_product_scheme") name = "show_product_scheme";
     if (name == "edit_slideshow") name = "show_slideshow";
     if (name == "orderdetail") name = "";
     return name;

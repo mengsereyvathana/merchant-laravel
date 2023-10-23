@@ -2,6 +2,7 @@
 import Swal from 'sweetalert2';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue'
+import PopupComponent from '../components/PopupComponent.vue';
 import _ from "lodash";
 import { Upload } from '../service/helpers';
 import { computed } from '@vue/reactivity';
@@ -36,6 +37,11 @@ onMounted(async () => {
     await getProductScheme();
 });
 
+const isConfirmedUpdated = (value: boolean, itemId: number) => {
+    if (value) {
+        deleteProductScheme(itemId);
+    }
+}
 
 const currentSearchUpdated = async (value: string, selectOptions: string) => {
     selectedSearchOption.value = selectOptions;
@@ -91,50 +97,51 @@ const search = _.debounce(async (pageNumber = 1) => {
 }, 400)
 
 const deleteProductScheme = async (id: number) => {
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to delete this Product!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
-        confirmButtonColor: '#42b883',
-        cancelButtonColor: '#d33',
-        reverseButtons: true
-    })
-    if (result.isConfirmed) {
-        loadingDelete.value = true;
-        // Swal.fire({
-        //     position: 'center',
-        //     allowEscapeKey: false,
-        //     allowOutsideClick: false,
-        //     showConfirmButton: false,
-        //     didOpen: () => {
-        //         Swal.showLoading();
-        //     }
-        // })
-        const [error, data] = await productSchemeService.deleteProductScheme(id)
-        if (error) console.log(error)
-        else {
-            if (data.success) {
-                Swal.close();
-                if ((productScheme.value.length - 1) % itemsPerPage.value == 0) {
-                    currentPage.value = currentPage.value - 1;
-                }
-                await getProductScheme(currentPage.value);
-                // Swal.fire({
-                //     toast: true,
-                //     position: 'top',
-                //     showClass: {
-                //         icon: 'animated heartBeat delay-1s'
-                //     },
-                //     icon: 'success',
-                //     text: 'Product has been delete!',
-                //     showConfirmButton: false,
-                //     timer: 1000
-                // });
-                loadingDelete.value = false;
+    // const result = await Swal.fire({
+    //     title: 'Are you sure?',
+    //     text: "You want to delete this Product!",
+    //     icon: 'warning',
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Yes, delete it!',
+    //     cancelButtonText: 'No, cancel!',
+    //     confirmButtonColor: '#42b883',
+    //     cancelButtonColor: '#d33',
+    //     reverseButtons: true
+    // })
+    // if (result.isConfirmed) {
+
+    // }
+    loadingDelete.value = true;
+    // Swal.fire({
+    //     position: 'center',
+    //     allowEscapeKey: false,
+    //     allowOutsideClick: false,
+    //     showConfirmButton: false,
+    //     didOpen: () => {
+    //         Swal.showLoading();
+    //     }
+    // })
+    const [error, data] = await productSchemeService.deleteProductScheme(id)
+    if (error) console.log(error)
+    else {
+        if (data.success) {
+            Swal.close();
+            if ((productScheme.value.length - 1) % itemsPerPage.value == 0) {
+                currentPage.value = currentPage.value - 1;
             }
+            await getProductScheme(currentPage.value);
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: 'Product has been delete!',
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // });
+            loadingDelete.value = false;
         }
     }
 }
@@ -152,17 +159,6 @@ const updateEnable = async (id: number, action: string) => {
     else {
         if (data.success) {
             await getProductScheme(currentPage.value)
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: data.message,
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // })
             loadingUpdate.value = false;
         }
     }
@@ -237,8 +233,9 @@ const updateEnable = async (id: number, action: string) => {
                                         <RouterLink :to="'/admin/edit_product_scheme/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
-                                        <v-btn @click="deleteProductScheme(item.id)" size="small" icon="mdi-delete"
-                                            :loading="loadingDelete" color="red" flat> </v-btn>
+                                        <PopupComponent :id="item.id" icon="mdi-delete" title="Delete This Item"
+                                            text="Are you sure?" :loading="loadingDelete"
+                                            @is-confirmed="isConfirmedUpdated" />
                                     </div>
                                 </tr>
                             </tbody>

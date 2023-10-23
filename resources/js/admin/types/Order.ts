@@ -3,9 +3,10 @@ export interface IOrder {
     data: Array<IOrderItem[]>;
     per_page: number;
     sum_page: number;
-    total_item: number;
+    total_invoice: number;
     total_page: number;
     invoice: number[];
+    invoice_date: string[];
     total: number[];
 }
 
@@ -20,7 +21,7 @@ export interface IOrderItem {
     created_at: Date;
     updated_at: Date;
     order: Order;
-    product: Product | null;
+    product: Product;
 }
 
 export interface Order {
@@ -41,7 +42,7 @@ export interface Product {
     color: string;
     description: string;
     price: number;
-    category_id: number;
+    category_id: null;
     ram: string;
     storage: string;
     buy: number;

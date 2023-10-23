@@ -2,11 +2,11 @@
 import Swal from 'sweetalert2';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue'
+import PopupComponent from '../components/PopupComponent.vue';
 import _ from "lodash"
 import { Upload } from '../service/helpers';
-import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
-import { RouteParams, RouterLink, useRoute } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import { slideshowService } from '../service/api/modules/slideshow.api'
 import { ISlideshowItem } from '../types/Slideshow';
 
@@ -43,6 +43,12 @@ const setPagination = (pn: number, ipp: number, ti: number, tp: number) => {
     itemsPerPage.value = ipp;
     totalItems.value = ti;
     totalPages.value = tp;
+}
+
+const isConfirmedUpdated = (value: boolean, itemId: number) => {
+    if (value) {
+        deleteSlideshow(itemId);
+    }
 }
 
 const currentSearchUpdated = async (value: string, selectOptions: string) => {
@@ -90,42 +96,29 @@ const search = _.debounce(async (pageNumber = 1) => {
     }
 }, 500)
 
-const deleteProduct = async (id: number) => {
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to delete this Slideshow!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
-        confirmButtonColor: '#42b883',
-        cancelButtonColor: '#d33',
-        reverseButtons: true
-    })
-    if (result.isConfirmed) {
-        loadingDelete.value = true;
-        const [error, data] = await slideshowService.deleteSlideshow(id)
-        if (error) console.log(error)
-        else {
-            if (data.success) {
-                await getSlideshows();
-                Swal.close();
-                if ((slideshows.value.length - 1) % itemsPerPage.value == 0) {
-                    currentPage.value = currentPage.value - 1;
-                }
-                // Swal.fire({
-                //     toast: true,
-                //     position: 'top',
-                //     showClass: {
-                //         icon: 'animated heartBeat delay-1s'
-                //     },
-                //     icon: 'success',
-                //     text: 'Product has been delete!',
-                //     showConfirmButton: false,
-                //     timer: 1000
-                // });
-                loadingDelete.value = false;
+const deleteSlideshow = async (id: number) => {
+    loadingDelete.value = true;
+    const [error, data] = await slideshowService.deleteSlideshow(id)
+    if (error) console.log(error)
+    else {
+        if (data.success) {
+            await getSlideshows();
+            Swal.close();
+            if ((slideshows.value.length - 1) % itemsPerPage.value == 0) {
+                currentPage.value = currentPage.value - 1;
             }
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: 'Product has been delete!',
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // });
+            loadingDelete.value = false;
         }
     }
 }
@@ -205,7 +198,6 @@ const updateEnable = async (id: number, action: string) => {
                                                             }}</span>
                                                     </template>
                                                 </v-hover>
-
                                             </RouterLink>
                                         </div>
                                     </td>
@@ -227,8 +219,11 @@ const updateEnable = async (id: number, action: string) => {
                                         <RouterLink :to="'/admin/edit_slideshow/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
-                                        <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
-                                            :loading="loadingDelete" flat> </v-btn>
+                                        <!-- <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
+                                            :loading="loadingDelete" flat> </v-btn> -->
+                                        <PopupComponent icon="mdi-delete" :id="item.id" title="Delete This Item"
+                                            text="Are you sure?" :loading="loadingDelete"
+                                            @is-confirmed="isConfirmedUpdated" />
                                     </div>
                                 </tr>
                             </tbody>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import PopupComponent from '@/admin/components/PopupComponent.vue';
 import Sidebar from './SidebarLayout.vue';
 import { Upload } from '../../service/helpers/index'
 import { adminAuthService } from '../../service/api/modules/auth-admin.api';
@@ -12,6 +13,7 @@ import { remove } from 'lodash';
 let profile = ref<object>({});
 let user = ref<IUserDataItem>();
 let num = ref<number>(0)
+let loading = ref<boolean>(false);
 
 onMounted(async () => {
     // profile.value = await Profile;
@@ -32,40 +34,34 @@ const getUser = async () => {
 //     open.value = value;
 // }
 
+const isConfirmedUpdated = (value: boolean) => {
+    if (value) {
+        logout();
+    }
+}
+
 const logout = async () => {
-    num.value++;
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to logout?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Logout',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#42b883',
-        cancelButtonColor: '#d33',
-        reverseButtons: false
-    })
-    if (result.isConfirmed) {
-        const [error, data] = await adminAuthService.logout();
-        if (error) console.log(error)
-        else {
-            if (data.success) {
-                sessionStorage.removeItem("adminToken");
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    showClass: {
-                        icon: 'animated heartBeat delay-1s'
-                    },
-                    icon: 'success',
-                    text: data.message,
-                    showConfirmButton: false,
-                    timer: 1000
-                }).then(() => {
-                    router.push("/admin/login")
-                });
-            }
+    loading.value = true;
+    const [error, data] = await adminAuthService.logout();
+    if (error) console.log(error)
+    else {
+        if (data.success) {
+            sessionStorage.removeItem("adminToken");
+            Swal.fire({
+                toast: true,
+                position: 'top',
+                showClass: {
+                    icon: 'animated heartBeat delay-1s'
+                },
+                icon: 'success',
+                text: data.message,
+                showConfirmButton: false,
+                timer: 1000
+            }).then(() => {
+                router.push("/admin/login")
+            });
         }
+        loading.value = false;
     }
 }
 
@@ -108,9 +104,11 @@ const yourProfile = () => {
                                 Edit Account
                             </v-btn>
                             <v-divider class="my-3"></v-divider>
-                            <v-btn @click="logout()" rounded variant="text">
+                            <!-- <v-btn @click="logout()" rounded variant="text">
                                 Logout
-                            </v-btn>
+                            </v-btn> -->
+                            <PopupComponent title="Logout" :icon="false" text="Do you want to logout?" :loading="loading"
+                                button-dialog="Logout" confirm-button-text="Logout" @is-confirmed="isConfirmedUpdated" />
                         </div>
                     </v-card-text>
                 </v-card>

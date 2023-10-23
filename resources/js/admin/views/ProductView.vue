@@ -2,6 +2,7 @@
 import Swal from 'sweetalert2';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue';
+import PopupComponent from '../components/PopupComponent.vue';
 import _ from 'lodash';
 import { Upload } from '../service/helpers';
 import { onMounted, ref, defineEmits } from 'vue';
@@ -30,6 +31,12 @@ let searchOption = ref([
     { id: 1, title: "Name", by: "name" },
     { id: 2, title: "ID", by: "id" },
 ]);
+
+const isConfirmedUpdated = (value: boolean, itemId: number) => {
+    if (value) {
+        deleteProduct(itemId);
+    }
+}
 
 const currentSearchUpdated = async (value: string, selectOptions: string) => {
     selectedSearchOption.value = selectOptions;
@@ -89,42 +96,29 @@ const search = _.debounce(async (pageNumber = 1) => {
 }, 200)
 
 const deleteProduct = async (id: number) => {
-    const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to delete this product!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
-        confirmButtonColor: '#42b883',
-        cancelButtonColor: '#d33',
-        reverseButtons: true
-    })
-    if (result.isConfirmed) {
-        loadingDelete.value = true;
+    loadingDelete.value = true;
 
-        const [error, data] = await productService.deleteProduct(id)
-        if (error) console.log(error)
-        else {
-            if (data.success) {
-                if ((products.value.length - 1) % itemsPerPage.value == 0) {
-                    currentPage.value = currentPage.value - 1;
-                    totalPages.value = totalPages.value - 1;
-                }
-                await getProducts(currentPage.value);
-                // Swal.fire({
-                //     toast: true,
-                //     position: 'top',
-                //     showClass: {
-                //         icon: 'animated heartBeat delay-1s'
-                //     },
-                //     icon: 'success',
-                //     text: data.message,
-                //     showConfirmButton: false,
-                //     timer: 1000
-                // });
-                loadingDelete.value = false;
+    const [error, data] = await productService.deleteProduct(id)
+    if (error) console.log(error)
+    else {
+        if (data.success) {
+            if ((products.value.length - 1) % itemsPerPage.value == 0) {
+                currentPage.value = currentPage.value - 1;
+                totalPages.value = totalPages.value - 1;
             }
+            await getProducts(currentPage.value);
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // });
+            loadingDelete.value = false;
         }
     }
 }
@@ -140,20 +134,8 @@ const updateEnable = async (id: number, enable: string) => {
     if (error) console.log(error)
     else {
         if (data.success) {
-            await getProducts(currentPage.value)?.then(() => {
-                loadingUpdate.value = false;
-            });
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: data.message,
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // })
+            await getProducts(currentPage.value);
+            loadingUpdate.value = false;
         }
     }
 }
@@ -238,8 +220,9 @@ const updateEnable = async (id: number, enable: string) => {
                                         <RouterLink :to="'/admin/edit_product/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
-                                        <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
-                                            :loading="loadingDelete" flat> </v-btn>
+                                        <PopupComponent :id="item.id" icon="mdi-delete" title="Delete This Item"
+                                            text="Are you sure?" :loading="loadingDelete"
+                                            @is-confirmed="isConfirmedUpdated" />
                                     </div>
                                 </tr>
                             </tbody>

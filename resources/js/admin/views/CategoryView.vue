@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import { onMounted, ref } from 'vue';
-import { RouterLink } from 'vue-router';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue';
+import PopupComponent from '../components/PopupComponent.vue';
+import { onMounted, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import _ from 'lodash';
 import { Upload } from '../service/helpers';
 import { categoryService } from '../service/api/modules/category.api'
@@ -39,6 +40,12 @@ const setPagination = (pn: number, ipp: number, ti: number, tp: number) => {
     itemsPerPage.value = ipp;
     totalItems.value = ti;
     totalPages.value = tp;
+}
+
+const isConfirmedUpdated = (value: boolean, itemId: number) => {
+    if (value) {
+        deleteCategory(itemId);
+    }
 }
 
 const currentSearchUpdated = async (value: string, selectOptions: string) => {
@@ -85,45 +92,31 @@ const search = _.debounce(async (pageNumber = 1) => {
     }
 }, 500)
 
-const deleteCategory = (id: number) => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to delete this category!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
-        confirmButtonColor: '#42b883',
-        cancelButtonColor: '#d33',
-        reverseButtons: true
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            loadingDelete.value = true;
-            const [error, data] = await categoryService.deleteCategory(id)
-            if (error) console.log(error)
-            else {
-                if (data.success) {
-                    if ((categories.value.length - 1) % itemsPerPage.value == 0) {
-                        currentPage.value = currentPage.value - 1;
-                        // totalPages.value = totalPages.value - 1;
-                    }
-                    await getCategories(currentPage.value);
-                    loadingDelete.value = false;
-                    // Swal.fire({
-                    //     toast: true,
-                    //     position: 'top',
-                    //     showClass: {
-                    //         icon: 'animated heartBeat delay-1s'
-                    //     },
-                    //     icon: 'success',
-                    //     text: 'Product has been delete!',
-                    //     showConfirmButton: false,
-                    //     timer: 1000
-                    // });
-                }
+const deleteCategory = async (id: number) => {
+    loadingDelete.value = true;
+    const [error, data] = await categoryService.deleteCategory(id)
+    if (error) console.log(error)
+    else {
+        if (data.success) {
+            if ((categories.value.length - 1) % itemsPerPage.value == 0) {
+                currentPage.value = currentPage.value - 1;
+                // totalPages.value = totalPages.value - 1;
             }
+            await getCategories(currentPage.value);
+            loadingDelete.value = false;
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: 'Product has been delete!',
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // });
         }
-    })
+    }
 }
 
 const updateEnable = async (id: number, action: string) => {
@@ -232,8 +225,9 @@ const updateEnable = async (id: number, action: string) => {
                                         <RouterLink :to="'/admin/edit_category/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
-                                        <v-btn @click="deleteCategory(item.id)" size="small" icon="mdi-delete" color="red"
-                                            :loading="loadingDelete" flat> </v-btn>
+                                        <PopupComponent :id="item.id" icon="mdi-delete" title=" Delete This Item"
+                                            text="Are you sure?" :loading="loadingDelete"
+                                            @is-confirmed="isConfirmedUpdated" />
                                     </div>
                                 </tr>
                             </tbody>

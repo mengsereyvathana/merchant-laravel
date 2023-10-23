@@ -6,7 +6,7 @@ import { Form } from "./types";
 import { IAddOrderDetail } from "@/types/OrderDetail";
 
 interface IOrderService {
-    getAllOrders(user_id: string): Promise<Form<IOrder>>;
+    getAllOrders(user_id: string, pageNumber: number): Promise<Form<IOrder>>;
     addOrder(form: FormData): Promise<Form<IAddOrder>>;
     addOrderDetail(form: CartData[]): Promise<Form<IAddOrderDetail>>;
 }
@@ -19,13 +19,13 @@ interface CartData {
 }
 
 export class OrderService extends Http implements IOrderService {
-    async getAllOrders(user_id: string): Promise<Form<IOrder>> {
+    async getAllOrders(user_id: string, pageNumber: number): Promise<Form<IOrder>> {
         try {
-            const { data } = await this.get<IOrder>(OrderRoute.LIST_ORDERED, true, { user_id: user_id });
+            const { data } = await this.getAll<IOrder>(OrderRoute.LIST_ORDERED, true, { user_id: user_id, page: pageNumber });
             return [null, data];
         } catch (error) {
             console.error(error)
-            throw new Error("Error is " + error)
+            return [error as Error];
         }
     }
     async addOrder(form: FormData): Promise<Form<IAddOrder>> {

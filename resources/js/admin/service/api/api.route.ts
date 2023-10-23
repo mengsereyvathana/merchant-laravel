@@ -13,7 +13,7 @@ export enum ProductSchemeRoute {
     GET = "/admin/user_scheme_price_list_detail",
     SEARCH = "/admin/search_scheme",
     CREATE = "/admin/user_scheme_price_list_add",
-    EDIT = "/admin/user_scheme_price_list_update",
+    EDIT = "/admin/user_scheme_price_list_update/",
     DELETE = "/admin/user_scheme_price_list_delete/",
 }
 
