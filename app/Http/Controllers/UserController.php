@@ -374,7 +374,7 @@ class UserController extends Controller
         // $apiKey = 'AIzaSyCeElRoZ9Aj_NKeT4hfLYVHc04UJPb4uwE';
 
         // Set the user's temporary ID token here
-        $keyPath = storage_path("app/Firebase.json");
+        $keyPath = storage_path("app/FireBase.json");
         $factory = (new Factory)->withServiceAccount($keyPath);
         $auth = $factory->createAuth();
         // Create a temporary ID token for the user
