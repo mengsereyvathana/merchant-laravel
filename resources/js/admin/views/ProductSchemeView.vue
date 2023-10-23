@@ -13,6 +13,8 @@ import { IProductSchemeItem } from '../types/ProductScheme';
 const header: string[] = ['PRODUCT SCHEME NAME', "SCHEME", "UNIT PRICE", "MARGIN", 'PUBLISHED ON'];
 
 let productScheme = ref<IProductSchemeItem[]>([]);
+let loadingUpdate = ref<boolean>(false);
+let loadingDelete = ref<boolean>(false);
 
 //paginate
 let currentPage = ref<number>(1);
@@ -101,15 +103,16 @@ const deleteProductScheme = async (id: number) => {
         reverseButtons: true
     })
     if (result.isConfirmed) {
-        Swal.fire({
-            position: 'center',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        })
+        loadingDelete.value = true;
+        // Swal.fire({
+        //     position: 'center',
+        //     allowEscapeKey: false,
+        //     allowOutsideClick: false,
+        //     showConfirmButton: false,
+        //     didOpen: () => {
+        //         Swal.showLoading();
+        //     }
+        // })
         const [error, data] = await productSchemeService.deleteProductScheme(id)
         if (error) console.log(error)
         else {
@@ -119,26 +122,28 @@ const deleteProductScheme = async (id: number) => {
                     currentPage.value = currentPage.value - 1;
                 }
                 await getProductScheme(currentPage.value);
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    showClass: {
-                        icon: 'animated heartBeat delay-1s'
-                    },
-                    icon: 'success',
-                    text: 'Product has been delete!',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
+                // Swal.fire({
+                //     toast: true,
+                //     position: 'top',
+                //     showClass: {
+                //         icon: 'animated heartBeat delay-1s'
+                //     },
+                //     icon: 'success',
+                //     text: 'Product has been delete!',
+                //     showConfirmButton: false,
+                //     timer: 1000
+                // });
+                loadingDelete.value = false;
             }
         }
     }
 }
 
 const updateEnable = async (id: number, action: string) => {
+    loadingUpdate.value = true;
+
     const formData = new FormData();
     formData.append('id', id.toString())
-    console.log("action: " + action)
     formData.append('action', action === '1' ? '0' : '1');
     formData.append('_method', 'PUT');
 
@@ -147,17 +152,18 @@ const updateEnable = async (id: number, action: string) => {
     else {
         if (data.success) {
             await getProductScheme(currentPage.value)
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            })
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // })
+            loadingUpdate.value = false;
         }
     }
 }
@@ -225,13 +231,14 @@ const updateEnable = async (id: number, action: string) => {
                                     <div
                                         class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
                                         <v-btn @click="updateEnable(item.id, item.action)" size="small"
-                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green" flat>
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" :loading="loadingUpdate"
+                                            color="green" flat>
                                         </v-btn>
                                         <RouterLink :to="'/admin/edit_product_scheme/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
                                         <v-btn @click="deleteProductScheme(item.id)" size="small" icon="mdi-delete"
-                                            color="red" flat> </v-btn>
+                                            :loading="loadingDelete" color="red" flat> </v-btn>
                                     </div>
                                 </tr>
                             </tbody>

@@ -86,7 +86,7 @@ const login = async () => {
 
 <template>
     <section class="h-screen bg-no-repeat bg-opacity-0 bg-[]" :style="'background-size: 100% 100%'">
-        <v-sheet class=" bg-slate-200 flex flex-row items-center justify-center px-3 py-3 md:px-6 md:py-8 mx-auto h-screen">
+        <v-sheet class=" bg-slate-200 flex flex-row items-center justify-center md:px-6 md:py-8 mx-auto h-screen">
             <v-card
                 class="flex flex-col md:flex-row gap-3 w-full h-full items-center bg-white rounded-lg shadow-[#E1E1E1_0px_1px_8px] md:mt-0 sm:max-w-[60rem] xl:p-0 overflow-hidden">
                 <div

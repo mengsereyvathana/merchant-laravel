@@ -669,7 +669,7 @@ class AdminListController extends Controller
             $data = category::where('id', $id)->delete();
             if ($data) {
                 return response()->json([
-                    'success' => false,
+                    'success' => true,
                     'mesage' => 'The Category has been deleted.'
                 ], 200);
             } else {

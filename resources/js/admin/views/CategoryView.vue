@@ -12,6 +12,8 @@ import { ICategoryItem } from '../types/Category';
 const header: string[] = ['CATEGORY NAME', 'DESCRIPTION', 'PUBLISHED ON'];
 
 let categories = ref<ICategoryItem[]>([]);
+let loadingUpdate = ref<boolean>(false);
+let loadingDelete = ref<boolean>(false);
 
 //paginate
 let currentPage = ref<number>(1);
@@ -96,28 +98,28 @@ const deleteCategory = (id: number) => {
         reverseButtons: true
     }).then(async (result) => {
         if (result.isConfirmed) {
-            console.log(id)
+            loadingDelete.value = true;
             const [error, data] = await categoryService.deleteCategory(id)
             if (error) console.log(error)
             else {
-                console.log(data)
                 if (data.success) {
                     if ((categories.value.length - 1) % itemsPerPage.value == 0) {
                         currentPage.value = currentPage.value - 1;
                         // totalPages.value = totalPages.value - 1;
                     }
                     await getCategories(currentPage.value);
-                    Swal.fire({
-                        toast: true,
-                        position: 'top',
-                        showClass: {
-                            icon: 'animated heartBeat delay-1s'
-                        },
-                        icon: 'success',
-                        text: 'Product has been delete!',
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
+                    loadingDelete.value = false;
+                    // Swal.fire({
+                    //     toast: true,
+                    //     position: 'top',
+                    //     showClass: {
+                    //         icon: 'animated heartBeat delay-1s'
+                    //     },
+                    //     icon: 'success',
+                    //     text: 'Product has been delete!',
+                    //     showConfirmButton: false,
+                    //     timer: 1000
+                    // });
                 }
             }
         }
@@ -125,6 +127,8 @@ const deleteCategory = (id: number) => {
 }
 
 const updateEnable = async (id: number, action: string) => {
+    loadingUpdate.value = true;
+
     const formData = new FormData();
     formData.append('action', action === '1' ? '0' : '1');
     formData.append('_method', 'PUT');
@@ -134,17 +138,18 @@ const updateEnable = async (id: number, action: string) => {
     else {
         if (data.success) {
             await getCategories(currentPage.value)
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            })
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // })
+            loadingUpdate.value = false;
         }
     }
 }
@@ -221,13 +226,14 @@ const updateEnable = async (id: number, action: string) => {
                                     <div
                                         class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
                                         <v-btn @click="updateEnable(item.id, item.action)" size="small"
-                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green" flat>
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green"
+                                            :loading="loadingUpdate" flat>
                                         </v-btn>
                                         <RouterLink :to="'/admin/edit_category/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
                                         <v-btn @click="deleteCategory(item.id)" size="small" icon="mdi-delete" color="red"
-                                            flat> </v-btn>
+                                            :loading="loadingDelete" flat> </v-btn>
                                     </div>
                                 </tr>
                             </tbody>

@@ -25,6 +25,7 @@ const verificationId = ref<string | null>(null);
 const errMsg = ref<string>("");
 const onResend = ref<boolean>(false);
 
+let loading = ref<boolean>(false);
 let showMsg = ref<string>("");
 let counter = ref<number>(60);
 let nextStep = ref<boolean>(false);
@@ -85,20 +86,21 @@ const sendCode = async () => {
                 timer: 1000,
             });
         }
-        Swal.fire({
-            position: 'center',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            timer: 4000,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        // Swal.fire({
+        //     position: 'center',
+        //     allowEscapeKey: false,
+        //     allowOutsideClick: false,
+        //     showConfirmButton: false,
+        //     timer: 4000,
+        //     didOpen: () => {
+        //         Swal.showLoading();
+        //     }
+        // });
 
         if (!appVerifier) {
             appVerifier = await userService.createRecaptchaVerifier(appVerifier, auth)
             appVerifier.render();
+            loading.value = true;
         }
 
         const res = await userService.sendCode(selectedCountry.value?.code + phoneNumber.value, appVerifier, auth);
@@ -106,49 +108,53 @@ const sendCode = async () => {
         if (res?.verificationId) {
             verificationId.value = res.verificationId;
 
-            Swal.fire({
-                position: 'center',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                timer: 4000,
-                didOpen: () => {
-                    Swal.showLoading();
+            // Swal.fire({
+            //     position: 'center',
+            //     allowEscapeKey: false,
+            //     allowOutsideClick: false,
+            //     showConfirmButton: false,
+            //     timer: 4000,
+            //     didOpen: () => {
+            //         Swal.showLoading();
+            //     }
+            // }).then(() => {
+
+            // });
+            setTimeout(() => (loading.value = false), 2000)
+            nextStep.value = true;
+            onResend.value = true;
+            counter.value = 60;
+
+            interval = setInterval(() => {
+                counter.value = counter.value - 1;
+                if (counter.value == 0) {
+                    onResend.value = false;
+                    Swal.fire({
+                        toast: true,
+                        position: "top",
+                        showClass: {
+                            icon: "animated heartBeat delay-1s",
+                        },
+                        icon: "info",
+                        text: "OTP has expired",
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    clearInterval(interval);
                 }
-            }).then(() => {
-                nextStep.value = true;
-                onResend.value = true;
-                counter.value = 60;
+            }, 1000);
 
-                interval = setInterval(() => {
-                    counter.value = counter.value - 1;
-                    if (counter.value == 0) {
-                        onResend.value = false;
-                        Swal.fire({
-                            toast: true,
-                            position: "top",
-                            showClass: {
-                                icon: "animated heartBeat delay-1s",
-                            },
-                            icon: "info",
-                            text: "OTP has expired",
-                            showConfirmButton: false,
-                            timer: 1000,
-                        });
-                        clearInterval(interval);
-                    }
-                }, 1000);
+            // loading.value = false;
 
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    icon: 'success',
-                    showConfirmButton: false,
-                    text: "We have sent a code to your SMS",
-                    timer: 1000,
-                })
-                console.log('Code sent successfully.');
-            });
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     icon: 'success',
+            //     showConfirmButton: false,
+            //     text: "We have sent a code to your SMS",
+            //     timer: 1000,
+            // })
+            // console.log('Code sent successfully.');
         }
     } catch (error) {
         console.error('Error sending code:', error);
@@ -181,38 +187,28 @@ const verifyCode = async () => {
             showConfirmButton: false,
             timer: 1000,
         });
-    Swal.fire({
-        position: 'center',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
+    loading.value = true;
     let code = otpInput.value.join("");
     if (verificationId.value) {
         try {
             const response = await userService.verifyCode(verificationId.value, code, auth)
             if (response.user) {
                 Swal.close();
-
                 //Create user in database
-
                 try {
                     const formData = new FormData();
                     formData.append("phoneNumber", selectedCountry.value?.code + phoneNumber.value);
                     formData.append("pss", "12345678");
 
-                    Swal.fire({
-                        position: 'center',
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            window.Swal.showLoading();
-                        }
-                    });
+                    // Swal.fire({
+                    //     position: 'center',
+                    //     allowEscapeKey: false,
+                    //     allowOutsideClick: false,
+                    //     showConfirmButton: false,
+                    //     didOpen: () => {
+                    //         window.Swal.showLoading();
+                    //     }
+                    // });
                     const [error, data] = await userService.loginWithPhone(formData)
                     if (error) console.log(error);
                     else {
@@ -220,6 +216,7 @@ const verifyCode = async () => {
                             if (data.is_new) {
                                 Swal.close();
                                 store.dispatch(AUTH_STORE.ACTIONS.SET_PASSWORD_PASS, "12345678")
+                                loading.value = false;
                                 router.push('/form_register/' + phoneNumber.value)
                             } else {
                                 Swal.close();
@@ -228,16 +225,18 @@ const verifyCode = async () => {
                                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(data.data.id)), 10);
                                 store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, data.token)
                                 clearInterval(interval)
+                                loading.value = false;
                                 router.push('/');
                             }
                         }
                     }
                 } catch (error) {
-                    console.log(error)
+                    console.log(error);
                 }
             }
         } catch (error) {
             Swal.close();
+            loading.value = false;
             const errorResponse = handleErrorMsg((error as AuthError).code);
             Swal.fire({
                 toast: true,
@@ -306,18 +305,16 @@ const resendCode = () => {
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <div class="space-y-4 md:space-y-6">
                         <div class="flex justify-between items-center">
-                            <v-select class="fit" variant="underlined" label="Country" v-model="selectedCountry"
+                            <v-select class="fit" variant="outlined" label="Country" v-model="selectedCountry"
                                 :items="country" :item-props="countryProps" hide-details="auto">
                             </v-select>
                             <v-text-field variant="outlined" class="pa-2" v-model="phoneNumber" ref="input1"
                                 hide-details="auto" type="tel" placeholder="XX XXX XXXX"
                                 label="Phone Number"></v-text-field>
-
                         </div>
-                        <button @click="sendCode()" v-ripple-init
-                            class="ripple-effect w-full text-white bg-main focus:outline-none font-medium rounded-sm text-sm px-5 py-4 text-center ">
+                        <v-btn @click="sendCode()" color="blue" block single-line size="large" :loading="loading">
                             Sign in
-                        </button>
+                        </v-btn>
                         <div class="text-main">{{ showMsg }}</div>
                     </div>
                 </div>
@@ -353,12 +350,12 @@ const resendCode = () => {
                             </div>
 
                             <div class="flex flex-col space-y-5">
-                                <button @click="verifyCode()" v-ripple-init
-                                    :class="otpInput.every(element => element !== '') ? 'ripple-effect' : 'opacity-70'"
+                                <v-btn @click="verifyCode()" :loading="loading" color="blue" size="large"
+                                    :class="otpInput.every(element => element !== '') ? '' : 'opacity-70'"
                                     :disabled="!otpInput.every(element => element !== '')"
                                     class="flex flex-row items-center justify-center text-center w-full border rounded-lg outline-none py-3 bg-main border-none text-white text-base shadow-sm ">
                                     Verify
-                                </button>
+                                </v-btn>
                                 <div
                                     class="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                                     <p>Didn't recieve code?</p>

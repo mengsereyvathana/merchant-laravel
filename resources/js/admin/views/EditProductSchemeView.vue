@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
+import SearchComponent from '@/admin/components/SearchComponent.vue';
 import _ from "lodash";
 import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
@@ -26,7 +27,10 @@ let products = ref<IProductItem[]>([])
 //search
 let selectedSearchOption = ref("");
 let searchQuery = ref();
-let searchOption = ref(["name", "scheme id", "product id"]);
+let searchOption = ref([
+    { id: 1, title: "Name", by: "name" },
+    { id: 2, title: "ID", by: "id" },
+]);
 
 const header: string[] = ['PRODUCT NAME', 'DESCRIPTION', 'PRICE', 'BUY', 'MARGIN', 'STOCK', 'RAM', 'STORAGE', 'COLOR', 'CATEGORY', 'PUBLISHED ON'];
 
@@ -68,11 +72,17 @@ const getScheme = async () => {
 }
 
 onMounted(async () => {
-    selectedSearchOption.value = searchOption.value[0];
+    selectedSearchOption.value = searchOption.value[0].by;
     await getScheme();
     await getProductScheme();
     await getProduct();
 });
+
+const currentSearchUpdated = async (value: string, selectOptions: string) => {
+    selectedSearchOption.value = selectOptions;
+    searchQuery.value = value;
+    await searchProducts();
+}
 
 const searchProducts = _.debounce(async () => {
     const params = {
@@ -282,72 +292,75 @@ const tooltipRemove = () => {
                         </div>
                     </v-col>
                     <v-col cols="12" md="5">
-                        <div class="border-solid border border-gray-300 rounded-lg p-4 w-auto h-[370px] bg-white">
+                        <div class="border-solid border border-gray-300 rounded-lg p-4 w-auto h-[390px] bg-white">
                             <div class="flex flex-col gap-4 overflow-hidden">
-                                <div class="flex justify-between">
-                                    <div class='relative flex flex-row items-center'>
-                                        <input @keyup="searchProducts()" v-model="searchQuery" type="text" name="" id=""
-                                            placeholder='Search product'
-                                            class='text-sm pl-10 w-[155px] h-[40px] rounded-md border-gray-300 border-solid border focus:border-current focus:ring-current' />
-                                        <img :src="Upload.icon('search.svg')" alt=""
-                                            class="absolute top-[50%] left-3 translate-y-[-50%] w-4 h-4" />
-                                    </div>
-                                    <div class="flex flex-row justify-between items-center gap-3">
-                                        <p class='text-sm font-semibold text-gray-800'>by:</p>
-                                        <select name="" id="" class="w-full text-[14px] cursor-pointer"
-                                            v-model="selectedSearchOption">
-                                            <option v-for="item in searchOption" :value="item" :key="item">{{ item }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <h1 class="text-sm font-semibold">Select a product</h1>
-                                <div
-                                    class="h-[245px] border border-solid rounded-md overflow-x-auto overflow-y-none scroll-smooth">
-                                    <v-table>
-                                        <thead>
-                                            <tr>
-                                                <th v-for="(item, index) in header" :key="index"
-                                                    :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
-                                                    class="text-grey-darken-2 py-2 px-3">{{ item }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class='group relative cursor-pointer' v-for="item in products"
-                                                :key="item.id" @click="getProduct(item.id)">
-                                                <td>
-                                                    <div class="d-flex flex-row align-center">
-                                                        <v-img :src="Upload.image(item.image)" alt="" aspect-ratio="1/1"
-                                                            class='rounded-md mr-3' cover :max-width="50"
-                                                            :width="50"></v-img>
-                                                        <v-hover>
-                                                            <template v-slot:default="{ isHovering, props }">
-                                                                <span v-bind="props" class="text-grey-darken-3"
-                                                                    :class="isHovering ? 'text-grey-darken-4' : ''">{{
-                                                                        item.name
-                                                                    }}</span>
-                                                            </template>
-                                                        </v-hover>
-                                                    </div>
-                                                </td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.description }}
-                                                </td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.price }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.buy }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.margin }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.stock }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.ram }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.storage }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.color }}</td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.category?.name
-                                                }}
-                                                </td>
-                                                <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.created_at }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </v-table>
-                                </div>
+                                <v-row>
+                                    <v-col>
+                                        <SearchComponent :search-option="searchOption"
+                                            @current-search-updated="currentSearchUpdated" />
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <h1 class="text-sm font-semibold">Select a product</h1>
+                                        <div
+                                            class="h-[245px] border border-solid rounded-md overflow-x-auto overflow-y-none scroll-smooth">
+                                            <v-table>
+                                                <thead>
+                                                    <tr>
+                                                        <th v-for="(item, index) in header" :key="index"
+                                                            :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
+                                                            class="text-grey-darken-2 py-2 px-3">{{ item }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class='group relative cursor-pointer' v-for="item in products"
+                                                        :key="item.id" @click="getProduct(item.id)">
+                                                        <td>
+                                                            <div class="d-flex flex-row align-center">
+                                                                <v-img :src="Upload.image(item.image)" alt=""
+                                                                    aspect-ratio="1/1" class='rounded-md mr-3' cover
+                                                                    :max-width="50" :width="50"></v-img>
+                                                                <v-hover>
+                                                                    <template v-slot:default="{ isHovering, props }">
+                                                                        <span v-bind="props" class="text-grey-darken-3"
+                                                                            :class="isHovering ? 'text-grey-darken-4' : ''">{{
+                                                                                item.name
+                                                                            }}</span>
+                                                                    </template>
+                                                                </v-hover>
+                                                            </div>
+                                                        </td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{
+                                                            item.description }}
+                                                        </td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.price
+                                                        }}</td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.buy }}
+                                                        </td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.margin
+                                                        }}</td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.stock
+                                                        }}</td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.ram }}
+                                                        </td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.storage
+                                                        }}</td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.color
+                                                        }}</td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{
+                                                            item.category?.name
+                                                        }}
+                                                        </td>
+                                                        <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{
+                                                            item.created_at }}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </v-table>
+                                        </div>
+                                    </v-col>
+                                </v-row>
                             </div>
                         </div>
                     </v-col>

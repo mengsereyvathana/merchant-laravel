@@ -62,7 +62,7 @@ class ProductSchemeService extends Http implements IProductSchemeService {
     }
     async deleteProductScheme(id: number): Promise<Form<GenericResponse>> {
         try {
-            const { data } = await this.delete<GenericResponse>(`${ProductSchemeRoute.DELETE}/${id}`, true);
+            const { data } = await this.delete<GenericResponse>(ProductSchemeRoute.DELETE + id, true);
             return [null, data];
         } catch (error) {
             console.error(error)

@@ -5,7 +5,7 @@ export enum ProductRoute {
     SEARCH = "/admin/search_product",
     CREATE = "/admin/add_list",
     EDIT = "/admin/update_list/",
-    DELETE = "delete_list",
+    DELETE = "/admin/delete_list/",
 }
 
 export enum ProductSchemeRoute {
@@ -14,7 +14,7 @@ export enum ProductSchemeRoute {
     SEARCH = "/admin/search_scheme",
     CREATE = "/admin/user_scheme_price_list_add",
     EDIT = "/admin/user_scheme_price_list_update",
-    DELETE = "/admin/user_scheme_price_list_delete",
+    DELETE = "/admin/user_scheme_price_list_delete/",
 }
 
 export enum SlideshowRoute {

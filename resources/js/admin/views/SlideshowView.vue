@@ -22,6 +22,8 @@ let totalPages = ref<number>(0);
 let isLoaded = ref<boolean>(false);
 
 //search
+let loadingUpdate = ref<boolean>(false);
+let loadingDelete = ref<boolean>(false);
 let isFound = ref(false);
 let selectedSearchOption = ref("");
 let searchQuery = ref("");
@@ -101,15 +103,7 @@ const deleteProduct = async (id: number) => {
         reverseButtons: true
     })
     if (result.isConfirmed) {
-        Swal.fire({
-            position: 'center',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        })
+        loadingDelete.value = true;
         const [error, data] = await slideshowService.deleteSlideshow(id)
         if (error) console.log(error)
         else {
@@ -119,43 +113,45 @@ const deleteProduct = async (id: number) => {
                 if ((slideshows.value.length - 1) % itemsPerPage.value == 0) {
                     currentPage.value = currentPage.value - 1;
                 }
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    showClass: {
-                        icon: 'animated heartBeat delay-1s'
-                    },
-                    icon: 'success',
-                    text: 'Product has been delete!',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
+                // Swal.fire({
+                //     toast: true,
+                //     position: 'top',
+                //     showClass: {
+                //         icon: 'animated heartBeat delay-1s'
+                //     },
+                //     icon: 'success',
+                //     text: 'Product has been delete!',
+                //     showConfirmButton: false,
+                //     timer: 1000
+                // });
+                loadingDelete.value = false;
             }
         }
     }
 }
 
 const updateEnable = async (id: number, action: string) => {
+    loadingUpdate.value = true;
     const formData = new FormData();
     formData.append('action', action === '1' ? '0' : '1');
     formData.append('_method', 'PUT');
-
     const [error, data] = await slideshowService.editSlideshow(id, formData)
     if (error) console.log(error)
     else {
         if (data.success) {
             await getSlideshows(currentPage.value)
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            })
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // })
+            loadingUpdate.value = false;
         }
     }
 }
@@ -225,13 +221,14 @@ const updateEnable = async (id: number, action: string) => {
                                     <div
                                         class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
                                         <v-btn @click="updateEnable(item.id, item.action)" size="small"
-                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green" flat>
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green"
+                                            :loading="loadingUpdate" flat>
                                         </v-btn>
                                         <RouterLink :to="'/admin/edit_slideshow/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
                                         <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
-                                            flat> </v-btn>
+                                            :loading="loadingDelete" flat> </v-btn>
                                     </div>
                                 </tr>
                             </tbody>

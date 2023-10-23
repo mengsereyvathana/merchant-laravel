@@ -13,6 +13,8 @@ const emits = defineEmits(['update-total-pages']);
 const header: string[] = ['PRODUCT NAME', 'DESCRIPTION', 'PRICE', 'BUY', 'MARGIN', 'STOCK', 'RAM', 'STORAGE', 'COLOR', 'CATEGORY', 'PUBLISHED ON'];
 
 let products = ref<IProductItem[]>([]);
+let loadingUpdate = ref<boolean>(false);
+let loadingDelete = ref<boolean>(false);
 
 //paginate
 let currentPage = ref<number>(1);
@@ -99,6 +101,8 @@ const deleteProduct = async (id: number) => {
         reverseButtons: true
     })
     if (result.isConfirmed) {
+        loadingDelete.value = true;
+
         const [error, data] = await productService.deleteProduct(id)
         if (error) console.log(error)
         else {
@@ -108,23 +112,26 @@ const deleteProduct = async (id: number) => {
                     totalPages.value = totalPages.value - 1;
                 }
                 await getProducts(currentPage.value);
-                Swal.fire({
-                    toast: true,
-                    position: 'top',
-                    showClass: {
-                        icon: 'animated heartBeat delay-1s'
-                    },
-                    icon: 'success',
-                    text: data.message,
-                    showConfirmButton: false,
-                    timer: 1000
-                });
+                // Swal.fire({
+                //     toast: true,
+                //     position: 'top',
+                //     showClass: {
+                //         icon: 'animated heartBeat delay-1s'
+                //     },
+                //     icon: 'success',
+                //     text: data.message,
+                //     showConfirmButton: false,
+                //     timer: 1000
+                // });
+                loadingDelete.value = false;
             }
         }
     }
 }
 
 const updateEnable = async (id: number, enable: string) => {
+    loadingUpdate.value = true;
+
     const formData = new FormData();
     formData.append('action', enable === '1' ? '0' : '1');
     formData.append('_method', 'PUT');
@@ -133,18 +140,20 @@ const updateEnable = async (id: number, enable: string) => {
     if (error) console.log(error)
     else {
         if (data.success) {
-            await getProducts(currentPage.value);
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            })
+            await getProducts(currentPage.value)?.then(() => {
+                loadingUpdate.value = false;
+            });
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // })
         }
     }
 }
@@ -223,13 +232,14 @@ const updateEnable = async (id: number, enable: string) => {
                                             <v-btn size="small" icon="mdi-plus" color="blue" flat></v-btn>
                                         </RouterLink>
                                         <v-btn @click="updateEnable(item.id, item.action)" size="small"
-                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green" flat>
+                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green"
+                                            :loading="loadingUpdate" flat>
                                         </v-btn>
                                         <RouterLink :to="'/admin/edit_product/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
                                         <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
-                                            flat> </v-btn>
+                                            :loading="loadingDelete" flat> </v-btn>
                                     </div>
                                 </tr>
                             </tbody>
