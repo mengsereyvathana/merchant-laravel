@@ -207,7 +207,6 @@ const updateEnable = async (id: number, action: string) => {
                                                             }}</span>
                                                     </template>
                                                 </v-hover>
-
                                             </RouterLink>
                                         </div>
                                     </td>

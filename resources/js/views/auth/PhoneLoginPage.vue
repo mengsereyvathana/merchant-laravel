@@ -87,20 +87,14 @@ const sendCode = async () => {
             });
         }
 
-        if (phoneNumber.value.charAt(0) === "0") {
-            phoneNumber.value = phoneNumber.value.substring(1);
-        }
 
         if (!appVerifier) {
-            if (phoneNumber.value.charAt(0) === "0") {
-                phoneNumber.value = phoneNumber.value.substring(1);
-            }
             appVerifier = await userService.createRecaptchaVerifier(appVerifier, auth)
             appVerifier.render();
             loading.value = true;
         }
 
-        const res = await userService.sendCode(selectedCountry.value?.code + phoneNumber.value, appVerifier, auth);
+        const res = await userService.sendCode(selectedCountry.value?.code + (phoneNumber.value.charAt(0) === "0" ? phoneNumber.value.substring(1) : phoneNumber.value), appVerifier, auth);
 
         if (res?.verificationId) {
             verificationId.value = res.verificationId;
@@ -109,6 +103,10 @@ const sendCode = async () => {
             nextStep.value = true;
             onResend.value = true;
             counter.value = 60;
+
+            if (phoneNumber.value.charAt(0) === "0") {
+                phoneNumber.value = phoneNumber.value.substring(1);
+            }
 
             interval = setInterval(() => {
                 counter.value = counter.value - 1;
