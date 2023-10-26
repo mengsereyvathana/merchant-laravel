@@ -122,23 +122,22 @@ let open = ref([false, false, false, false, false, false, false]);
                     @click.stop="toggleMenu = !toggleMenu"></v-btn>
             </template>
         </v-list-item>
-        <v-list v-model:opened="open" density="compact" nav>
-            <div v-for="(item, index) in menus" :key="index">
+        <v-list v-model:opened="open" nav>
+            <div v-for="(item, index) in  menus " :key="index">
                 <v-list-group v-if="item.hasSub" :value="item.title">
                     <template v-slot:activator="{ props }">
-                        <v-list-item v-bind="props" :title="item.title" :prepend-icon="item.icon"></v-list-item>
+                        <v-list-item :ripple="{ class: 'text-blue' }" active-color="blue" v-bind="props" :title="item.title"
+                            :prepend-icon="item.icon"></v-list-item>
                     </template>
                     <div v-for="sub in item.children" :key="sub.page_name">
-                        <RouterLink :to="'/admin/' + sub.page_name">
-                            <v-list-item :title="sub.title" prepend-icon="mdi-arrow-right-bold-circle-outline"
-                                :value="sub.title"></v-list-item>
-                        </RouterLink>
+                        <v-list-item :to="'/admin/' + sub.page_name" :ripple="{ class: 'text-blue' }" active-color="blue"
+                            :title="sub.title" prepend-icon="mdi-arrow-right-bold-circle-outline"
+                            :value="sub.title"></v-list-item>
                     </div>
                 </v-list-group>
-                <RouterLink v-else :to="'/admin/' + (item.page_name == 'dashboard' ? '' : item.page_name)">
-                    <v-list-item :prepend-icon="item.icon" :title="item.title" :value="item.title"
-                        class="mb-[4px] mx-0"></v-list-item>
-                </RouterLink>
+                <v-list-item v-else :to="'/admin/' + (item.page_name === 'dashboard' ? '' : item.page_name)"
+                    :ripple="{ class: 'text-blue' }" active-color="blue" :prepend-icon="item.icon" :title="item.title"
+                    :value="item.title" class="mb-[4px] mx-0"></v-list-item>
             </div>
         </v-list>
     </v-navigation-drawer>

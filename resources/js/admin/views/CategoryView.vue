@@ -197,7 +197,8 @@ const updateEnable = async (id: number, action: string) => {
                                     <td>
                                         <div class="d-flex flex-row align-center">
                                             <v-img :src="Upload.image(item.image)" alt="" aspect-ratio="1/1"
-                                                class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
+                                                class='rounded-md mr-3' cover :max-width="50" :width="50"
+                                                :height="50"></v-img>
                                             <RouterLink :to="'/admin/edit_category/' + item.id">
                                                 <v-hover>
                                                     <template v-slot:default="{ isHovering, props }">

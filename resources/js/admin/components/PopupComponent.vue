@@ -29,8 +29,6 @@ const loading = computed<boolean>(() => props.loading);
 const confirm = () => {
     dialog.value = false;
     emits("isConfirmed", true, id.value)
-    console.log(icon.value)
-    console.log()
 }
 
 </script>

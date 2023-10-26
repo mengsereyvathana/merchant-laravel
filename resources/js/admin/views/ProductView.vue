@@ -181,7 +181,8 @@ const updateEnable = async (id: number, enable: string) => {
                                     <td>
                                         <div class="d-flex flex-row align-center">
                                             <v-img :src="Upload.image(item.image)" alt="" aspect-ratio="1/1"
-                                                class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
+                                                class='rounded-md mr-3' cover :max-width="50" :width="50"
+                                                :height="50"></v-img>
                                             <RouterLink :to="'/admin/edit_product/' + item.id">
                                                 <v-hover>
                                                     <template v-slot:default="{ isHovering, props }">
@@ -195,9 +196,9 @@ const updateEnable = async (id: number, enable: string) => {
                                         </div>
                                     </td>
                                     <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.description }}</td>
-                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.price }}</td>
-                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.buy }}</td>
-                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.margin }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ item.price }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ item.buy }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ item.margin }}</td>
                                     <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.stock }}</td>
                                     <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.ram }}</td>
                                     <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.storage }}</td>

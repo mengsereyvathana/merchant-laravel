@@ -10,12 +10,11 @@ import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue';
 
 const header = ['NAME', 'QTY', 'TOTAL'];
-const ITEM_PER_PAGE = 5;
 
 let orders = ref<Array<IOrderItem[]>>([])
 let invoice = ref<number[]>([])
 let total = ref<number[]>([])
-let totalQty = ref<number>()
+let customerName = ref<string[]>([])
 let invoiceDate = ref<string[]>([])
 
 //paginate
@@ -66,6 +65,7 @@ const getOrders = async (pageNumber = 1) => {
         orders.value = data.data;
         invoice.value = data.invoice;
         total.value = data.total;
+        customerName.value = data.buy_by;
         invoiceDate.value = data.invoice_date;
         setPagination(pageNumber, data.per_page, data.total_invoice, data.total_page)
         loading.value = true;
@@ -84,6 +84,7 @@ const search = _.debounce(async (pageNumber = 1) => {
             orders.value = data.data as IOrderItem[][]
             invoice.value = data.invoice;
             total.value = data.total;
+            customerName.value = data.buy_by;
             invoiceDate.value = data.invoice_date;
             setPagination(pageNumber, data.per_page, data.total_invoice, data.total_page)
         }
@@ -111,25 +112,27 @@ const search = _.debounce(async (pageNumber = 1) => {
                     <v-col>
                         <div class='bg-white relative'>
                             <div v-for="(mainItem, mainIndex) in orders" :key="mainIndex"
-                                class="w-full overflow-x-auto overflow-y-none mt-5 border border-solid rounded-md">
-                                <div class="d-flex justify-space-between">
+                                class="w-full overflow-x-auto overflow-y-none mt-5 border-2 border-solid border-blue-200 rounded-md">
+                                <div class="d-flex justify-space-between flex-sm-row flex-column">
                                     <div v-if="invoice" class="p-3">
-                                        <h2 class="text-md font-semibold text-gray-600 underline">Invoice #{{
+                                        <h2 class="font-weight-medium text-grey-darken-2">Invoice #{{
                                             invoice[mainIndex]
                                         }}</h2>
                                     </div>
                                     <div v-if="invoiceDate" class="p-3">
-                                        <h2 class="text-md font-semibold text-gray-600 underline">Invoice Date #{{
+                                        <h2 class="font-weight-medium text-grey-darken-2">Invoice Date #{{
                                             invoiceDate[mainIndex]
+                                        }}</h2>
+                                    </div>
+                                    <div v-if="customerName" class="p-3">
+                                        <h2 class="font-weight-medium text-grey-darken-2">Customer name: {{
+                                            customerName[mainIndex]
                                         }}</h2>
                                     </div>
                                 </div>
                                 <v-table class='w-[1100px] md:w-full'>
                                     <thead>
                                         <tr>
-                                            <!-- <th class='px-3'>
-                                                <v-checkbox hide-details></v-checkbox>
-                                            </th> -->
                                             <th v-for="(item, index) in header" :key="index"
                                                 :class="index == 5 ? 'w-[200px] text-start' : index == 0 ? 'w-[300px] text-center' : 'text-start'"
                                                 class="text-grey-darken-2 py-2 px-3">{{ item }}</th>
@@ -139,19 +142,11 @@ const search = _.debounce(async (pageNumber = 1) => {
                                     <tbody>
                                         <tr class='group relative border-solid border-b border-gray-300'
                                             v-for="(item, index) in mainItem" :key="index">
-                                            <!-- <td class='text-sm text-gray-700 py-2 px-3'>
-                                <input type="checkbox" name="" id=""
-                                    class='w-4 h-4 cursor-pointer border-solid border border-gray-500 rounded-[4px] checked:rounded-[4px]' />
-                            </td> -->
-                                            <td>
-                                                <!-- <img :src="Upload.image(item.product?.image)" alt=""
-                                                    class='w-[45px] h-[45px] border-solid border border-gray-300 rounded-md object-cover' />
-                                                <p
-                                                    class='w-[230px] text-ph font-semibold truncate text-primary py-2 px-3 cursor-pointer hover:underline'>
-                                                    {{ item.product?.name }}</p> -->
+                                            <td v-if="item.product">
                                                 <div class="d-flex flex-row align-center">
                                                     <v-img :src="Upload.image(item.product.image)" alt="" aspect-ratio="1/1"
-                                                        class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
+                                                        class='rounded-md mr-3' cover :max-width="50" :width="50"
+                                                        :height="50"></v-img>
                                                     <v-hover>
                                                         <template v-slot:default="{ isHovering, props }">
                                                             <span v-bind="props" class="text-grey-darken-3"
@@ -173,9 +168,6 @@ const search = _.debounce(async (pageNumber = 1) => {
                                         </tr>
                                     </tbody>
                                 </v-table>
-                                <!-- <div v-if="total" class="p-3">
-                                    <h2 class="text-md font-semibold text-gray-600">Total: ${{ total[mainIndex] }}</h2>
-                                </div> -->
                             </div>
                         </div>
                     </v-col>

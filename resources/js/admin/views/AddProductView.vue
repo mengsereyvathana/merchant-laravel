@@ -8,6 +8,7 @@ import { ICategoryItem } from "../types/Category"
 import { IColorItem } from "../types/Color"
 
 const router = useRouter();
+let loadingSave = ref<boolean>(false);
 
 interface IForm {
     c_id: number | null;
@@ -110,6 +111,8 @@ const saveProduct = async () => {
         timer: 1000
     });
 
+    loadingSave.value = true;
+
     const formData = new FormData();
     console.log("category id" + form.value.c_id)
     formData.append('category_id', form.value.c_id.toString());
@@ -144,6 +147,7 @@ const saveProduct = async () => {
             });
         }
     }
+    loadingSave.value = false;
 }
 const removeImage = () => {
     form.value.image = null;
@@ -154,7 +158,7 @@ const removeImage = () => {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Add a product</h1>
-            <v-btn @click="saveProduct()" color="success" flat>
+            <v-btn @click="saveProduct()" color="success" :loading="loadingSave" flat>
                 publish
             </v-btn>
         </div>

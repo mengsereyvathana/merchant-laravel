@@ -146,12 +146,12 @@ const deleteProductScheme = async (id: number) => {
     }
 }
 
-const updateEnable = async (id: number, action: string) => {
+const updateEnable = async (id: number, enable: string) => {
     loadingUpdate.value = true;
 
     const formData = new FormData();
     formData.append('id', id.toString())
-    formData.append('action', action === '1' ? '0' : '1');
+    formData.append('action', enable === '1' ? '0' : '1');
     formData.append('_method', 'PUT');
 
     const [error, data] = await productSchemeService.editProductScheme(id, formData)
@@ -204,7 +204,8 @@ const updateEnable = async (id: number, action: string) => {
                                     <td>
                                         <div class="d-flex flex-row align-center">
                                             <v-img :src="Upload.image(item.products?.image)" alt="" aspect-ratio="1/1"
-                                                class='rounded-md mr-3' cover :max-width="50" :width="50"></v-img>
+                                                class='rounded-md mr-3' cover :max-width="50" :width="50"
+                                                :height="50"></v-img>
                                             <RouterLink :to="'/admin/edit_product_scheme/' + item.id">
                                                 <v-hover>
                                                     <template v-slot:default="{ isHovering, props }">
@@ -218,11 +219,10 @@ const updateEnable = async (id: number, action: string) => {
                                         </div>
                                     </td>
                                     <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.scheme_id }}</td>
-                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.unit_price }}</td>
-                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.margin }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ item.unit_price }}</td>
+                                    <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ item.margin }}</td>
                                     <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.created_at }}</td>
-                                    <td class='py-2 px-3 pr-5'>
-                                        <v-btn icon="mdi-dots-horizontal" variant="text"></v-btn>
+                                    <td class='py-2 px-3 pr-5'><v-btn icon="mdi-dots-horizontal" variant="text"></v-btn>
                                     </td>
                                     <div
                                         class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>

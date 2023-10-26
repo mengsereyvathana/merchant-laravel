@@ -7,6 +7,7 @@ export interface IOrder {
     total_page: number;
     invoice: number[];
     invoice_date: string[];
+    buy_by: string[];
     total: number[];
 }
 
@@ -21,7 +22,7 @@ export interface IOrderItem {
     created_at: Date;
     updated_at: Date;
     order: Order;
-    product: Product;
+    product: Product | null;
 }
 
 export interface Order {
@@ -42,7 +43,7 @@ export interface Product {
     color: string;
     description: string;
     price: number;
-    category_id: null;
+    category_id: number;
     ram: string;
     storage: string;
     buy: number;

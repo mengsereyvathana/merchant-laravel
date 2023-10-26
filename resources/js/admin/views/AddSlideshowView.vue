@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { slideshowService } from '../service/api/modules/slideshow.api'
 
 const router = useRouter();
+let loadingSave = ref<boolean>(false);
 
 onMounted(() => {
     // sessionStorage.setItem('access_token', 'laravel_sanctum_wxMkVJgkLWQe9ttkxeODbGi6SlL28XDyGEbhyWtJ02075735')
@@ -66,6 +67,8 @@ const saveSlideshow = async () => {
         timer: 1000
     });
 
+    loadingSave.value = true;
+
     const formData = new FormData();
     formData.append('title', form.value.title);
     formData.append('tage', form.value.tage);
@@ -75,7 +78,6 @@ const saveSlideshow = async () => {
     const [error, data] = await slideshowService.createSlideshow(formData)
     if (error) console.log(error)
     else {
-        console.log(data.data)
         Swal.fire({
             toast: true,
             position: 'top',
@@ -87,9 +89,10 @@ const saveSlideshow = async () => {
             showConfirmButton: false,
             timer: 1000
         }).then(() => {
-            // router.push("/admin/show_slideshow");
+            router.push("/admin/show_slideshow");
         })
     }
+    loadingSave.value = false;
 }
 const removeImage = () => {
     if (form.value.image) {
@@ -102,7 +105,7 @@ const removeImage = () => {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Add a slideshow</h1>
-            <v-btn @click="saveSlideshow()" color="success" flat>
+            <v-btn @click="saveSlideshow()" color="success" :loading="loadingSave" flat>
                 publish
             </v-btn>
         </div>

@@ -73,7 +73,7 @@ onMounted(async () => {
 
 const sendCode = async () => {
     try {
-        if (selectedCountry.value === null || phoneNumber.value === "" || phoneNumber.value.length > 9) {
+        if (selectedCountry.value === null || phoneNumber.value === "" || phoneNumber.value.length > 10) {
             return Swal.fire({
                 toast: true,
                 position: "top",
@@ -86,18 +86,15 @@ const sendCode = async () => {
                 timer: 1000,
             });
         }
-        // Swal.fire({
-        //     position: 'center',
-        //     allowEscapeKey: false,
-        //     allowOutsideClick: false,
-        //     showConfirmButton: false,
-        //     timer: 4000,
-        //     didOpen: () => {
-        //         Swal.showLoading();
-        //     }
-        // });
+
+        if (phoneNumber.value.charAt(0) === "0") {
+            phoneNumber.value = phoneNumber.value.substring(1);
+        }
 
         if (!appVerifier) {
+            if (phoneNumber.value.charAt(0) === "0") {
+                phoneNumber.value = phoneNumber.value.substring(1);
+            }
             appVerifier = await userService.createRecaptchaVerifier(appVerifier, auth)
             appVerifier.render();
             loading.value = true;
@@ -108,18 +105,6 @@ const sendCode = async () => {
         if (res?.verificationId) {
             verificationId.value = res.verificationId;
 
-            // Swal.fire({
-            //     position: 'center',
-            //     allowEscapeKey: false,
-            //     allowOutsideClick: false,
-            //     showConfirmButton: false,
-            //     timer: 4000,
-            //     didOpen: () => {
-            //         Swal.showLoading();
-            //     }
-            // }).then(() => {
-
-            // });
             setTimeout(() => (loading.value = false), 2000)
             nextStep.value = true;
             onResend.value = true;
@@ -343,8 +328,8 @@ const resendCode = () => {
                                         @keyup.enter="verifyCode()" @keydown.delete="handleDelete(index)"
                                         @input="onlyNumbers(index)" v-model="otpInput[index]" :autofocus="index === 0"
                                         maxLength="1"
-                                        :class="otpInput.every(element => element !== '') ? 'border-main' : ''"
-                                        class="w-full h-full flex flex-col items-center justify-center text-center px-3 outline-none input text-xl rounded border-2 border-solid focus:ring-main focus:border-main"
+                                        :class="otpInput.every(element => element !== '') ? 'border-[#2196F3]' : ''"
+                                        class="w-full h-full flex flex-col items-center justify-center text-center px-3 outline-none input text-xl rounded border-2 border-solid focus:ring-[#2196F3] focus:border-[#2196F3]"
                                         type="tel" name="" id="" />
                                 </div>
                             </div>
@@ -353,7 +338,7 @@ const resendCode = () => {
                                 <v-btn @click="verifyCode()" :loading="loading" color="blue" size="large"
                                     :class="otpInput.every(element => element !== '') ? '' : 'opacity-70'"
                                     :disabled="!otpInput.every(element => element !== '')"
-                                    class="flex flex-row items-center justify-center text-center w-full border rounded-lg outline-none py-3 bg-main border-none text-white text-base shadow-sm ">
+                                    class="flex flex-row items-center justify-center text-center w-full border rounded-lg outline-none py-3 bg-[#2196F3] border-none text-white text-base shadow-sm ">
                                     Verify
                                 </v-btn>
                                 <div

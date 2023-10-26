@@ -6,6 +6,8 @@ import { categoryService } from '../service/api/modules/category.api'
 
 const router = useRouter();
 
+let loadingSave = ref<boolean>(false);
+
 onMounted(() => {
     // sessionStorage.setItem('access_token', 'laravel_sanctum_wxMkVJgkLWQe9ttkxeODbGi6SlL28XDyGEbhyWtJ02075735')
     // token.value = sessionStorage.getItem('access_token') || '';
@@ -62,6 +64,8 @@ const saveCategory = async () => {
         timer: 1000
     });
 
+    loadingSave.value = true;
+
     const formData = new FormData();
     formData.append('name', form.value.name);
     formData.append('des', form.value.description);
@@ -85,6 +89,7 @@ const saveCategory = async () => {
             router.push("/admin/show_category");
         })
     }
+    loadingSave.value = false;
 }
 const removeImage = () => {
     if (form.value.image) {

@@ -483,100 +483,18 @@ class AdminListController extends Controller
         }
     }
 
-    // public function list_ordered(Request $req)
-    // {
-    //     $pg = $req->query('page');
-    //     $offset = 0;
-    //     $limit  = 2;
-    //     if ($pg > 0) {
-    //         $offset = ($pg - 1) * $limit;
-    //     }
-    //     $pg ? $order_detail = orderDetail::offset($offset)->limit($limit)->whereRelation('order', 'status', 'delivered')->with('order', 'product')->get() :
-    //         $order_detail = orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get();
-    //     $total_invoice = count(orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice'));
-    //     $order_date = $order_detail[0]['order']['updated_at'];
-    //     if (($total_invoice - $offset) < $limit || empty($pg)) {
-    //         $sum_page = $total_invoice;
-    //     } else {
-    //         $sum_page = $total_invoice - ($total_invoice - $offset) + $limit;
-    //     }
-    //     if (count($order_detail) == 0) {
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => 'No Products',
-    //             'per_page' => $limit,
-    //             'sum_page' => 0,
-    //             'total_item' => 0,
-    //             'total_page' => 0
-    //         ], 200);
-    //     } else {
-    //         //make group by invoice
-    //         $groupedInvoice = $order_detail->groupBy('order.invoice');
-    //         $collections = collect($groupedInvoice);
-    //         // covert obj type to array type =>{"0":100,"3":2345}
-    //         $groupedInvoices = $collections->toArray();
-
-
-    //         //get all invoice value in data total 6 invocie
-    //         for ($a = 0; $a < count($order_detail); $a++) {
-    //             $invoice[] = $order_detail[$a]['order']['invoice'];
-    //         }
-
-    //         // but have the same invocie so, convert by unique 100(3)&2345(3) =>{"0":100,"3":2345}
-    //         $collection = collect($invoice);
-
-    //         //  return $collection;
-    //         $uniqueincoive = $collection->unique();
-    //         $date =  orderDetail::query();
-    //         // return $uniqueincoive;
-    //         //loop 0-1 
-    //         for ($i = 0; $i < count($uniqueincoive); $i++) {
-    //             // find value of invocie (100&2345) type obj =>{"0":100,"3":2345}
-    //             $collection = collect($uniqueincoive);
-
-    //             // covert obj type to array type =>{"0":100,"3":2345}
-    //             $arrays = $collection->toArray();
-
-    //             // covert key of obj to array =>[0,3]
-    //             $keys = array_keys($arrays);
-
-    //             // get value of obj point by key cus $keys[0]=100,$keys[1]=2345 =>$arrays[0]&$array[3] =>getInvoice [100,2345]
-    //             $getInvoice[] = $arrays[$keys[$i]];
-    //             $date->orwhereRelation('order', 'invoice', $arrays[$keys[$i]]);
-    //             // groupInvoice have key 100 & 2345 of 6 data so, we poit key of group and insert into array 
-    //             // =>get_group [[],[]]
-    //             $get_group[] = $groupedInvoice[$getInvoice[$i]];
-
-    //             $total[] = array_sum(array_column($groupedInvoices[$getInvoice[$i]], 'total'));
-    //         }
-
-    //         // return $date->get();
-    //         return response()->json([
-    //             'success' => true,
-    //             'data' => $get_group,
-    //             'per_page' => $limit,
-    //             'sum_page' => $sum_page,
-    //             'total_invocie' => $total_invoice,
-    //             'total_page' => ceil($total_invoice / $limit),
-    //             'invoice' => $getInvoice,
-    //             // 'invoice_date'=>$getInvoice_date,
-    //             'total' => $total,
-    //         ], 200);
-    //     }
-    // }
-
     public function list_ordered(Request $req)
     {
         $pg = $req->query('page');
         $offset = 0;
-        $limit  = 2;
+        $limit  = 4;
         if ($pg > 0) {
             $offset = ($pg - 1) * $limit;
         }
-        $pg ? $order_detail = orderDetail::offset($offset)->limit($limit)->whereRelation('order', 'status', 'delivered')->with('order', 'product')->get() :
-            $order_detail = orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get();
+
+        $pg ? $order_detail = orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice')->skip($offset)->take($limit) :
+            $order_detail = orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice');
         $total_invoice = count(orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice'));
-        $order_date = $order_detail[0]['order']['updated_at'];
         if (($total_invoice - $offset) < $limit || empty($pg)) {
             $sum_page = $total_invoice;
         } else {
@@ -590,7 +508,7 @@ class AdminListController extends Controller
                 'data' => [],
                 'per_page' => $limit,
                 'sum_page' => 0,
-                'total_invoice' => 0,
+                'total_item' => 0,
                 'total_page' => 0
             ], 200);
         }
@@ -600,29 +518,27 @@ class AdminListController extends Controller
                 'message' => 'No Products',
                 'per_page' => $limit,
                 'sum_page' => 0,
-                'total_invoice' => 0,
+                'total_item' => 0,
                 'total_page' => 0
             ], 200);
         } else {
-            //make group by invoice
-            $groupedInvoice = $order_detail->groupBy('order.invoice');
-            $collections = collect($groupedInvoice);
-            // covert obj type to array type =>{"0":100,"3":2345}
+
+            $collections = collect($order_detail);
+
             $groupedInvoices = $collections->toArray();
-
-
-            //get all invoice value in data total 6 invocie
-            for ($a = 0; $a < count($order_detail); $a++) {
-                $invoice[] = $order_detail[$a]['order']['invoice'];
+            // return  $groupedInvoices[3];
+            $myKeys = array_keys($groupedInvoices);
+            // return $groupedInvoices;
+            for ($a = 0; $a < count($groupedInvoices); $a++) {
+                $invoice[] = $groupedInvoices[$myKeys[$a]][0]['order']['invoice'];
             }
-
+            // return $invoice;
             // but have the same invocie so, convert by unique 100(3)&2345(3) =>{"0":100,"3":2345}
             $collection = collect($invoice);
 
             //  return $collection;
             $uniqueincoive = $collection->unique();
             $date =  orderDetail::query();
-            // return $uniqueincoive;
             //loop 0-1 
             for ($i = 0; $i < count($uniqueincoive); $i++) {
                 // find value of invocie (100&2345) type obj =>{"0":100,"3":2345}
@@ -631,6 +547,7 @@ class AdminListController extends Controller
                 // covert obj type to array type =>{"0":100,"3":2345}
                 $arrays = $collection->toArray();
 
+
                 // covert key of obj to array =>[0,3]
                 $keys = array_keys($arrays);
 
@@ -638,18 +555,18 @@ class AdminListController extends Controller
                 $getInvoice[] = $arrays[$keys[$i]];
                 $date->orwhereRelation('order', 'invoice', $arrays[$keys[$i]]);
                 // groupInvoice have key 100 & 2345 of 6 data so, we poit key of group and insert into array 
-                // =>get_group [[],[]]
-                $get_group[] = $groupedInvoice[$getInvoice[$i]];
+                $get_group[] = $order_detail[$getInvoice[$i]];
 
                 $total[] = array_sum(array_column($groupedInvoices[$getInvoice[$i]], 'total'));
             }
-
-            // rget invocie date;
-            // return
+            //    return $arrays;
             $getInvoice_ordered = implode(',', $getInvoice);
-            $date = order::whereIn('invoice', $getInvoice)->orderByRaw("FIELD(invoice, $getInvoice_ordered)")->get();
+            $date = order::whereIn('invoice', $getInvoice)->orderByRaw("FIELD(invoice, $getInvoice_ordered)")->with('user')->get();
+
             for ($i = 0; $i < count($getInvoice); $i++) {
                 $dates[] = $date[$i]['created_at'];
+                $buy_by[] = $date[$i]['user'];
+                $buy_by_name[] =  $buy_by[$i]['name'];
             }
             $invoice_date = $dates;
             for ($i = 0; $i < count($getInvoice); $i++) {
@@ -664,10 +581,12 @@ class AdminListController extends Controller
                 'total_page' => ceil($total_invoice / $limit),
                 'invoice' => $getInvoice,
                 'invoice_date' => $invoice_date,
+                'buy_by' => $buy_by_name,
                 'total' => $total,
             ], 200);
         }
     }
+
 
     public function List_ordered_delete($invoice = null)
     {

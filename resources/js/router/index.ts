@@ -63,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../admin/views/AdminView.vue"),
         children: [
             {
-                path: "/admin",
+                path: "/admin/",
                 name: "dashboard",
                 component: () => import("../admin/views/DashboardView.vue"),
             },

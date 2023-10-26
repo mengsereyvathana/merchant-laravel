@@ -10,6 +10,9 @@ import { API_URL } from '../config/api.config';
 const router = useRouter();
 const route = useRoute();
 const params = computed<RouteParams>(() => route.params)
+
+let loadingSave = ref<boolean>(false);
+
 let imagePreview = ref<string | undefined>("");
 
 interface SchemeList {
@@ -81,6 +84,8 @@ const saveProduct = async () => {
         timer: 1000
     });
 
+    loadingSave.value = true;
+
     const formData = new FormData();
     formData.append('pro_id', route.params.id.toString());
     formData.append('scheme_id', form.value.scheme_id.toString());
@@ -102,6 +107,7 @@ const saveProduct = async () => {
                 timer: 1000
             }).then(() => {
                 router.push("/admin/show_product_scheme");
+                loadingSave.value = false;
             })
         }
         else {
@@ -118,6 +124,7 @@ const saveProduct = async () => {
             })
         }
     }
+    loadingSave.value = false;
 }
 
 function previewImage() {
@@ -129,7 +136,7 @@ function previewImage() {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Add a product scheme</h1>
-            <v-btn @click="saveProduct()" color="success" flat>
+            <v-btn @click="saveProduct()" color="success" :loading="loadingSave" flat>
                 publish
             </v-btn>
         </div>
