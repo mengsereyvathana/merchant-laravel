@@ -46,20 +46,20 @@ const logout = async () => {
     if (error) console.log(error)
     else {
         if (data.success) {
-            sessionStorage.removeItem("adminToken");
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                router.push("/admin/login")
-            });
+            // sessionStorage.removeItem("adminToken");
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // }).then(() => {
+            // });
+            router.push("/admin/login")
         }
         loading.value = false;
     }

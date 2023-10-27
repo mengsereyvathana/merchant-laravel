@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import { Upload } from '../../service/helpers/index';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { adminAuthService } from '../../service/api/modules/auth-admin.api'
 import { ILoginMessage } from '../../types/AdminAuth'
-import { API_URL } from '@/config/api.config';
-// // import Profile from '../../setting/profile.js';
 
 const router = useRouter();
 
@@ -30,8 +27,6 @@ let form = ref<IForm>({
 
 let loading = ref<boolean>(false);
 
-// let profile = ref({});
-
 onMounted(async () => {
     if (await adminAuthService.isAuthenticated()) {
         router.replace("/admin")
@@ -40,17 +35,6 @@ onMounted(async () => {
 
 const login = async () => {
     loading.value = true;
-    // if (form.value.username === "" || form.value.password === "") return Swal.fire({
-    //     toast: true,
-    //     position: 'top',
-    //     showClass: {
-    //         icon: 'animated heartBeat delay-1s'
-    //     },
-    //     icon: 'warning',
-    //     text: 'Please check information again',
-    //     showConfirmButton: false,
-    //     timer: 1000
-    // });
     const formData = new FormData();
     formData.append('name', form.value.username);
     formData.append('password', form.value.password);
@@ -60,22 +44,19 @@ const login = async () => {
     else {
         if (data.success) {
             sessionStorage.setItem("adminToken", data.token);
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: 'Welcome back' + data.user.name,
-                showConfirmButton: false,
-                timer: 1000
-            });
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: 'Welcome back' + data.user.name,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // });
             router.replace("/admin");
         } else {
-            // for (let i = 0; i < data.data.name.length; i++) {
-            //     validateUsername.value += data.data.name[i];
-            // }
             message.value.name = data.data.name;
             message.value.password = data.data.password;
         }

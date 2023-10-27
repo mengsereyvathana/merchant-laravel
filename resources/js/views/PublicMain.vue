@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import HeaderLayout from "./layout/HeaderLayout.vue";
 import { ref, watch, computed, onMounted } from 'vue'
-import Header from "./layout/HeaderLayout.vue";
 import { transition } from '@/store/transition';
 
 const tranName = ref<string>("")
@@ -17,15 +17,13 @@ const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-watch([transitionName],
-    () => { scrollToTop(); },
-    { immediate: true }
-);
+watch([transitionName], () => { scrollToTop(); }, { immediate: true });
+
 </script>
 
 <template>
     <div class="max-h-screen">
-        <Header />
+        <HeaderLayout />
         <div class=" bg-white min-h-screen h-screen bg-center relative">
             <div class="absolute top-[60px] left-0 right-0">
                 <RouterView v-slot="{ Component }">

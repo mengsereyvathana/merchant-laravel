@@ -41,9 +41,9 @@ const search = () => {
                             :flat="true" class="border border-solid rounded-md" block></v-text-field>
                     </v-col>
                     <v-col cols="12" xs="6" sm="5" md="4" lg="3" class="d-flex">
-                        <span class="align-self-center mr-2 font-weight-light text-grey-darken-1">
+                        <!-- <span class="align-self-center mr-2 font-weight-light text-grey-darken-1">
                             Filter by
-                        </span>
+                        </span> -->
                         <v-select v-model="selectedSearchOption" :items="searchOption" item-value="by" density="compact"
                             variant="solo" hide-details :flat="true" clearable
                             class="border border-solid rounded-md"></v-select>

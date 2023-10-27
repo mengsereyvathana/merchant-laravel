@@ -35,21 +35,11 @@ interface Country {
     code: string;
     name: string;
 }
-
 const country: Country[] = [
-    {
-        code: '+855',
-        name: 'Cambodia',
-    },
-    {
-        code: '+000',
-        name: 'Untitle',
-    }
+    { code: '+855', name: 'Cambodia', },
+    { code: '+000', name: 'Untitle', }
 ]
-const selectedCountry = ref<Country | null>({
-    code: '+855',
-    name: 'Cambodia',
-});
+const selectedCountry = ref<Country | null>({ code: '+855', name: 'Cambodia', });
 
 onMounted(async () => {
     auth = getAuth();
@@ -86,7 +76,6 @@ const sendCode = async () => {
                 timer: 1000,
             });
         }
-
 
         if (!appVerifier) {
             appVerifier = await userService.createRecaptchaVerifier(appVerifier, auth)
@@ -126,18 +115,6 @@ const sendCode = async () => {
                     clearInterval(interval);
                 }
             }, 1000);
-
-            // loading.value = false;
-
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     icon: 'success',
-            //     showConfirmButton: false,
-            //     text: "We have sent a code to your SMS",
-            //     timer: 1000,
-            // })
-            // console.log('Code sent successfully.');
         }
     } catch (error) {
         console.error('Error sending code:', error);
@@ -176,33 +153,21 @@ const verifyCode = async () => {
         try {
             const response = await userService.verifyCode(verificationId.value, code, auth)
             if (response.user) {
-                Swal.close();
                 //Create user in database
                 try {
                     const formData = new FormData();
                     formData.append("phoneNumber", selectedCountry.value?.code + phoneNumber.value);
                     formData.append("pss", "12345678");
 
-                    // Swal.fire({
-                    //     position: 'center',
-                    //     allowEscapeKey: false,
-                    //     allowOutsideClick: false,
-                    //     showConfirmButton: false,
-                    //     didOpen: () => {
-                    //         window.Swal.showLoading();
-                    //     }
-                    // });
                     const [error, data] = await userService.loginWithPhone(formData)
                     if (error) console.log(error);
                     else {
                         if (data.success) {
                             if (data.is_new) {
-                                Swal.close();
                                 store.dispatch(AUTH_STORE.ACTIONS.SET_PASSWORD_PASS, "12345678")
                                 loading.value = false;
                                 router.push('/form_register/' + phoneNumber.value)
                             } else {
-                                Swal.close();
                                 // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
                                 Cookie.set("token", data.token, 10);
                                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(data.data.id)), 10);

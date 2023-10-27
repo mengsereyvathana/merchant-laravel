@@ -1,12 +1,11 @@
 <script setup lang="ts">
+import Swal from 'sweetalert2';
 import { ref, onMounted, onBeforeMount, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router';
 import { Cookie, Crypt, Upload } from '@/services/helper/index';
 import { ICartItem } from '@/types/Cart';
 import { CART_STORE } from '@/store/constants';
 import { useStore } from '@/use/useStore';
-import Swal from 'sweetalert2';
-import { cartService } from '@/services/api/modules/cart.api';
 import { orderService } from '@/services/api/modules/order.api';
 
 const store = useStore();
