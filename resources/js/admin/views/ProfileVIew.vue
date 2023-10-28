@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { Upload } from '../service/helpers';
 import { adminAuthService } from '../service/api/modules/auth-admin.api';
 import { IUserDataItem } from '../types/IUserData';
 

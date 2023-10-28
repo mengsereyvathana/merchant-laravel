@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import _ from 'lodash';
-import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
-import { RouterLink } from 'vue-router';
-import { IOrder, IOrderItem } from '../types/Order';
+import { IOrderItem } from '../types/Order';
 import { orderService } from '../service/api/modules/order.api'
 import { Upload } from '../service/helpers';
 import PaginationComponent from '../components/PaginationComponent.vue';

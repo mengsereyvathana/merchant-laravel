@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import _ from "lodash";
 import Swal from 'sweetalert2';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue'
 import PopupComponent from '../components/PopupComponent.vue';
-import _ from "lodash";
 import { Upload } from '../service/helpers';
-import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { productSchemeService } from '../service/api/modules/product-scheme.api'
@@ -97,30 +96,7 @@ const search = _.debounce(async (pageNumber = 1) => {
 }, 400)
 
 const deleteProductScheme = async (id: number) => {
-    // const result = await Swal.fire({
-    //     title: 'Are you sure?',
-    //     text: "You want to delete this Product!",
-    //     icon: 'warning',
-    //     showCancelButton: true,
-    //     confirmButtonText: 'Yes, delete it!',
-    //     cancelButtonText: 'No, cancel!',
-    //     confirmButtonColor: '#42b883',
-    //     cancelButtonColor: '#d33',
-    //     reverseButtons: true
-    // })
-    // if (result.isConfirmed) {
-
-    // }
     loadingDelete.value = true;
-    // Swal.fire({
-    //     position: 'center',
-    //     allowEscapeKey: false,
-    //     allowOutsideClick: false,
-    //     showConfirmButton: false,
-    //     didOpen: () => {
-    //         Swal.showLoading();
-    //     }
-    // })
     const [error, data] = await productSchemeService.deleteProductScheme(id)
     if (error) console.log(error)
     else {
@@ -130,17 +106,6 @@ const deleteProductScheme = async (id: number) => {
                 currentPage.value = currentPage.value - 1;
             }
             await getProductScheme(currentPage.value);
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: 'Product has been delete!',
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // });
             loadingDelete.value = false;
         }
     }

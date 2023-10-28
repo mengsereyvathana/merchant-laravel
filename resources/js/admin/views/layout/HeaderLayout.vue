@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import PopupComponent from '@/admin/components/PopupComponent.vue';
-import Sidebar from './SidebarLayout.vue';
 import { Upload } from '../../service/helpers/index'
 import { adminAuthService } from '../../service/api/modules/auth-admin.api';
-import Swal from 'sweetalert2';
 import router from '@/router';
 import { IUserDataItem } from '../../types/IUserData';
 import { toggleMenu, removeRail } from '@/admin/store/toggle';
-import { remove } from 'lodash';
-// import Profile from '../../setting/profile';
-let profile = ref<object>({});
+
 let user = ref<IUserDataItem>();
-let num = ref<number>(0)
 let loading = ref<boolean>(false);
 
 onMounted(async () => {
-    // profile.value = await Profile;
     await getUser();
 });
 
@@ -30,10 +24,6 @@ const getUser = async () => {
     }
 }
 
-// function handle(value: boolean) {
-//     open.value = value;
-// }
-
 const isConfirmedUpdated = (value: boolean) => {
     if (value) {
         logout();
@@ -46,19 +36,6 @@ const logout = async () => {
     if (error) console.log(error)
     else {
         if (data.success) {
-            // sessionStorage.removeItem("adminToken");
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: data.message,
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // }).then(() => {
-            // });
             router.push("/admin/login")
         }
         loading.value = false;

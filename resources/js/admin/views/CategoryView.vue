@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2';
+import _ from 'lodash';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue';
 import PopupComponent from '../components/PopupComponent.vue';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import _ from 'lodash';
 import { Upload } from '../service/helpers';
 import { categoryService } from '../service/api/modules/category.api'
 import { ICategoryItem } from '../types/Category';
@@ -104,17 +103,6 @@ const deleteCategory = async (id: number) => {
             }
             await getCategories(currentPage.value);
             loadingDelete.value = false;
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: 'Product has been delete!',
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // });
         }
     }
 }
@@ -131,17 +119,6 @@ const updateEnable = async (id: number, action: string) => {
     else {
         if (data.success) {
             await getCategories(currentPage.value)
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: data.message,
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // })
             loadingUpdate.value = false;
         }
     }
@@ -151,15 +128,6 @@ const updateEnable = async (id: number, action: string) => {
 
 <template>
     <div>
-        <!-- <div class='flex justify-between items-center mb-4'>
-            <h1 class='text-xl font-bold text-gray-600'>Category</h1>
-            <RouterLink to="/admin/add_slideshow">
-                <button
-                    class='flex items-center gap-1 px-4 py-3 rounded-md bg-main text-white text-sm cursor-pointer font-medium'>
-                    <img :src="Upload.icon('plus.svg')" alt="" />Add Slideshow
-                </button>
-            </RouterLink>
-        </div> -->
         <div class='d-flex flex-row justify-space-between align-center flex-wrap mb-4'>
             <h1 class='text-header text-grey-darken-2 font-weight-medium'>Category</h1>
             <RouterLink to="/admin/add_category">

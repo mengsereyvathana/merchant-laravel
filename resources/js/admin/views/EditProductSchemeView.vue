@@ -7,10 +7,7 @@ import { onMounted, ref } from 'vue';
 import { productService } from '../service/api/modules/product.api'
 import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { IProductItem } from '../types/Product';
-import { ICategoryItem } from '../types/Category';
-import { categoryService } from '../service/api/modules/category.api';
-import { API_URL } from '@/config/api.config';
-import { IProductSchemeItem, Products } from '../types/ProductScheme';
+import { IProductSchemeItem } from '../types/ProductScheme';
 import { productSchemeService } from '../service/api/modules/product-scheme.api';
 import { Upload } from '../service/helpers';
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, defineProps, defineEmits } from 'vue';
-import { RouterLink, useRoute } from 'vue-router';
-import { Upload } from '../../service/helpers';
+import { useRoute } from 'vue-router';
 import { toggleMenu, removeRail } from '@/admin/store/toggle';
 
 let drawer = ref(toggleMenu)

@@ -7,7 +7,6 @@ import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { IProductItem } from '../types/Product';
 import { ICategoryItem } from '../types/Category';
 import { categoryService } from '../service/api/modules/category.api';
-import { API_URL } from '@/config/api.config';
 
 const router = useRouter();
 const route = useRoute();

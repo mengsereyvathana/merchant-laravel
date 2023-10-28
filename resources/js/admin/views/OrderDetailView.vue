@@ -3,7 +3,6 @@ import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { IOrderItem } from '../types/Order';
-import { orderService } from '../service/api/modules/order.api'
 import { Upload } from '../service/helpers';
 
 const header = ['INVOICE', 'TOTAL', 'PAYMENT METHOD', 'DATE'];

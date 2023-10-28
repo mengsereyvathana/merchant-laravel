@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import { slideshowService } from '../service/api/modules/slideshow.api';
 import { computed } from '@vue/reactivity';
 import { onMounted, ref } from 'vue';
 import { RouteParams, useRoute, useRouter } from 'vue-router';
-import { ISlideshowItem } from '../types/Slideshow'
-import { API_URL } from '@/config/api.config';
 import { ICategoryItem } from '../types/Category';
 import { categoryService } from '../service/api/modules/category.api';
 
@@ -112,11 +109,6 @@ function browseImage(e: Event) {
 
 <template>
     <div>
-        <!-- <div class="flex justify-between items-end">
-            <h1 class='text-xl font-bold text-black_500'>Edit a category</h1>
-            <button class='px-4 py-3 rounded-md bg-primary text-white text-sm cursor-pointer' @click="updateCategory()">Edit
-                category</button>
-        </div> -->
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Edit a category</h1>
             <v-btn @click="updateCategory()" color="success" flat>

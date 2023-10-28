@@ -5,7 +5,6 @@ import { computed } from 'vue'; //changed
 import { onMounted, ref } from 'vue';
 import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { ISlideshowItem } from '../types/Slideshow'
-import { API_URL } from '@/config/api.config';
 
 const router = useRouter();
 const route = useRoute();

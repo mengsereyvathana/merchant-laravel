@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2';
+import _ from 'lodash';
 import PaginationComponent from '../components/PaginationComponent.vue';
 import SearchComponent from '../components/SearchComponent.vue';
 import PopupComponent from '../components/PopupComponent.vue';
-import _ from 'lodash';
 import { Upload } from '../service/helpers';
 import { onMounted, ref, defineEmits } from 'vue';
 import { RouterLink } from 'vue-router';
@@ -107,17 +106,6 @@ const deleteProduct = async (id: number) => {
                 totalPages.value = totalPages.value - 1;
             }
             await getProducts(currentPage.value);
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: data.message,
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // });
             loadingDelete.value = false;
         }
     }
