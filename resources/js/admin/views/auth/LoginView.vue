@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { adminAuthService } from '../../service/api/modules/auth-admin.api'
 import { ILoginMessage } from '../../types/AdminAuth'
 
 const router = useRouter();
-
-// const validateUsername = ref<string>('')
 
 let message = ref<ILoginMessage>({
     name: [],
@@ -44,17 +41,6 @@ const login = async () => {
     else {
         if (data.success) {
             sessionStorage.setItem("adminToken", data.token);
-            // Swal.fire({
-            //     toast: true,
-            //     position: 'top',
-            //     showClass: {
-            //         icon: 'animated heartBeat delay-1s'
-            //     },
-            //     icon: 'success',
-            //     text: 'Welcome back' + data.user.name,
-            //     showConfirmButton: false,
-            //     timer: 1000
-            // });
             router.replace("/admin");
         } else {
             message.value.name = data.data.name;

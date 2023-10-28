@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import { ref } from 'vue';
 
 const dialog = ref<boolean>(false);
-
 const emits = defineEmits(['isConfirmed']);
 
 const props = defineProps<{

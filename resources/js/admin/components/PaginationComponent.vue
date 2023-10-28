@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, defineProps, defineEmits, onMounted } from 'vue';
-import { Upload } from '@/admin/service/helpers';
 
 const emits = defineEmits(['currentPageUpdated']);
 const currentPage = computed<number>(() => props.currentPage);
