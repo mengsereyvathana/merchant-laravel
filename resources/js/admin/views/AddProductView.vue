@@ -6,6 +6,7 @@ import { RouterLink, useRouter } from 'vue-router';
 import { productService } from '../service/api/modules/product.api'
 import { ICategoryItem } from "../types/Category"
 import { IColorItem } from "../types/Color"
+import { IFormProduct } from '../types/Form';
 
 const router = useRouter();
 
@@ -13,22 +14,7 @@ let loadingSave = ref<boolean>(false);
 let categories = ref<ICategoryItem[]>([]);
 let colors = ref<IColorItem[]>([]);
 
-interface IForm {
-    c_id: number | null;
-    name: string;
-    description: string;
-    price: number | null;
-    buy: number | null;
-    margin: number | null;
-    stock: number | null;
-    ram: string;
-    storage: string;
-    color_id: number | null;
-    enable: boolean;
-    image: File | null;
-}
-
-let form = ref<IForm>({
+let form = ref<IFormProduct>({
     c_id: null,
     name: '',
     description: '',
@@ -42,7 +28,6 @@ let form = ref<IForm>({
     enable: false,
     image: null
 });
-
 
 onMounted(async () => {
     getCategory();
@@ -80,7 +65,7 @@ function browseImage(e: Event) {
 }
 
 const saveProduct = async () => {
-    if (form.value.c_id === null || form.value.name === "" || form.value.description === "" || form.value.price === null || form.value.buy === null || form.value.stock === null || form.value.ram === "" || form.value.storage === "" || form.value.color_id === null) return Swal.fire({
+    if (form.value.c_id == null || form.value.name === "" || form.value.description === "" || form.value.price === null || form.value.buy === null || form.value.stock === null || form.value.ram === "" || form.value.storage === "" || form.value.color_id === null) return Swal.fire({
         toast: true,
         position: 'top',
         showClass: {
@@ -171,8 +156,8 @@ const removeImage = () => {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
-                        <v-text-field v-model="form.description" density="compact" placeholder="Write description here..."
-                            variant="outlined" hide-details></v-text-field>
+                        <v-textarea v-model="form.description" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-textarea>
                     </div>
                     <div class="mt-7 p-3 border border-solid rounded-md">
                         <div class="d-flex flex-column flex-md-row justify-space-between">
@@ -242,7 +227,7 @@ const removeImage = () => {
                             </RouterLink> -->
                         </div>
                         <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.color_id">
-                            <option v-for="item in colors" :value="item.id" :key="item.id">{{ item.name }}</option>
+                            <option v-for="item in colors" :value="item.name" :key="item.id">{{ item.name }}</option>
                         </select>
                     </div>
                 </v-col>

@@ -2,21 +2,14 @@
 import Swal from 'sweetalert2';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { slideshowService } from '../service/api/modules/slideshow.api'
+import { slideshowService } from '../service/api/modules/slideshow.api';
+import { IFormSlideshow } from '../types/Form';
 
 const router = useRouter();
+
 let loadingSave = ref<boolean>(false);
 
-interface IForm {
-    id: number;
-    title: string;
-    tage: string;
-    link: string;
-    image: File | null;
-    enable: boolean;
-}
-
-let form = ref<IForm>({
+let form = ref<IFormSlideshow>({
     id: 0,
     title: '',
     tage: '',
@@ -120,8 +113,8 @@ const removeImage = () => {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Tag</div>
-                        <v-text-field v-model="form.tage" density="compact" placeholder="Write tag here..."
-                            variant="outlined" hide-details></v-text-field>
+                        <v-textarea v-model="form.tage" density="compact" placeholder="Write tag here..." variant="outlined"
+                            hide-details></v-textarea>
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Link</div>

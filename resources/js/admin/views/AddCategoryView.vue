@@ -3,19 +3,13 @@ import Swal from 'sweetalert2';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { categoryService } from '../service/api/modules/category.api'
+import { IFormCategory } from '../types/Form';
 
 const router = useRouter();
 
 let loadingSave = ref<boolean>(false);
 
-interface IForm {
-    name: string;
-    description: string;
-    image: File | null;
-    enable: boolean;
-}
-
-let form = ref<IForm>({
+let form = ref<IFormCategory>({
     name: '',
     description: '',
     image: null,
@@ -117,8 +111,8 @@ const removeImage = () => {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
-                        <v-text-field v-model="form.description" density="compact" placeholder="Write description here..."
-                            variant="outlined" hide-details></v-text-field>
+                        <v-textarea v-model="form.description" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-textarea>
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>

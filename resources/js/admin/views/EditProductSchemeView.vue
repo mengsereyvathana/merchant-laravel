@@ -9,6 +9,7 @@ import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { IProductItem } from '../types/Product';
 import { IProductSchemeItem } from '../types/ProductScheme';
 import { productSchemeService } from '../service/api/modules/product-scheme.api';
+import { IFormProductScheme } from '../types/Form';
 import { Upload } from '../service/helpers';
 
 const router = useRouter();
@@ -21,6 +22,7 @@ const tooltipCopy = ref<HTMLButtonElement>();
 
 let products = ref<IProductItem[]>([])
 let loading = ref<boolean>(false);
+let imagePreview = ref<string | undefined>("");
 
 //search
 let selectedSearchOption = ref("");
@@ -33,37 +35,20 @@ let searchOption = ref([
 const header: string[] = ['PRODUCT NAME', 'DESCRIPTION', 'PRICE', 'BUY', 'MARGIN', 'STOCK', 'RAM', 'STORAGE', 'COLOR', 'CATEGORY', 'PUBLISHED ON'];
 
 interface SchemeList {
-    id: number;
-    name: string;
+    id: number; name: string;
 }
 let schemeList: SchemeList[] = [
-    {
-        id: 1,
-        name: 'user1',
-    },
-    {
-        id: 2,
-        name: 'user2',
-    }
+    { id: 1, name: 'user1', },
+    { id: 2, name: 'user2', }
 ];
 
-interface IForm {
-    product_id: number | undefined;
-    scheme_id: number | null;
-    unit_price: number | null;
-    products: IProductItem | null;
-    enable: boolean;
-}
-let form = ref<IForm>({
+let form = ref<IFormProductScheme>({
     product_id: 0,
     scheme_id: null,
     unit_price: null,
     products: null,
     enable: false,
 });
-
-let imagePreview = ref<string | undefined>("");
-
 
 const getScheme = async () => {
     form.value.scheme_id = schemeList[0].id;

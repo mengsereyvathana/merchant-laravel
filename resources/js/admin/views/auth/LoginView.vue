@@ -3,26 +3,14 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { adminAuthService } from '../../service/api/modules/auth-admin.api'
 import { ILoginMessage } from '../../types/AdminAuth'
+import { IFormLogin } from '../../types/Form';
 
 const router = useRouter();
 
-let message = ref<ILoginMessage>({
-    name: [],
-    password: []
-})
 let visible = ref<boolean>(false);
-
-interface IForm {
-    username: string;
-    password: string;
-}
-
-let form = ref<IForm>({
-    username: '',
-    password: ''
-});
-
 let loading = ref<boolean>(false);
+let message = ref<ILoginMessage>({ name: [], password: [] });
+let form = ref<IFormLogin>({ username: '', password: '' });
 
 onMounted(async () => {
     if (await adminAuthService.isAuthenticated()) {

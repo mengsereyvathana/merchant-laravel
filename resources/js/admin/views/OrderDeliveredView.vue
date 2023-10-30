@@ -111,19 +111,19 @@ const search = _.debounce(async (pageNumber = 1) => {
                         <div class='bg-white relative'>
                             <div v-for="(mainItem, mainIndex) in orders" :key="mainIndex"
                                 class="w-full overflow-x-auto overflow-y-none mt-5 border-2 border-solid border-blue-200 rounded-md">
-                                <div class="d-flex justify-space-between flex-sm-row flex-column">
+                                <div class="d-flex justify-space-between flex-row">
                                     <div v-if="invoice" class="p-3">
                                         <h2 class="font-weight-medium text-grey-darken-2">Invoice #{{
                                             invoice[mainIndex]
                                         }}</h2>
                                     </div>
                                     <div v-if="invoiceDate" class="p-3">
-                                        <h2 class="font-weight-medium text-grey-darken-2">Invoice Date #{{
+                                        <h2 class="font-weight-medium text-grey-darken-2">Date #{{
                                             invoiceDate[mainIndex]
                                         }}</h2>
                                     </div>
                                     <div v-if="customerName" class="p-3">
-                                        <h2 class="font-weight-medium text-grey-darken-2">Customer name: {{
+                                        <h2 class="font-weight-medium text-grey-darken-2">Customer: {{
                                             customerName[mainIndex]
                                         }}</h2>
                                     </div>
@@ -141,7 +141,7 @@ const search = _.debounce(async (pageNumber = 1) => {
                                         <tr class='group relative border-solid border-b border-gray-300'
                                             v-for="(item, index) in mainItem" :key="index">
                                             <td v-if="item.product">
-                                                <div class="d-flex flex-row align-center">
+                                                <div class="d-flex flex-row align-center h-[56px]">
                                                     <v-img :src="Upload.image(item.product.image)" alt="" aspect-ratio="1/1"
                                                         class='rounded-md mr-3' cover :max-width="50" :width="50"
                                                         :height="50"></v-img>

@@ -4,6 +4,7 @@ import { onMounted, ref, computed } from 'vue';
 import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { ICategoryItem } from '../types/Category';
 import { categoryService } from '../service/api/modules/category.api';
+import { IFormCategory } from '../types/Form';
 
 const router = useRouter();
 const route = useRoute();
@@ -13,20 +14,12 @@ let validateMessage = ref({ image: "", });
 let loading = ref<boolean>(false);
 let imagePreview = ref<string>('');
 
-interface IForm {
-    name: string;
-    description: string;
-    image: File | null;
-    enable: boolean;
-}
-
-let form = ref<IForm>({
+let form = ref<IFormCategory>({
     name: '',
     description: '',
     image: null,
     enable: false,
 });
-
 
 onMounted(async () => {
     getCategory();
@@ -141,8 +134,8 @@ function browseImage(e: Event) {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
-                        <v-text-field v-model="form.description" density="compact" placeholder="Write tag here..."
-                            variant="outlined" hide-details></v-text-field>
+                        <v-textarea v-model="form.description" density="compact" placeholder="Write tag here..."
+                            variant="outlined" hide-details></v-textarea>
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>

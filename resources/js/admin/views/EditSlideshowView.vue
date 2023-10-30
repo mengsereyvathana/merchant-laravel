@@ -5,6 +5,7 @@ import { computed } from 'vue'; //changed
 import { onMounted, ref } from 'vue';
 import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { ISlideshowItem } from '../types/Slideshow'
+import { IFormSlideshow } from '../types/Form';
 
 const router = useRouter();
 const route = useRoute();
@@ -15,17 +16,7 @@ let slideshows = ref<ISlideshowItem[]>([]);
 let imagePreview = ref<string>('');
 let loading = ref<boolean>(false);
 
-interface IForm {
-    order_number: number;
-    id: number;
-    title: string;
-    tage: string;
-    link: string;
-    image: File | null;
-    enable: boolean;
-}
-
-let form = ref<IForm>({
+let form = ref<IFormSlideshow>({
     order_number: 0,
     id: 0,
     title: '',
@@ -34,7 +25,6 @@ let form = ref<IForm>({
     image: null,
     enable: false,
 });
-
 
 onMounted(async () => {
     getSlideshow();
@@ -73,7 +63,7 @@ const getSlideshow = async () => {
 
 const updateSlideshow = async () => {
     console.log(form.value.order_number)
-    if (form.value.title == "" || form.value.tage == "" || form.value.link == "") return Swal.fire({
+    if (form.value.title == "" || form.value.tage == "" || form.value.link == "" || form.value.order_number == null) return Swal.fire({
         toast: true,
         position: 'top',
         showClass: {
@@ -165,8 +155,8 @@ function browseImage(e: Event) {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Tag</div>
-                        <v-text-field v-model="form.tage" density="compact" placeholder="Write tag here..."
-                            variant="outlined" hide-details></v-text-field>
+                        <v-textarea v-model="form.tage" density="compact" placeholder="Write tag here..." variant="outlined"
+                            hide-details></v-textarea>
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Link</div>
@@ -175,11 +165,9 @@ function browseImage(e: Event) {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
-
                         <div class="gap-4 mt-1" v-if="imagePreview !== ''">
                             <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" :height="100" alt="" cover></v-img>
                         </div>
-
                         <div
                             class="relative h-[200px] mt-3 border-dashed border-2 border-gray-300 rounded-lg flex flex-col justify-center items-center">
                             <v-icon>mdi-upload</v-icon>

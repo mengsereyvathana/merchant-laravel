@@ -108,8 +108,6 @@ const menus = [
 /*=========== init open sub meu ===========*/
 let open = ref([false, false, false, false, false, false, false]);
 
-
-
 </script>
 
 <template>

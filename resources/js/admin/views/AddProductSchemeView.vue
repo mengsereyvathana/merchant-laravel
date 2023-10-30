@@ -5,6 +5,7 @@ import { useRouter, useRoute, RouteParams } from 'vue-router';
 import { productSchemeService } from '../service/api/modules/product-scheme.api'
 import { IProductItem } from '../types/Product';
 import { productService } from '../service/api/modules/product.api';
+import { IFormProductScheme } from '../types/Form';
 
 const router = useRouter();
 const route = useRoute();
@@ -13,19 +14,18 @@ const params = computed<RouteParams>(() => route.params);
 let loadingSave = ref<boolean>(false);
 let imagePreview = ref<string | undefined>("");
 
+let form = ref<IFormProductScheme>({
+    scheme_id: 0,
+    unit_price: null,
+    products: null,
+});
+
 interface SchemeList {
-    id: number;
-    name: string;
+    id: number; name: string;
 }
 let schemeList: SchemeList[] = [
-    {
-        id: 1,
-        name: 'user1',
-    },
-    {
-        id: 2,
-        name: 'user2',
-    }
+    { id: 1, name: 'user1', },
+    { id: 2, name: 'user2' }
 ];
 
 onMounted(() => {
@@ -33,18 +33,8 @@ onMounted(() => {
     getProduct();
 });
 
-interface IForm {
-    scheme_id: number;
-    unit_price: number | null;
-    products: IProductItem | null;
 
-}
 
-let form = ref<IForm>({
-    scheme_id: 0,
-    unit_price: null,
-    products: null,
-});
 
 const getScheme = async () => {
     // const [error, data] = await categoryService.getAllCategories();
@@ -70,7 +60,7 @@ const getProduct = async () => {
 
 
 const saveProduct = async () => {
-    if (form.value.scheme_id === 0 || form.value.unit_price === null) return Swal.fire({
+    if (form.value.scheme_id == null || form.value.unit_price === null) return Swal.fire({
         toast: true,
         position: 'top',
         showClass: {

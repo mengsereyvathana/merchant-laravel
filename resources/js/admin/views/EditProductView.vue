@@ -6,31 +6,20 @@ import { productService } from '../service/api/modules/product.api'
 import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { IProductItem } from '../types/Product';
 import { ICategoryItem } from '../types/Category';
+import { IColorItem } from "../types/Color"
 import { categoryService } from '../service/api/modules/category.api';
+import { IFormProduct } from '../types/Form';
 
 const router = useRouter();
 const route = useRoute();
 const params = computed<RouteParams>(() => route.params);
 
 let categories = ref<ICategoryItem[]>([]);
+let colors = ref<IColorItem[]>([]);
 let imagePreview = ref<string>("");
 let loading = ref<boolean>(false);
 
-interface IForm {
-    category: Partial<ICategoryItem>;
-    name: string;
-    description: string;
-    price: number;
-    buy: number;
-    margin: number;
-    stock: number;
-    ram: string;
-    storage: string;
-    color: string;
-    enable: boolean;
-    image: File | null;
-}
-let form = ref<IForm>({
+let form = ref<IFormProduct>({
     category: {},
     name: '',
     description: '',
@@ -40,16 +29,25 @@ let form = ref<IForm>({
     stock: 0,
     ram: '',
     storage: '',
-    color: '',
+    color_id: null,
     enable: false,
     image: null
 });
 
-
 onMounted(async () => {
     getProduct();
     getCategory();
+    getColor();
 });
+
+const getColor = () => {
+    colors.value = [
+        { id: 1, name: 'red' },
+        { id: 2, name: 'black' },
+        { id: 3, name: 'white' },
+    ]
+    if (colors.value.length > 0) form.value.color_id = colors.value[0].id;
+}
 
 const getCategory = async () => {
     const [error, data] = await categoryService.getAllCategories(0);
@@ -71,6 +69,7 @@ const getProduct = async () => {
             if (item.category) {
                 form.value.category = item.category
             }
+            // form.value.color_id = item.color;
             form.value.name = item.name;
             form.value.description = item.description;
             form.value.price = item.price;
@@ -78,7 +77,7 @@ const getProduct = async () => {
             form.value.stock = item.stock;
             form.value.ram = item.ram;
             form.value.storage = item.storage;
-            form.value.color = item.color;
+            // form.value.color_id = item.color;
             imagePreview.value = item.image;
             form.value.enable = item.action == '1' ? true : false;
         }
@@ -86,7 +85,7 @@ const getProduct = async () => {
 }
 
 const updateProduct = async () => {
-    if (form.value.name == "" || form.value.description == "" || form.value.price === 0 || form.value.buy === 0 || form.value.stock === 0 || form.value.ram == "" || form.value.storage == "" || form.value.color == "" || form.value.category.id === undefined) return Swal.fire({
+    if (form.value.name == "" || form.value.description == "" || form.value.price === null || form.value.buy === null || form.value.stock === null || form.value.ram == "" || form.value.storage == "" || form.value.color_id == null || form.value.category?.id == undefined) return Swal.fire({
         toast: true,
         position: 'top',
         showClass: {
@@ -109,7 +108,7 @@ const updateProduct = async () => {
     formData.append('stock', form.value.stock.toString());
     formData.append('ram', form.value.ram);
     formData.append('storage', form.value.storage);
-    formData.append('color', form.value.color);
+    formData.append('color', form.value.color_id.toString());
     formData.append('action', form.value.enable ? '1' : '0');
     formData.append('_method', "PUT");
 
@@ -181,8 +180,8 @@ function browseImage(e: Event) {
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
-                        <v-text-field v-model="form.description" density="compact" placeholder="Write description here..."
-                            variant="outlined" hide-details></v-text-field>
+                        <v-textarea v-model="form.description" density="compact" placeholder="Write description here..."
+                            variant="outlined" hide-details></v-textarea>
                     </div>
                     <div class="mt-7 p-3 border border-solid rounded-md">
                         <div class="d-flex flex-column flex-md-row justify-space-between">
@@ -239,7 +238,8 @@ function browseImage(e: Event) {
                                 </v-btn>
                             </RouterLink>
                         </div>
-                        <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.category.id">
+                        <select v-if="form.category" name="" id="" class="w-full mt-4 text-[14px] cursor-pointer"
+                            v-model="form.category.id">
                             <option v-for="item in categories" :value="item.id" :key="item.id">{{ item.name }}
                             </option>
                         </select>
@@ -249,6 +249,9 @@ function browseImage(e: Event) {
                         <!-- <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.color_id">
                             <option v-for="item in colors" :value="item.id" :key="item.id">{{ item.name }}</option>
                         </select> -->
+                        <select name="" id="" class="w-full mt-4 text-[14px] cursor-pointer" v-model="form.color_id">
+                            <option v-for="item in colors" :value="item.name" :key="item.id">{{ item.name }}</option>
+                        </select>
                     </div>
                 </v-col>
             </v-row>
