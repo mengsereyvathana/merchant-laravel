@@ -9,11 +9,11 @@ import SearchComponent from '../components/SearchComponent.vue';
 
 const header = ['NAME', 'QTY', 'TOTAL'];
 
-let orders = ref<Array<IOrderItem[]>>([])
-let invoice = ref<number[]>([])
-let total = ref<number[]>([])
-let customerName = ref<string[]>([])
-let invoiceDate = ref<string[]>([])
+let orders = ref<Array<IOrderItem[]>>([]);
+let invoice = ref<number[]>([]);
+let total = ref<number[]>([]);
+let customerName = ref<string[]>([]);
+let invoiceDate = ref<string[]>([]);
 
 //paginate
 let currentPage = ref<number>(1);

@@ -13,13 +13,14 @@ import { Upload } from '../service/helpers';
 
 const router = useRouter();
 const route = useRoute();
-const params = computed<RouteParams>(() => route.params)
+const params = computed<RouteParams>(() => route.params);
 
 //Tooltip & copy
 const productIdCopy = ref<HTMLSpanElement>();
 const tooltipCopy = ref<HTMLButtonElement>();
 
 let products = ref<IProductItem[]>([])
+let loading = ref<boolean>(false);
 
 //search
 let selectedSearchOption = ref("");
@@ -147,6 +148,8 @@ const updateProduct = async () => {
         timer: 1000
     });
 
+    loading.value = true;
+
     const formData = new FormData();
     formData.append('product_id', form.value.products.id.toString());
     formData.append('scheme_id', form.value.scheme_id.toString());
@@ -158,21 +161,22 @@ const updateProduct = async () => {
     if (error) console.log(error);
     else {
         if (data.success) {
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                router.push('/admin/show_product_scheme');
-            });
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // }).then(() => {
+            // });
+            router.push('/admin/show_product_scheme');
         }
     }
+    loading.value = false;
 }
 
 
@@ -195,7 +199,7 @@ const tooltipRemove = () => {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Edit a product scheme</h1>
-            <v-btn @click="updateProduct()" color="success" flat>
+            <v-btn @click="updateProduct()" color="success" :loading="loading" flat>
                 Edit Product
             </v-btn>
         </div>

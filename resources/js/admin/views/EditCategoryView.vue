@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import { computed } from '@vue/reactivity';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { RouteParams, useRoute, useRouter } from 'vue-router';
 import { ICategoryItem } from '../types/Category';
 import { categoryService } from '../service/api/modules/category.api';
 
 const router = useRouter();
 const route = useRoute();
-const params = computed<RouteParams>(() => route.params)
+const params = computed<RouteParams>(() => route.params);
+
+let validateMessage = ref({ image: "", });
+let loading = ref<boolean>(false);
+let imagePreview = ref<string>('');
 
 interface IForm {
     name: string;
@@ -23,7 +26,7 @@ let form = ref<IForm>({
     image: null,
     enable: false,
 });
-let imagePreview = ref<string>('');
+
 
 onMounted(async () => {
     getCategory();
@@ -56,36 +59,37 @@ const updateCategory = async () => {
         timer: 1000
     });
 
+    loading.value = true;
+
     const formData = new FormData();
     formData.append('name', form.value.name);
-    console.log(form.value.description)
     formData.append('des', form.value.description);
+    formData.append('action', form.value.enable ? '1' : '0');
+    formData.append('_method', 'PUT');
     if (form.value.image) {
         formData.append('image', form.value.image);
     }
-    formData.append('action', form.value.enable ? '1' : '0');
-    formData.append('_method', 'PUT');
 
     const [error, data] = await categoryService.editCategory(Number(params.value.id), formData)
     if (error) console.log(error)
     else {
-        console.log(data)
         if (data.success) {
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                router.push('/admin/show_category');
-            })
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // }).then(() => {
+            // })
+            router.push('/admin/show_category');
         }
     }
+    loading.value = false;
 }
 
 function previewImage() {
@@ -101,7 +105,13 @@ function browseImage(e: Event) {
     if (files && files.length > 0) {
         const file = files[0];
         const allowExtenstions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-        if (allowExtenstions.exec(target.value)) form.value.image = file;
+        if (allowExtenstions.exec(target.value)) {
+            form.value.image = file;
+            validateMessage.value.image = ""
+        }
+        else {
+            validateMessage.value.image = "Image should be jpg, jpeg, png, gif";
+        }
     }
 }
 
@@ -111,7 +121,7 @@ function browseImage(e: Event) {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Edit a category</h1>
-            <v-btn @click="updateCategory()" color="success" flat>
+            <v-btn @click="updateCategory()" color="success" :loading="loading" flat>
                 Edit category
             </v-btn>
         </div>
@@ -119,24 +129,24 @@ function browseImage(e: Event) {
             <v-row>
                 <v-col>
                     <div class="d-flex justify-space-between align-center">
-                        <div class="font-weight-medium text-grey-darken-4">Title</div>
+                        <div class="font-weight-medium text-grey-darken-4">Name</div>
                         <div class="flex items-center gap-2">
                             <v-checkbox v-model="form.enable" label="enable" density="compact" color="success"
                                 hide-details></v-checkbox>
                         </div>
                     </div>
                     <div>
-                        <v-text-field v-model="form.name" density="compact" placeholder="Write title here..."
+                        <v-text-field v-model="form.name" density="compact" placeholder="Write name here..."
                             variant="outlined" hide-details></v-text-field>
                     </div>
                     <div class="mt-7">
-                        <div class="mb-2 font-weight-medium text-grey-darken-4">Tag</div>
+                        <div class="mb-2 font-weight-medium text-grey-darken-4">Description</div>
                         <v-text-field v-model="form.description" density="compact" placeholder="Write tag here..."
                             variant="outlined" hide-details></v-text-field>
                     </div>
                     <div class="mt-7">
                         <div class="mb-2 font-weight-medium text-grey-darken-4">Display images</div>
-
+                        <span class="text-red-darken-1">{{ validateMessage.image }}</span>
                         <div class="gap-4 mt-1" v-if="imagePreview !== ''">
                             <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" :height="100" alt="" cover></v-img>
                         </div>
@@ -152,6 +162,5 @@ function browseImage(e: Event) {
                 </v-col>
             </v-row>
         </v-layout>
-
     </div>
 </template>

@@ -8,10 +8,9 @@ import { productService } from '../service/api/modules/product.api';
 
 const router = useRouter();
 const route = useRoute();
-const params = computed<RouteParams>(() => route.params)
+const params = computed<RouteParams>(() => route.params);
 
 let loadingSave = ref<boolean>(false);
-
 let imagePreview = ref<string | undefined>("");
 
 interface SchemeList {
@@ -94,20 +93,19 @@ const saveProduct = async () => {
     if (error) console.log(error)
     else {
         if (data.success) {
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                router.push("/admin/show_product_scheme");
-                loadingSave.value = false;
-            })
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // }).then(() => {
+            // })
+            router.push("/admin/show_product_scheme");
         }
         else {
             Swal.fire({
@@ -126,9 +124,10 @@ const saveProduct = async () => {
     loadingSave.value = false;
 }
 
-function previewImage() {
+const previewImage = () => {
     return imagePreview.value;
 }
+
 </script>
 
 <template>

@@ -7,11 +7,6 @@ import { slideshowService } from '../service/api/modules/slideshow.api'
 const router = useRouter();
 let loadingSave = ref<boolean>(false);
 
-onMounted(() => {
-    // sessionStorage.setItem('access_token', 'laravel_sanctum_wxMkVJgkLWQe9ttkxeODbGi6SlL28XDyGEbhyWtJ02075735')
-    // token.value = sessionStorage.getItem('access_token') || '';
-});
-
 interface IForm {
     id: number;
     title: string;
@@ -30,7 +25,7 @@ let form = ref<IForm>({
     enable: false
 });
 
-const previewImage = () => form.value.image ? URL.createObjectURL(form.value.image) : "";
+const previewImage = () => form.value.image ? URL.createObjectURL(form.value.image) : undefined;
 
 const browseImage = (e: Event) => {
     const target = e.target as HTMLInputElement;

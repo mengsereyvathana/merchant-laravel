@@ -10,7 +10,11 @@ import { categoryService } from '../service/api/modules/category.api';
 
 const router = useRouter();
 const route = useRoute();
-const params = computed<RouteParams>(() => route.params)
+const params = computed<RouteParams>(() => route.params);
+
+let categories = ref<ICategoryItem[]>([]);
+let imagePreview = ref<string>("");
+let loading = ref<boolean>(false);
 
 interface IForm {
     category: Partial<ICategoryItem>;
@@ -40,8 +44,7 @@ let form = ref<IForm>({
     enable: false,
     image: null
 });
-let categories = ref<ICategoryItem[]>([]);
-let imagePreview = ref("");
+
 
 onMounted(async () => {
     getProduct();
@@ -76,8 +79,8 @@ const getProduct = async () => {
             form.value.ram = item.ram;
             form.value.storage = item.storage;
             form.value.color = item.color;
-            form.value.enable = item.action == '1' ? true : false;
             imagePreview.value = item.image;
+            form.value.enable = item.action == '1' ? true : false;
         }
     }
 }
@@ -95,10 +98,9 @@ const updateProduct = async () => {
         timer: 1000
     });
 
+    loading.value = true;
+
     const formData = new FormData();
-    if (form.value.image) {
-        formData.append('image', form.value.image);
-    }
     formData.append('category_id', form.value.category.id.toString());
     formData.append('name', form.value.name);
     formData.append('description', form.value.description);
@@ -111,25 +113,30 @@ const updateProduct = async () => {
     formData.append('action', form.value.enable ? '1' : '0');
     formData.append('_method', "PUT");
 
+    if (form.value.image) {
+        formData.append('image', form.value.image);
+    }
+
     const [error, data] = await productService.editProduct(Number(params.value.id), formData)
     if (error) console.log(error);
     else {
         if (data.success) {
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                router.push('/admin/show_product');
-            });
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // }).then(() => {
+            // });
+            router.push('/admin/show_product');
         }
     }
+    loading.value = false;
 }
 
 function previewImage() {
@@ -154,7 +161,7 @@ function browseImage(e: Event) {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Edit a product</h1>
-            <v-btn @click="updateProduct()" color="success" flat>
+            <v-btn @click="updateProduct()" color="success" :loading="loading" flat>
                 publish
             </v-btn>
         </div>

@@ -8,7 +8,10 @@ import { ICategoryItem } from "../types/Category"
 import { IColorItem } from "../types/Color"
 
 const router = useRouter();
+
 let loadingSave = ref<boolean>(false);
+let categories = ref<ICategoryItem[]>([]);
+let colors = ref<IColorItem[]>([]);
 
 interface IForm {
     c_id: number | null;
@@ -39,8 +42,7 @@ let form = ref<IForm>({
     enable: false,
     image: null
 });
-let categories = ref<ICategoryItem[]>([]);
-let colors = ref<IColorItem[]>([]);
+
 
 onMounted(async () => {
     getCategory();
@@ -58,18 +60,9 @@ const getCategory = async () => {
 
 const getColor = async () => {
     colors.value = [
-        {
-            id: 1,
-            name: 'red'
-        },
-        {
-            id: 2,
-            name: 'black'
-        },
-        {
-            id: 3,
-            name: 'white'
-        },
+        { id: 1, name: 'red' },
+        { id: 2, name: 'black' },
+        { id: 3, name: 'white' },
     ]
     if (colors.value.length > 0) form.value.color_id = colors.value[0].id;
 }
@@ -166,7 +159,7 @@ const removeImage = () => {
             <v-row>
                 <v-col cols="12" md="8">
                     <div class="d-flex justify-space-between align-center">
-                        <div class="font-weight-medium text-grey-darken-4">Product Name</div>
+                        <div class="font-weight-medium text-grey-darken-4">Name</div>
                         <div class="flex items-center gap-2">
                             <v-checkbox v-model="form.enable" label="enable" density="compact" color="success"
                                 hide-details></v-checkbox>

@@ -5,7 +5,6 @@ import SearchComponent from '../components/SearchComponent.vue';
 import PopupComponent from '../components/PopupComponent.vue';
 import { Upload } from '../service/helpers';
 import { onMounted, ref, defineEmits } from 'vue';
-import { RouterLink } from 'vue-router';
 import { productService } from '../service/api/modules/product.api'
 import { IProductItem } from '../types/Product';
 
@@ -31,6 +30,11 @@ let searchOption = ref([
     { id: 2, title: "ID", by: "id" },
 ]);
 
+onMounted(async () => {
+    selectedSearchOption.value = searchOption.value[0].by;
+    await getProducts();
+});
+
 const isConfirmedUpdated = (value: boolean, itemId: number) => {
     if (value) {
         deleteProduct(itemId);
@@ -51,10 +55,7 @@ const currentPageUpdated = (value: number): void => {
     }
 };
 
-onMounted(async () => {
-    selectedSearchOption.value = searchOption.value[0].by;
-    await getProducts();
-});
+
 
 const setPagination = (pn: number, ipp: number, ti: number, tp: number) => {
     currentPage.value = pn;
@@ -63,7 +64,7 @@ const setPagination = (pn: number, ipp: number, ti: number, tp: number) => {
     totalPages.value = tp;
 }
 
-const getProducts = _.debounce(async (pageNumber = 1) => {
+const getProducts = async (pageNumber = 1) => {
     const [error, data] = await productService.getAllProducts(pageNumber)
     if (error) console.log(error);
     else {
@@ -74,7 +75,7 @@ const getProducts = _.debounce(async (pageNumber = 1) => {
             paginationLoaded.value = true;
         }
     }
-}, 200)
+}
 
 const search = _.debounce(async (pageNumber = 1) => {
     const params = {
@@ -92,18 +93,17 @@ const search = _.debounce(async (pageNumber = 1) => {
             getProducts(currentPage.value);
         }
     }
-}, 200)
+}, 400)
 
 const deleteProduct = async (id: number) => {
     loadingDelete.value = true;
-
     const [error, data] = await productService.deleteProduct(id)
     if (error) console.log(error)
     else {
         if (data.success) {
             if ((products.value.length - 1) % itemsPerPage.value == 0) {
                 currentPage.value = currentPage.value - 1;
-                totalPages.value = totalPages.value - 1;
+                // totalPages.value = totalPages.value - 1;
             }
             await getProducts(currentPage.value);
             loadingDelete.value = false;
@@ -113,7 +113,6 @@ const deleteProduct = async (id: number) => {
 
 const updateEnable = async (id: number, enable: string) => {
     loadingUpdate.value = true;
-
     const formData = new FormData();
     formData.append('action', enable === '1' ? '0' : '1');
     formData.append('_method', 'PUT');
@@ -179,7 +178,6 @@ const updateEnable = async (id: number, enable: string) => {
                                                             }}</span>
                                                     </template>
                                                 </v-hover>
-
                                             </RouterLink>
                                         </div>
                                     </td>
@@ -206,9 +204,9 @@ const updateEnable = async (id: number, enable: string) => {
                                             :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green"
                                             :loading="loadingUpdate" flat>
                                         </v-btn>
-                                        <RouterLink :to="'/admin/edit_product/' + item.id">
-                                            <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
-                                        </RouterLink>
+                                        <v-btn :to="'/admin/edit_product/' + item.id" size="small" icon="mdi-pencil"
+                                            color="blue" flat></v-btn>
+
                                         <PopupComponent :id="item.id" icon="mdi-delete" title="Delete This Item"
                                             text="Are you sure?" :loading="loadingDelete"
                                             @is-confirmed="isConfirmedUpdated" />

@@ -8,11 +8,6 @@ const router = useRouter();
 
 let loadingSave = ref<boolean>(false);
 
-onMounted(() => {
-    // sessionStorage.setItem('access_token', 'laravel_sanctum_wxMkVJgkLWQe9ttkxeODbGi6SlL28XDyGEbhyWtJ02075735')
-    // token.value = sessionStorage.getItem('access_token') || '';
-});
-
 interface IForm {
     name: string;
     description: string;
@@ -27,7 +22,7 @@ let form = ref<IForm>({
     enable: false,
 });
 
-const previewImage = () => form.value.image ? URL.createObjectURL(form.value.image) : "";
+const previewImage = () => form.value.image ? URL.createObjectURL(form.value.image) : undefined;
 
 const browseImage = (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -102,7 +97,7 @@ const removeImage = () => {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Add a category</h1>
-            <v-btn @click="saveCategory()" color="success" flat>
+            <v-btn @click="saveCategory()" color="success" :loading="loadingSave" flat>
                 Publish
             </v-btn>
         </div>
@@ -110,7 +105,7 @@ const removeImage = () => {
             <v-row>
                 <v-col>
                     <div class="d-flex justify-space-between align-center">
-                        <div class="font-weight-medium text-grey-darken-4">Category name</div>
+                        <div class="font-weight-medium text-grey-darken-4">Name</div>
                         <div class="flex items-center gap-2">
                             <v-checkbox v-model="form.enable" label="enable" color="success" density="compact"
                                 hide-details></v-checkbox>

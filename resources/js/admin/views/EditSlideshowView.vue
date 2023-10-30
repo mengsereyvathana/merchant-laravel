@@ -8,7 +8,12 @@ import { ISlideshowItem } from '../types/Slideshow'
 
 const router = useRouter();
 const route = useRoute();
-const params = computed<RouteParams>(() => route.params)
+const params = computed<RouteParams>(() => route.params);
+
+let currentSlideOrder = ref<number>(0);
+let slideshows = ref<ISlideshowItem[]>([]);
+let imagePreview = ref<string>('');
+let loading = ref<boolean>(false);
 
 interface IForm {
     order_number: number;
@@ -29,9 +34,7 @@ let form = ref<IForm>({
     image: null,
     enable: false,
 });
-let currentSlideOrder = ref<number>(0)
-let slideshows = ref<ISlideshowItem[]>([]);
-let imagePreview = ref<string>('');
+
 
 onMounted(async () => {
     getSlideshow();
@@ -82,10 +85,9 @@ const updateSlideshow = async () => {
         timer: 1000
     });
 
+    loading.value = true;
+
     const formData = new FormData();
-    if (form.value.image) {
-        formData.append('new_image', form.value.image);
-    }
     formData.append('id', form.value.id.toString())
     formData.append('new_title', form.value.title);
     formData.append('new_tage', form.value.tage);
@@ -94,26 +96,30 @@ const updateSlideshow = async () => {
     formData.append('action', form.value.enable ? '1' : '0');
     formData.append('_method', 'PUT');
 
-    console.log(Number(params.value.id))
+    if (form.value.image) {
+        formData.append('new_image', form.value.image);
+    }
+
     const [error, data] = await slideshowService.editSlideshow(Number(params.value.id), formData)
     if (error) console.log(error)
     else {
         if (data.success) {
-            Swal.fire({
-                toast: true,
-                position: 'top',
-                showClass: {
-                    icon: 'animated heartBeat delay-1s'
-                },
-                icon: 'success',
-                text: data.message,
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                router.push('/admin/show_slideshow');
-            })
+            // Swal.fire({
+            //     toast: true,
+            //     position: 'top',
+            //     showClass: {
+            //         icon: 'animated heartBeat delay-1s'
+            //     },
+            //     icon: 'success',
+            //     text: data.message,
+            //     showConfirmButton: false,
+            //     timer: 1000
+            // }).then(() => {
+            // })
+            router.push('/admin/show_slideshow');
         }
     }
+    loading.value = false;
 }
 
 function previewImage() {
@@ -139,7 +145,7 @@ function browseImage(e: Event) {
     <div>
         <div class="d-flex flex-row justify-space-between align-center flex-wrap mb-4">
             <h1 class='text-header font-weight-medium'>Edit a slideshow</h1>
-            <v-btn @click="updateSlideshow()" color="success" flat>
+            <v-btn @click="updateSlideshow()" color="success" :loading="loading" flat>
                 Edit
             </v-btn>
         </div>

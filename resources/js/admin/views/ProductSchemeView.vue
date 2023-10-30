@@ -6,7 +6,6 @@ import SearchComponent from '../components/SearchComponent.vue'
 import PopupComponent from '../components/PopupComponent.vue';
 import { Upload } from '../service/helpers';
 import { onMounted, ref } from 'vue';
-import { RouterLink } from 'vue-router';
 import { productSchemeService } from '../service/api/modules/product-scheme.api'
 import { IProductSchemeItem } from '../types/ProductScheme';
 
@@ -113,7 +112,6 @@ const deleteProductScheme = async (id: number) => {
 
 const updateEnable = async (id: number, enable: string) => {
     loadingUpdate.value = true;
-
     const formData = new FormData();
     formData.append('id', id.toString())
     formData.append('action', enable === '1' ? '0' : '1');
