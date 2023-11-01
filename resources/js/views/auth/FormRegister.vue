@@ -76,30 +76,14 @@ const saveUser = async () => {
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <div class="space-y-4 md:space-y-6">
                     <div>
-                        <!-- <label for="full_name" class="block mb-2 text-sm font-medium text-gray-900 capitalize">full
-                            name</label> -->
-                        <!-- <input v-model="form.full_name" /> -->
                         <v-text-field variant="underlined" v-model="form.full_name" label="Name" ref="input1" type="text"
                             name="full_name" id="full_name" class=" text-gray-900" placeholder="" required></v-text-field>
                     </div>
-                    <!-- <v-date-picker></v-date-picker> -->
-                    <!-- <v-row justify="center">
-                        <v-date-picker width="100"></v-date-picker>
-                    </v-row> -->
                     <p class="block text-sm font-medium text-gray-900 capitalize">Date of
                         Birth</p>
                     <v-text-field class="spacing-playground pa-0" variant="underlined" type="date" format="dd-mm-yy"
                         v-model="form.dob" placeholder="Date of birth" required></v-text-field>
-                    <!-- <template>
-                        <v-container>
-                            <v-row>
-                                <v-date-picker elevation="24"></v-date-picker>
-                            </v-row>
-                        </v-container>
-                    </template> -->
                     <div>
-                        <!-- <input v-model="form.dob" ref="input1" type="text" name="dob" id="dob"
-                            class="bg-field text-gray-900 sm:text-sm block w-full p-4" placeholder="" required /> -->
                     </div>
                     <v-btn @click="saveUser()" :loading="loading" color="blue" size="large" flat block>
                         Create now
