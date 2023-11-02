@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import Swal from "sweetalert2";
 import { onMounted, ref, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "@/use/useStore";
 import { AUTH_STORE } from "@/store/constants";
 import { userService } from "@/services/api/modules/user.api";
-import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import Swal from "sweetalert2";
 
 const store = useStore();
 const route = useRoute();
