@@ -19,7 +19,6 @@ import { rippleInit } from "@/directive/index";
 
 import "../css/app.css";
 import "sweetalert2/dist/sweetalert2.css";
-import Swal from "sweetalert2";
 
 const vuetify = createVuetify({
     components,
@@ -28,8 +27,6 @@ const vuetify = createVuetify({
 });
 
 initializeApp(firebaseConfig);
-
-window.Swal = Swal;
 
 const app = createApp(App).use(vuetify).use(store).use(router);
 
