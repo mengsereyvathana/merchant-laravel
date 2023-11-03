@@ -2,11 +2,9 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import 'firebase/compat/auth';
-import { IChecker } from "@/types/Checker";
 import Swal from 'sweetalert2';
 
 const route = useRoute();
-const router = useRouter();
 
 let counter = ref(60);
 
