@@ -20,6 +20,7 @@ import { rippleInit } from "@/directive/index";
 import "../css/app.css";
 import "sweetalert2/dist/sweetalert2.css";
 
+
 const vuetify = createVuetify({
     components,
     directives,
