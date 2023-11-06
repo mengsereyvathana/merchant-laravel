@@ -8,7 +8,6 @@ import { CART_STORE } from '@/store/constants';
 import { productService } from '@/services/api/modules/product.api';
 import { useRoute } from 'vue-router';
 
-// type TProductCategory = NonNullable<Awaited<ReturnType<typeof productService.getProductByCategory>>>
 const route = useRoute();
 const store = useStore();
 const category_name = ref<string>("");
