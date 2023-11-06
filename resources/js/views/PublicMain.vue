@@ -5,18 +5,10 @@ import { transition } from '@/store/transition';
 
 const tranName = ref<string>("")
 
-onMounted(() => {
-    tranName.value = transitionName.value
-})
+let transitionName = computed<string>(() => { return transition.value; })
 
-let transitionName = computed<string>(() => {
-    return transition.value;
-})
-
-const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-};
-
+const scrollToTop = () => { window.scrollTo({ top: 0, behavior: "smooth" }); };
+onMounted(() => { tranName.value = transitionName.value })
 watch([transitionName], () => { scrollToTop(); }, { immediate: true });
 
 </script>
