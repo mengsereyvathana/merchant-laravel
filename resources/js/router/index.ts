@@ -157,8 +157,8 @@ const routes: Array<RouteRecordRaw> = [
     //     },
     // },
     {
-        path: "/phone_login",
-        name: "phone_login",
+        path: "/login",
+        name: "login",
         component: () => import("../views/auth/PhoneLoginPage.vue"),
         meta: {
             userAuth: false,
@@ -291,7 +291,7 @@ router.beforeEach(async (to, from, next) => {
             if (token && isAuth) {
                 next();
             } else {
-                next("/phone_login");
+                next("/login");
             }
         } else {
             next();

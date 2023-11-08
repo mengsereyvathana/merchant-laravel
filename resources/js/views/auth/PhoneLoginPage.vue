@@ -53,7 +53,7 @@ onMounted(async () => {
                     if (data.success) {
                         router.replace("/")
                     } else {
-                        router.replace("/phone_login")
+                        router.replace("/login")
                     }
                 }
             }

@@ -33,7 +33,7 @@ const menus = [
         title: 'Orders',
         children: [
             {
-                title: 'Delivered',
+                title: 'Order Delivered',
                 path: '/admin/show_order_delivered',
                 page_name: 'show_order_delivered',
             },
@@ -51,12 +51,12 @@ const menus = [
         title: "Categories",
         children: [
             {
-                title: 'Add Category',
+                title: 'Add New category',
                 path: '/admin/add_category',
                 page_name: 'add_category',
             },
             {
-                title: 'Category',
+                title: 'All Categories',
                 path: '/admin/show_category',
                 page_name: 'show_category',
             }
@@ -68,17 +68,17 @@ const menus = [
         title: "Products",
         children: [
             {
-                title: 'Add Product',
+                title: 'Add New product',
                 path: '/admin/add_product',
                 page_name: 'add_product',
             },
             {
-                title: 'Product',
+                title: 'All Products',
                 path: '/admin/show_product',
                 page_name: 'show_product',
             },
             {
-                title: 'Product Scheme',
+                title: 'All Product By scheme',
                 path: '/admin/show_product_scheme',
                 page_name: 'show_product_scheme',
             },
@@ -90,12 +90,12 @@ const menus = [
         title: "Slideshows",
         children: [
             {
-                title: 'Add Slideshow',
+                title: 'Add new slideshow',
                 path: '/admin/add_slideshow',
                 page_name: 'add_slideshow',
             },
             {
-                title: 'Slideshow',
+                title: 'All Slideshows',
                 path: '/admin/show_slideshow',
                 page_name: 'show_slideshow',
             }
