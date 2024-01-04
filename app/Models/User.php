@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\scheme;
-use App\Models\order;
+use App\Models\Scheme;
+use App\Models\Order;
 
 
 class User extends Authenticatable
@@ -17,10 +17,10 @@ class User extends Authenticatable
     protected $table = "users";
 
     public function scheme(){
-        return $this->belongsTo(scheme::class); //this user has  1 of scheme_id
+        return $this->belongsTo(Scheme::class); //this user has  1 of scheme_id
     }
     public function order(){
-        return $this->hasMany(order::class,'user_id'); //this user has  1 of scheme_id
+        return $this->hasMany(Order::class,'user_id'); //this user has  1 of scheme_id
     }
     /**
      * The attributes that are mass assignable.

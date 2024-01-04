@@ -146,7 +146,8 @@ const previewImage = () => {
                                 </v-responsive>
                                 <div>
                                     <div class="gap-4 mt-1" v-if="imagePreview != ''">
-                                        <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" alt="" cover></v-img>
+                                        <v-img :src="previewImage()" aspect-ratio="1/1" :width="100" :height="100" alt=""
+                                            cover></v-img>
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +183,7 @@ const previewImage = () => {
                 <v-col cols="12" md="4">
                     <div class="border-solid border border-gray-300 rounded-lg p-4 h-[305px] bg-white mt-2 md:mt-10">
                         <div class="d-flex flex-wrap justify-space-between align-center">
-                            <div class='font-weight-medium text-grey-darken-4'>Product Scheme</div>
+                            <div class='font-weight-medium text-grey-darken-4'>Scheme Id</div>
                             <!-- <RouterLink :to="'/admin/add_category'">
                                 <v-btn color="blue" class='text-none' variant="tonal" flat>Add
                                     category

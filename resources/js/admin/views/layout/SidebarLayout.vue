@@ -128,8 +128,7 @@ let open = ref([false, false, false, false, false, false, false]);
                     </template>
                     <div v-for="sub in item.children" :key="sub.page_name">
                         <v-list-item :to="'/admin/' + sub.page_name" :ripple="{ class: 'text-blue' }" active-color="blue"
-                            :title="sub.title" prepend-icon="mdi-arrow-right-bold-circle-outline"
-                            :value="sub.title"></v-list-item>
+                            :title="sub.title" :value="sub.title"></v-list-item>
                     </div>
                 </v-list-group>
                 <v-list-item v-else :to="'/admin/' + (item.page_name === 'dashboard' ? '' : item.page_name)"

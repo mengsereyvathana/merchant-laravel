@@ -19,7 +19,7 @@ export class Http implements IHttpRequest {
             baseURL: "/api",
             headers: {
                 Accept: "application/json",
-                "Content-type": "multipart/form-data",
+                "Content-Type": "multipart/form-data",
             },
         }
         this.api = axios.create(baseConfig)

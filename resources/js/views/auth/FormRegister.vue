@@ -32,7 +32,7 @@ onMounted(() => {
 
 function checkPassword() {
     if (store.getters[AUTH_STORE.GETTERS.GET_PASSWORD_PASS] === "") {
-        router.replace("/phone_login");
+        router.replace("/login");
     } else {
         form.default_password = store.getters[AUTH_STORE.GETTERS.GET_PASSWORD_PASS];
     }

@@ -2,10 +2,21 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ListController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\Admin\AdminListController;
-use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\AuthController;
+
+use App\Http\Controllers\ProductController as UserProductController;
+use App\Http\Controllers\CategoryController as UserCategoryController;
+use App\Http\Controllers\ProductSchemeController as UserProductSchemeController;
+use App\Http\Controllers\CartController as UserCartController;
+use App\Http\Controllers\OrderController as UserOrderController;
+use App\Http\Controllers\SlideController as UserSlideController;
+
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductSchemeController;
+use App\Http\Controllers\Admin\SlideController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,6 +28,12 @@ use App\Http\Controllers\Admin\AdminUserController;
 |
 */
 
+
+/*
+|--------------------------------------------------------------------------
+| User Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json([
         'success' => true,
@@ -25,77 +42,100 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    //jasldfjasldjf
-    // Route::post('/logout',[UserController::class,'logout'])->name('auth.logout');
-    Route::get('/user_scheme_price_list', [ListController::class, 'user_scheme_price_list']);
-    Route::get('detail_list/{id?}', [ListController::class, 'detail_list']);
-    Route::delete('delete_list/{id?}', [ListController::class, 'delete_list']);
-    Route::post('/sub_to_cart', [ListController::class, 'sub_to_cart']);
-    Route::delete('/delete_cart', [ListController::class, 'delete_cart']);
-    Route::post('/order', [ListController::class, 'order']);
-    Route::post('/order_detail', [ListController::class, 'order_detail']);
-    Route::post('/add_to_cart', [ListController::class, 'add_to_cart']);
-    Route::get('/list_cart', [ListController::class, 'list_cart']);
-    Route::get('/list_ordered', [ListController::class, 'list_ordered']);
-    Route::get('/user_scheme_price_list_detail', [ListController::class, 'user_scheme_price_list_detail']);
-    Route::get('/user_scheme_price_list_by_category', [ListController::class, 'user_scheme_price_list_by_category']);
+    //product
+    Route::get('product/{id?}', [UserProductController::class, 'show']);
+
+    //product scheme
+    Route::get('/product_scheme', [UserProductSchemeController::class, 'index']);
+    Route::get('/product_scheme_detail', [UserProductSchemeController::class, 'show']);
+    Route::get('/product_scheme_by_category', [UserProductSchemeController::class, 'productByCategory']);
+
+    //cart
+    Route::get('/cart', [UserCartController::class, 'index']);
+    Route::post('/add_to_cart', [UserCartController::class, 'addToCart']);
+    Route::post('/subtract_from_cart', [UserCartController::class, 'subtractFromCart']);
+    Route::delete('/delete_cart', [UserCartController::class, 'deleteCart']);
+
+    //order
+    Route::get('/order', [UserOrderController::class, 'index']);
+    Route::post('/order', [UserOrderController::class, 'store']);
+    Route::post('/order_detail', [UserOrderController::class, 'showOrderDetail']);
 });
 
-Route::get('/show_cart/{pg?}', [ListController::class, 'show_cart']);
+//product
+Route::get('/product/{pg?}', [UserProductController::class, 'index']);
+Route::get('/product/search/{pg?}', [UserProductSchemeController::class, 'search']);
 
-Route::get('/list/{pg?}', [ListController::class, 'list']);
-Route::get('/search/{pg?}', [ListController::class, 'search']);
-Route::get('/list_slide', [ListController::class, 'list_slide']);
-Route::get('/detail_slide/{slide_id?}', [ListController::class, 'detail_slide']);
-
-
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/admin_login', [UserController::class, 'admin_login']);
-Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/verify_email_otp', [UserController::class, 'verify_email_otp']);
-Route::post('/resend_otp', [UserController::class, 'resend_otp']);
-Route::post('/change_password', [UserController::class, 'change_password']);
-Route::post('forgot', [UserController::class, 'forgot']);
-Route::post('/log_with_phone', [UserController::class, 'log_with_phone']);
-Route::post('/create_user_with_phone', [UserController::class, 'create_user_with_phone']);
-Route::get('/list_category', [ListController::class, 'list_category']);
+//cart
+Route::get('/category', [UserCategoryController::class, 'index']);
 
 
+//slide
+Route::get('/slide', [UserSlideController::class, 'index']);
+Route::get('/slide/{slide_id?}', [UserSlideController::class, 'show']);
+
+
+//auth
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/create_user_with_phone', [AuthController::class, 'create_user_with_phone']);
+Route::post('/log_with_phone', [AuthController::class, 'log_with_phone']);
+Route::post('/admin_login', [AuthController::class, 'admin_login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/verify_email_otp', [AuthController::class, 'verify_email_otp']);
+Route::post('/resend_otp', [AuthController::class, 'resend_otp']);
+Route::post('/change_password', [AuthController::class, 'change_password']);
+Route::post('/forgot', [AuthController::class, 'forgot']);
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
 Route::group(['prefix' => 'admin'], function () {
-    //list
     Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::get('/list', [AdminListController::class, 'list']);
-        Route::post('/add_list', [AdminListController::class, 'add_list']);
-        Route::put('/update_list/{id}', [AdminListController::class, 'update_list']);
-        Route::delete('delete_list/{id?}', [AdminListController::class, 'delete']);
-        Route::get('/user_scheme_price_list', [AdminListController::class, 'user_scheme_price_list']);
-        Route::get('/user_scheme_price_list_detail/{id?}', [AdminListController::class, 'user_scheme_price_list_detail']);
-        Route::delete('/user_scheme_price_list_delete/{id?}', [AdminListController::class, 'user_scheme_price_list_delete']);
-        Route::post('/user_scheme_price_list_add', [AdminListController::class, 'user_scheme_price_list_add']);
-        Route::put('/user_scheme_price_list_update/{id?}', [AdminListController::class, 'user_scheme_price_list_update']);
-        Route::get('/list_ordered', [AdminListController::class, 'list_ordered']);
-        Route::delete('/List_ordered_delete/{invoice?}', [AdminListController::class, 'List_ordered_delete']);
-        Route::get('search_product', [AdminListController::class, 'search_product']);
-        Route::get('search_scheme', [AdminListController::class, 'search_scheme']);
-        Route::get('search_slide', [AdminListController::class, 'search_slide']);
-        Route::get('search_order', [AdminListController::class, 'search_order']);
-        Route::post('add_category', [AdminListController::class, 'add_category']);
-        Route::get('list_category', [AdminListController::class, 'list_category']);
-        Route::delete('delete_category/{id?}', [AdminListController::class, 'delete_category']);
-        Route::get('detail_category/{id?}', [AdminListController::class, 'detail_category']);
-        Route::put('update_category/{id?}', [AdminListController::class, 'update_category']);
-        Route::post('/add_slide', [AdminListController::class, 'add_slide']);
-        Route::get('/list_slide', [AdminListController::class, 'list_slide']);
-        Route::get('/detail_slide/{slide_id?}', [AdminListController::class, 'detail_slide']);
-        Route::delete('/delete_slide', [AdminListController::class, 'delete_slide']);
-        Route::put('/update_slide/{id?}', [AdminListController::class, 'update_slide']);
-        Route::get('search_category', [AdminListController::class, 'search_category']);
-        Route::post('/logout', [AdminUserController::class, 'logout'])->middleware('auth:sanctum'); //check uathorization use if(auth()->check())
-    });
-    //auth
-    Route::post('login', [AdminUserController::class, 'login']);
-});
-    
+        //product
+        Route::get('/product', [ProductController::class, 'index']);
+        Route::get('/product/search', [ProductController::class, 'search']);
+        Route::get('/product_by_category', [ProductController::class, 'productByCategory']);
+        Route::post('/product', [ProductController::class, 'store']);
+        Route::get('product/{id?}', [ProductController::class, 'show']);
+        Route::put('/product/{id}', [ProductController::class, 'update']);
+        Route::delete('product/{id?}', [ProductController::class, 'destroy']);
 
-// Route::apiResource('list',ListController::class);
+        //product scheme
+        Route::get('/product_scheme', [ProductSchemeController::class, 'index']);
+        Route::get('/product_scheme/search', [ProductSchemeController::class, 'search']);
+        Route::get('/product_scheme/{id?}', [ProductSchemeController::class, 'show']);
+        Route::post('/product_scheme', [ProductSchemeController::class, 'store']);
+        Route::put('/product_scheme/{id?}', [ProductSchemeController::class, 'update']);
+        Route::delete('/product_scheme/{id?}', [ProductSchemeController::class, 'destroy']);
+
+        //slide
+        Route::get('/slide', [SlideController::class, 'index']);
+        Route::post('/slide', [SlideController::class, 'store']);
+        Route::get('/slide/search', [SlideController::class, 'search']);
+        Route::get('/slide/{slide_id?}', [SlideController::class, 'show']);
+        Route::put('/slide/{id?}', [SlideController::class, 'update']);
+        Route::delete('/slide', [SlideController::class, 'destroy']);
+
+        //category
+        Route::get('/category', [CategoryController::class, 'index']);
+        Route::get('/category/search', [CategoryController::class, 'search']);
+        Route::post('/category', [CategoryController::class, 'store']);
+        Route::get('/category/{id?}', [CategoryController::class, 'show']);
+        Route::put('/category/{id?}', [CategoryController::class, 'update']);
+        Route::delete('/category/{id?}', [CategoryController::class, 'destroy']);
+
+        //order
+        Route::get('/order', [OrderController::class, 'index']);
+        Route::get('/order/search', [OrderController::class, 'search']);
+        Route::delete('/order/{invoice?}', [OrderController::class, 'destroy']);
+
+        //auth
+        Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    });
+
+    //auth
+    Route::post('/login', [AuthController::class, 'login']);
+});

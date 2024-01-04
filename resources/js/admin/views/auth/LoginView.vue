@@ -53,10 +53,6 @@ const login = async () => {
                     <h1 class="text-header font-semibold text-gray-700 capitalize">Welcome to adminstrator page</h1>
                 </div>
                 <div class="w-full h-full flex justify-center items-center">
-                    <!-- <RouterLink to='/' class="flex items-center text-2xl font-semibold text-white">
-                        <img class="w-8 h-8 mr-2" :src="profile.image" alt="logo" />
-                        {{ profile.name }}
-                    </RouterLink> -->
                     <v-sheet class="p-6 space-y-4 md:space-y-6 sm:p-8" width="377">
                         <div class="flex flex-row gap-5 items-center justify-center">
                             <h2 class="text-title text-center font-semibold tracking-tight text-gray-800 md:text-header">
@@ -64,36 +60,19 @@ const login = async () => {
                             </h2>
                         </div>
                         <v-container>
-                            <!-- <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Username</label> -->
                             <v-text-field v-model="form.username" label="Username" variant="outlined" color="primary"
                                 hide-details="auto" class="my-5"></v-text-field>
-                            <!-- <input type="email" name="email" id="email"
-                                        class="bg-gray-50 border border-solid border-gray-300 text-gray-900 sm:text-sm rounded-sm focus:ring-primary focus:border-primary block w-full p-2.5 "
-                                        placeholder="" required /> -->
                             <p v-for="(item, index) in message.name" class="font-semibold text-sm mt-2 text-red-600 mb-2"
                                 :key="index">{{ item }}</p>
-
-                            <!-- <v-list-item v-for="(item, index) in message.name" :key="index"
-                                    :subtitle="item[index]"></v-list-item> -->
-                            <!-- <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label> -->
-                            <v-text-field v-model="form.password" label="Password" variant="outlined"
+                            <v-text-field v-model="form.password" label="Password" variant="outlined" color="primary"
                                 :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                                 :type="visible ? 'text' : 'password'" @click:append-inner="visible = !visible"
                                 hide-details="auto" class="my-5"></v-text-field>
-                            <!-- <input v-model="form.password" type="password" name="password" id="password"
-                                        placeholder="••••••••"
-                                        class="bg-gray-50 border border-solid border-gray-300 text-gray-900 sm:text-sm rounded-sm focus:ring-primary focus:border-primary block w-full p-2.5 "
-                                        required /> -->
                             <p v-for="(item, index) in message.password"
                                 class="font-semibold text-sm mt-2 text-red-600 mb-2" :key="index">{{ item }}
                             </p>
                             <v-btn @click="login()" color="success" block :loading="loading" size="large">
-                                <!-- <div class="h-[2.5rem] leading-[2.5rem] basis-[100%] pl-[2.5rem]">Login</div>
-                                    <div class="h-[2.5rem] leading-[2.5rem] flex justify-center basis-[15%]">
-                                        <img :src="Upload.icon('rightarrow.svg')" alt="" class="w-[25px]">
-                                    </div> -->
                                 Login
-                                <!-- <v-icon icon="mdi-chevron-right" end></v-icon> -->
                             </v-btn>
                         </v-container>
                     </v-sheet>

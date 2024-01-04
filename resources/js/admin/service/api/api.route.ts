@@ -1,46 +1,43 @@
 export enum ProductRoute {
-    GET_ALL = "/admin/list",
-    GET = "detail_list",
-    GET_ALL_BY_CATEGORY = "user_scheme_price_list_by_category",
-    SEARCH = "/admin/search_product",
-    CREATE = "/admin/add_list",
-    EDIT = "/admin/update_list/",
-    DELETE = "/admin/delete_list/",
+    GET_ALL = "/admin/product",
+    GET = "/admin/product",
+    GET_ALL_BY_CATEGORY = "/admin/product_by_category",
+    SEARCH = "/admin/product/search",
+    CREATE = "/admin/product",
+    EDIT = "/admin/product/",
+    DELETE = "/admin/product/",
 }
 
 export enum ProductSchemeRoute {
-    GET_ALL = "/admin/user_scheme_price_list",
-    GET = "/admin/user_scheme_price_list_detail",
-    SEARCH = "/admin/search_scheme",
-    CREATE = "/admin/user_scheme_price_list_add",
-    EDIT = "/admin/user_scheme_price_list_update/",
-    DELETE = "/admin/user_scheme_price_list_delete/",
+    GET_ALL = "/admin/product_scheme",
+    GET = "/admin/product_scheme",
+    SEARCH = "/admin/product_scheme/search",
+    CREATE = "/admin/product_scheme",
+    EDIT = "/admin/product_scheme/",
+    DELETE = "/admin/product_scheme/",
 }
 
 export enum SlideshowRoute {
-    GET_ALL = "/admin/list_slide",
-    GET = "/admin/detail_slide",
-    SEARCH = "/admin/search_slide",
-    CREATE = "/admin/add_slide",
-    EDIT = "/admin/update_slide/",
-    DELETE = "/admin/delete_slide",
+    GET_ALL = "/admin/slide",
+    GET = "/admin/slide",
+    SEARCH = "/admin/slide/search",
+    CREATE = "/admin/slide",
+    EDIT = "/admin/slide/",
+    DELETE = "/admin/slide",
 }
 
 export enum CategoryRoute {
-    GET_ALL = "/admin/list_category",
-    GET = "/admin/detail_category/",
-    SEARCH = "/admin/search_category",
-    CREATE = "/admin/add_category",
-    EDIT = "/admin/update_category/",
-    DELETE = "/admin/delete_category/",
+    GET_ALL = "/admin/category",
+    GET = "/admin/category/",
+    SEARCH = "/admin/category/search",
+    CREATE = "/admin/category",
+    EDIT = "/admin/category/",
+    DELETE = "/admin/category/",
 }
 
 export enum OrderRoute {
-    GET_ALL = "/admin/list_ordered",
-    SEARCH = "/admin/search_order",
-    CREATE = "",
-    EDIT = "",
-    DELETE = "",
+    GET_ALL = "/admin/order",
+    SEARCH = "/admin/order/search",
 }
 
 export enum AuthRoute {

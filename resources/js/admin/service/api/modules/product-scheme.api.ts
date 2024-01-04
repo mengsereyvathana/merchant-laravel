@@ -35,7 +35,6 @@ class ProductSchemeService extends Http implements IProductSchemeService {
     async searchProducts(params: object): Promise<Form<IProductScheme>> {
         try {
             const { data } = await this.getAll<IProductScheme>(`${ProductSchemeRoute.SEARCH}`, true, params);
-            console.log(data)
             return [null, data];
         } catch (error) {
             console.error(error)
