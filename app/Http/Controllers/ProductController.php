@@ -34,9 +34,6 @@ class ProductController extends Controller
         }
         $minutesToAdd = 1;
 
-        // $newTime = strtotime("+$minutesToAdd minutes");
-        // date_default_timezone_set('Asia/Bangkok');
-        // $date= date('i:s',$newTime);
         return response()->json([
             // 'date'=>$date,
             'success' => true,

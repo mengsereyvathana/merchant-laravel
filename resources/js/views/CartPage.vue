@@ -177,14 +177,6 @@ async function sendMessageTelegram(order_id: number, cartData: CartData[]) {
 </script>
 <template>
     <div v-if="cart_loaded && products.length > 0" class="flex flex-col p-4 gap-3 bg-white">
-        <!-- <div class="p-4">
-            <p class="text-xs pb-4">
-                This store provides both
-                Delivery and Self-Pickup options.
-                You have selected: {{ options }}
-                <span class="underline text-xs cursor-pointer">Change</span>
-            </p>
-        </div> -->
         <div class="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-lg">
             <div class="p-4">
                 <h3 class=" border-b border-solid border-gray-200 uppercase pb-4 font-semibold">items in cart</h3>
@@ -202,12 +194,9 @@ async function sendMessageTelegram(order_id: number, cartData: CartData[]) {
                                 {{ item.products.name }}
                             </h1>
                             <p class="text-sm text-letter mt-1 font-semibold">
-                                <span>${{ item.unit_price }}
+                                <span>${{ item.unit_price.toFixed(2) }}
                                 </span>
                             </p>
-                            <!-- <p class="text-xs text-gray-700">
-                                {{ item.products.description }}
-                            </p> -->
                         </div>
                     </div>
                     <div class="flex flex-col justify-between" v-if="item.products">
@@ -242,7 +231,7 @@ async function sendMessageTelegram(order_id: number, cartData: CartData[]) {
             <h3 class="uppercase pb-4 font-semibold">Bill details</h3>
             <div class="border-t border-solid flex justify-between items-center py-4">
                 <p class="capitalize text-sm">item total</p>
-                <p class="font-semibold text-sm">${{ cartAmount }}</p>
+                <p class="font-semibold text-sm">${{ cartAmount.toFixed(2) }}</p>
             </div>
             <div class="border-t border-solid flex flex-col justify-start py-4">
                 <p class="capitalize text-sm mb-3">Payment Method</p>

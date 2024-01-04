@@ -78,7 +78,7 @@ const getProductOrder = async (pageNumber = 1) => {
                                 {{ items.product.name }}
                             </h1>
                             <p class="text-xs text-letter mt-1 font-semibold">
-                                <span>${{ items.unit_price }}
+                                <span>${{ items.unit_price.toFixed(2) }}
                                 </span>
                             </p>
                             <!-- <p class="text-xs text-gray-700">{{ items.product.description }}</p> -->
@@ -86,14 +86,14 @@ const getProductOrder = async (pageNumber = 1) => {
                     </div>
                     <div class="flex flex-col justify-between items-end text-xs font-medium">
                         <p class="p-2">x{{ items.qty }}</p>
-                        <p class="text-danger">${{ items.total }}</p>
+                        <p class="text-danger">${{ items.total.toFixed(2) }}</p>
                     </div>
                 </div>
             </div>
             <div class="p-4">
                 <div class="flex justify-between border-t border-solid border-gray-200 w-full">
                     <h3 class="uppercase pt-4 font-semibold">Total</h3>
-                    <h3 class="uppercase pt-4 font-semibold text-danger">${{ total[index] }}</h3>
+                    <h3 class="uppercase pt-4 font-semibold text-danger">${{ total[index].toFixed(2) }}</h3>
                 </div>
             </div>
         </div>
