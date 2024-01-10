@@ -112,10 +112,10 @@ const deleteSlideshow = async (id: number) => {
     }
 }
 
-const updateEnable = async (id: number, action: string) => {
+const updateEnable = async (id: number, action: boolean) => {
     loadingUpdate.value = true;
     const formData = new FormData();
-    formData.append('action', action === '1' ? '0' : '1');
+    formData.append('action', action ? '0' : '1');
     formData.append('_method', 'PUT');
     const [error, data] = await slideshowService.editSlideshow(id, formData)
     if (error) console.log(error)
@@ -192,14 +192,12 @@ const updateEnable = async (id: number, action: string) => {
                                     <div
                                         class='hidden group-hover:flex absolute right-0 top-[50%] translate-y-[-50%] pr-[10px]  gap-1'>
                                         <v-btn @click="updateEnable(item.id, item.action)" size="small"
-                                            :icon="item.action === '1' ? 'mdi-eye' : 'mdi-eye-off'" color="green"
+                                            :icon="item.action ? 'mdi-eye' : 'mdi-eye-off'" color="green"
                                             :loading="loadingUpdate" flat>
                                         </v-btn>
                                         <RouterLink :to="'/admin/edit_slideshow/' + item.id">
                                             <v-btn size="small" icon="mdi-pencil" color="blue" flat></v-btn>
                                         </RouterLink>
-                                        <!-- <v-btn @click="deleteProduct(item.id)" size="small" icon="mdi-delete" color="red"
-                                            :loading="loadingDelete" flat> </v-btn> -->
                                         <PopupComponent icon="mdi-delete" :id="item.id" title="Delete This Item"
                                             text="Are you sure?" :loading="loadingDelete"
                                             @is-confirmed="isConfirmedUpdated" />

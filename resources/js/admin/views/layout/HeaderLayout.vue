@@ -36,6 +36,7 @@ const logout = async () => {
     if (error) console.log(error)
     else {
         if (data.success) {
+            sessionStorage.removeItem('adminToken');
             router.push("/admin/login")
         }
         loading.value = false;
@@ -61,15 +62,17 @@ const yourProfile = () => {
                 <template v-slot:activator="{ props }">
                     <v-btn icon v-bind="props" size="small" variant="tonal" flat>
                         <v-avatar color="blue">
-                            <v-img :src="Upload.image(user?.image)" :alt="user?.name"></v-img>
+                            <!-- <v-img :src="Upload.image(user?.image)" :alt="user?.name"></v-img> -->
+                            <span class="text-h5">A</span>
                         </v-avatar>
                     </v-btn>
                 </template>
                 <v-card>
                     <v-card-text>
                         <div class="mx-auto text-center">
-                            <v-avatar>
-                                <v-img :src="Upload.image(user?.image)" :alt="user?.name"></v-img>
+                            <v-avatar color="blue">
+                                <!-- <v-img :src="Upload.image(user?.image)" :alt="user?.name"></v-img> -->
+                                <span class="text-h5">A</span>
                             </v-avatar>
                             <h3>{{ user?.name }}</h3>
                             <p class="text-caption mt-1">
@@ -77,7 +80,7 @@ const yourProfile = () => {
                             </p>
                             <p>Role: {{ user?.role === 3 ? "admin" : "user" }}</p>
                             <v-divider class="my-3"></v-divider>
-                            <v-btn @click="yourProfile()" rounded variant="text">
+                            <v-btn @click="yourProfile()" rounded variant="text" text="A">
                                 Edit Account
                             </v-btn>
                             <v-divider class="my-3"></v-divider>

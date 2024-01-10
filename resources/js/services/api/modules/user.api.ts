@@ -87,7 +87,7 @@ export class UserService extends Http implements IUserService {
 
     async loginWithPhone(form: FormData): Promise<Form<ILoginPhone>> {
         try {
-            const { data } = await this.post<ILoginPhone>(`log_with_phone`, false, form);
+            const { data } = await this.post<ILoginPhone>(UserRoute.LOGIN_WITH_PHONE, false, form);
             return [null, data];
         } catch (error) {
             console.log(error);
@@ -183,7 +183,7 @@ export class UserService extends Http implements IUserService {
             formData.append("phoneNumber", `+855${phoneNumber}`);
             formData.append("name", full_name);
             formData.append("dob", dob);
-            formData.append("pss", default_password);
+            formData.append("password", default_password);
 
             const response = await this.post<IFormRegister>(UserRoute.REGISTER, true, formData);
 

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_email_phone_otp', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('email',50);
-            $table->string('phone',10);
-            $table->string('otp',8);
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->longText('address');
+            $table->string('tag');
+            $table->string('contact');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_email_phone_otp');
+        Schema::dropIfExists('addresses');
     }
 };

@@ -13,7 +13,7 @@ export interface ISlideshowItem {
     title: string;
     tage: string;
     link: string;
-    action: string;
+    action: boolean;
     slide_order: number;
     created_at?: Date;
     updated_at?: Date;

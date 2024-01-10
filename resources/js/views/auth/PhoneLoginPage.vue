@@ -9,7 +9,6 @@ import { AUTH_STORE } from '@/store/constants';
 import { userService } from '@/services/api/modules/user.api';
 import { handleErrorMsg } from '@/services/helper/handle-error'
 
-// type FirebaseApp = NonNullable<Parameters<typeof getAuth>[0]>;
 type Auth = ReturnType<typeof getAuth>
 let auth: Auth
 let appVerifier: RecaptchaVerifier | null = null;
@@ -157,7 +156,7 @@ const verifyCode = async () => {
                 try {
                     const formData = new FormData();
                     formData.append("phoneNumber", selectedCountry.value?.code + phoneNumber.value);
-                    formData.append("pss", "12345678");
+                    formData.append("password", "12345678");
 
                     const [error, data] = await userService.loginWithPhone(formData)
                     if (error) console.log(error);
@@ -168,7 +167,6 @@ const verifyCode = async () => {
                                 loading.value = false;
                                 router.push('/form_register/' + phoneNumber.value)
                             } else {
-                                // httpAuth.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
                                 Cookie.set("token", data.token, 10);
                                 Cookie.set("session_id", Crypt.encrypt(JSON.stringify(data.data.id)), 10);
                                 store.dispatch(AUTH_STORE.ACTIONS.SET_TOKEN, data.token)

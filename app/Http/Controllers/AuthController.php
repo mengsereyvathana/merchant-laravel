@@ -127,22 +127,16 @@ class AuthController extends Controller
         $user = new User;
         $user->name     = $req->name;
         if (is_numeric($phoneEmail_check)) {
-
             $user->phone    = $phoneEmail_check;
         }
         if (filter_var($phoneEmail_check, FILTER_VALIDATE_EMAIL)) {
-
             $user->email    = $phoneEmail_check;
-            // Mail::to($phoneEmail_check)->send(new emailOTP);
-
         }
         $user->password = Hash::make($req->password);
-        // $user->comfirmPassword = Hash::make($req->comfirm);
         $result         = $user->save();
         $data           = $user->refresh();
 
         if ($result) {
-            // check for add to tbl otp
             $email_phone_otp = new PhoneOtp;
             $otp = rand(1000, 9999);
             if (is_numeric($phoneEmail_check)) {
@@ -154,9 +148,6 @@ class AuthController extends Controller
                 $email_phone_otp->email = $phoneEmail_check;
 
                 Mail::to($phoneEmail_check)->send(new emailOTP($otp));
-
-                // return view('mail.emailOTP',compact('otp'));
-
             }
             $minutesToAdd = 1;
             $newTime = strtotime("+$minutesToAdd minutes");
@@ -165,7 +156,6 @@ class AuthController extends Controller
             $email_phone_otp->otp   = Hash::make($otp);
             $email_phone_otp->expired_date  = $time;
             $email_phone_otp->save();
-            //end check for add to tbl otp
             return response()->json([
                 'success'   => true,
                 'message'   => 'Verify code We already sent to ' . $phoneEmail_check,
@@ -190,8 +180,6 @@ class AuthController extends Controller
         if (filter_var($req->emailPhone, FILTER_VALIDATE_EMAIL)) {
             PhoneOtp::where('email', $req->emailPhone)->where('expired_date', '<=', $current_time)->delete();
             $tbl_email_phone_otp = PhoneOtp::where('email', $req->emailPhone)->where('expired_date', '>', $current_time)->first();
-
-            /*  */
         }
         if ($tbl_email_phone_otp) {
             $check = Hash::check($req->otp, $tbl_email_phone_otp->otp);
@@ -311,27 +299,17 @@ class AuthController extends Controller
     }
     public function log_with_phone(Request $request)
     {
-
-        // Set your API key here
-        // $apiKey = 'AIzaSyCeElRoZ9Aj_NKeT4hfLYVHc04UJPb4uwE';
-
-        // Set the user's temporary ID token here
         $keyPath = storage_path("app/FireBase.json");
         $factory = (new Factory)->withServiceAccount($keyPath);
         $auth = $factory->createAuth();
-
-        // Create a temporary ID token for the user
-        // $idToken = $auth->createCustomToken($request->phoneNumber)->toString();
         try {
-            // change $examplePhoneNumber to yours
             $examplePhoneNumber = $request->phoneNumber;
             $user = $auth->getUserByPhoneNumber($examplePhoneNumber);
             $object = json_decode(json_encode($user));
             $phone = $object->phoneNumber;
             $compair_user = User::where('phone', $phone)->first();
-            //check user has new  or not
             if ($compair_user) {
-                $check = Hash::check($request->pss, $compair_user->password);
+                $check = Hash::check($request->password, $compair_user->password);
                 if ($check) {
                     $token = $compair_user->createToken('my-app-token')->plainTextToken;
                     return response()->json([
@@ -343,7 +321,7 @@ class AuthController extends Controller
                 } else {
                     return response()->json([
                         'success' => false,
-                        'message' => "pss don't match"
+                        'message' => "password don't match"
                     ], 400);
                 }
             } else {
@@ -363,18 +341,10 @@ class AuthController extends Controller
 
     public function create_user_with_phone(Request $request)
     {
-
-        // Set your API key here
-        // $apiKey = 'AIzaSyCeElRoZ9Aj_NKeT4hfLYVHc04UJPb4uwE';
-
-        // Set the user's temporary ID token here
         $keyPath = storage_path("app/FireBase.json");
         $factory = (new Factory)->withServiceAccount($keyPath);
         $auth = $factory->createAuth();
-        // Create a temporary ID token for the user
-        // $idToken = $auth->createCustomToken($request->phoneNumber)->toString();
         try {
-            // change $examplePhoneNumber to yours
             $examplePhoneNumber = $request->phoneNumber;
             $user = $auth->getUserByPhoneNumber($examplePhoneNumber);
             $object = json_decode(json_encode($user));
@@ -390,11 +360,9 @@ class AuthController extends Controller
                 $created = $greate_user->save();
                 $get_user = $greate_user->refresh();
                 $getuser = User::where('phone', $phone)->first();
-                //check pss
-                $check = Hash::check($request->pss, $getuser->password);
+                $check = Hash::check($request->password, $getuser->password);
                 if ($check) {
                     $token = $getuser->createToken('my-app-token')->plainTextToken;
-                    // $update = $getuser->save();
                     return response()->json([
                         'success' => true,
                         'data' => $get_user,
@@ -404,7 +372,7 @@ class AuthController extends Controller
                     $getuser = User::where('phone', $phone)->delete();
                     return response()->json([
                         'success' => false,
-                        'message' => 'incorrect pss'
+                        'message' => 'incorrect password'
                     ], 400);
                 }
             } else {

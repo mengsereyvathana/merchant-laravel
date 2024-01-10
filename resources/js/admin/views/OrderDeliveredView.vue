@@ -31,7 +31,7 @@ let searchOption = ref([
 
 onMounted(async () => {
     selectedSearchOption.value = searchOption.value[0].by;
-    getOrders();
+    await getOrders();
     // token.value = sessionStorage.getItem('adminToken') || '';
 });
 
@@ -156,12 +156,14 @@ const search = _.debounce(async (pageNumber = 1) => {
                                                 </div>
                                             </td>
                                             <td class='py-2 px-3 text-body-2 text-grey-darken-3'>{{ item.qty }}</td>
-                                            <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ item.unit_price.toFixed(2) }}</td>
+                                            <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{
+                                                item.unit_price.toFixed(2) }}</td>
                                         </tr>
                                         <tr>
                                             <td class='py-2 px-3 text-body-2 text-grey-darken-3'>Total</td>
                                             <td class='py-2 px-3 text-body-2 text-grey-darken-3'></td>
-                                            <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{ total[mainIndex].toFixed(2)
+                                            <td class='py-2 px-3 text-body-2 text-grey-darken-3'>${{
+                                                total[mainIndex].toFixed(2)
                                             }}</td>
                                         </tr>
                                     </tbody>

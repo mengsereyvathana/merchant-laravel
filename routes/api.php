@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\AuthController as UserAuthController;
 use App\Http\Controllers\ProductController as UserProductController;
 use App\Http\Controllers\CategoryController as UserCategoryController;
 use App\Http\Controllers\ProductSchemeController as UserProductSchemeController;
@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\AuthController;
 | User Routes
 |--------------------------------------------------------------------------
 */
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return response()->json([
         'success' => true,
@@ -76,16 +77,16 @@ Route::get('/slide/{slide_id?}', [UserSlideController::class, 'show']);
 
 
 //auth
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::post('/create_user_with_phone', [AuthController::class, 'create_user_with_phone']);
-Route::post('/log_with_phone', [AuthController::class, 'log_with_phone']);
-Route::post('/admin_login', [AuthController::class, 'admin_login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/verify_email_otp', [AuthController::class, 'verify_email_otp']);
-Route::post('/resend_otp', [AuthController::class, 'resend_otp']);
-Route::post('/change_password', [AuthController::class, 'change_password']);
-Route::post('/forgot', [AuthController::class, 'forgot']);
+Route::post('/login', [UserAuthController::class, 'login']);
+Route::post('/logout', [UserAuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/create_user_with_phone', [UserAuthController::class, 'create_user_with_phone']);
+Route::post('/log_with_phone', [UserAuthController::class, 'log_with_phone']);
+Route::post('/admin_login', [UserAuthController::class, 'admin_login']);
+Route::post('/register', [UserAuthController::class, 'register']);
+Route::post('/verify_email_otp', [UserAuthController::class, 'verify_email_otp']);
+Route::post('/resend_otp', [UserAuthController::class, 'resend_otp']);
+Route::post('/change_password', [UserAuthController::class, 'change_password']);
+Route::post('/forgot', [UserAuthController::class, 'forgot']);
 
 /*
 |--------------------------------------------------------------------------

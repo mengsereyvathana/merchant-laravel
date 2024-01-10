@@ -10,7 +10,7 @@ use  App\Models\User;
 class Order extends Model
 {
   use HasFactory;
-  protected $table = 'tbl_order';
+
   public function orderDetail()
   {
     return $this->hasMany(OrderDetail::class, 'order_id'); //this products_id fetch the products  ,product_id fro call product id in prducts table compare with produtc

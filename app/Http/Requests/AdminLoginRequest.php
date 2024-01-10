@@ -13,7 +13,7 @@ class AdminLoginRequest extends FormRequest
     {
 
         return [
-            'name'    => 'required',
+            'email'    => 'required',
             'password'      => 'required|numeric|digits_between:8,20'
         ];
     }

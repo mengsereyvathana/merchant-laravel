@@ -21,26 +21,27 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => '|max:50|min:2',
-            'price' => '|numeric',
-            'image' => '|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'color' => '',
-            'description' => '|max:500|min:2',
-            'ram' => 'integer|numeric|digits_between:1,2',
-            'storage'=>'integer',
-            'buy'=>'integer',
-            'stock'=>'integer',
-            'action' => 'integer|digits:1'
+            // 'name'  => 'required|max:50|min:2',
+            // 'price' => 'required|numeric',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'color' => 'required|',
+            // 'description' => 'required|max:500|min:2',
+            // 'ram' => 'required|numeric|digits_between:1,2',
+            // 'storage' => 'required',
+            // 'buy' => 'required',
+            // 'stock' => 'required',
+            // 'category_id' => 'required',
+            // 'action' => 'required'
         ];
     }
 
     /* for response message when the process error */
     public function failedValidation(Validator $validator)
-{
-   throw new HttpResponseException(response()->json([
-     'success'   => false,
-     'message'   => 'Validation errors',
-     'data'      => $validator->errors()
-   ],400));
-}
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message'   => 'Validation error',
+            'data'      => $validator->errors()
+        ], 400));
+    }
 }

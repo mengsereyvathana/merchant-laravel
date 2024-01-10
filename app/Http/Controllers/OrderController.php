@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatusEnum;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -51,27 +52,19 @@ class OrderController extends Controller
                 'total_page' => 0
             ], 200);
         } else {
-
             $collections = collect($order_detail);
-
             $groupedInvoices = $collections->toArray();
             $myKeys = array_keys($groupedInvoices);
             for ($a = 0; $a < count($groupedInvoices); $a++) {
                 $invoice[] = $groupedInvoices[$myKeys[$a]][0]['order']['invoice'];
             }
             $collection = collect($invoice);
-
             $uniqueincoive = $collection->unique();
             $date =  OrderDetail::query();
             for ($i = 0; $i < count($uniqueincoive); $i++) {
                 $collection = collect($uniqueincoive);
-
                 $arrays = $collection->toArray();
-
-
                 $keys = array_keys($arrays);
-
-
                 $getInvoice[] = $arrays[$keys[$i]];
                 $date->orwhereRelation('order', 'invoice', $arrays[$keys[$i]]);
                 $get_group[] = $order_detail[$getInvoice[$i]];
@@ -105,7 +98,8 @@ class OrderController extends Controller
         }
     }
 
-    public function showOrderDetail (Request $req) {
+    public function showOrderDetail(Request $req)
+    {
         $objects = $req->input();
         $order = Order::where('id', $objects[0]['order_id'])->get();
         $order_id =  $order[0]['id'];
@@ -156,14 +150,10 @@ class OrderController extends Controller
         $data = new Order;
         $data->invoice = $order_invoice + 1;
         $data->user_id = $request->user_id;
-        $data->address_id = $request->address_id;
+        // $data->address_id = $request->address_id;
         $data->pay_by = $request->pay_by;
-        if ($request->status) {
-            $data->status = $request->status;
-        }
-
+        $data->status = OrderStatusEnum::DELIVERED;
         $result = $data->save();
-        // $data->load('user');
         $get_data = $data->load('user');
         if ($result) {
             return response()->json([

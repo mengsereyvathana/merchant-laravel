@@ -11,10 +11,11 @@ use App\Models\OrderDetail;
 class Product extends Model
 {
     use HasFactory;
-    protected $table = 'tbl_products';
-    // public $timestamp = false;
-    // protected $guarded = ['updated_at'];
-    protected $fillable = ['name', 'price', 'image', 'color', 'description', 'ram', 'storage', 'buy', 'margin', 'stock', 'category_id', 'action'];
+
+    protected $fillable = [
+        'name', 'price', 'image', 'color', 'description', 'ram', 'storage', 'buy', 'margin', 'stock', 'category_id', 'action'
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');

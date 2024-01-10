@@ -48,7 +48,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function search (Request $request) {
+    public function search(Request $request)
+    {
         $data = Category::query();
         if ($request->name != null) {
             $search = $request->name;
@@ -115,7 +116,6 @@ class CategoryController extends Controller
      */
     public function create(Request $request)
     {
-
     }
 
     /**

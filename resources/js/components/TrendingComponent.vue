@@ -46,10 +46,6 @@ const idDetail = (id: number): string | null => {
                 <img :src="Upload.icon('trending.svg')" alt="" class='w-[20px] h-[20px] mr-1' />
                 <span class='min-[320px]:text-sm text-2xl font-[700] text-gray-800 capitalize'>Trending</span>
             </div>
-            <!-- <p @click="more = !more" class="text-sm hover:underline cursor-pointer text-primary">
-                {{ more ? 'See less' :
-                'See more' }}
-            </p> -->
         </div>
         <div class="grid min-[320px]:grid-cols-2 min-[320px]:gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-9 mt-5">
             <div v-for="item in products" :key="item.id">
@@ -67,15 +63,15 @@ const idDetail = (id: number): string | null => {
                             <div class="flex flex-col gap-1 font-normal">
                                 <div class="flex items-center gap-2 text-sm text-letter">
                                     <span class="">Buy: </span>
-                                    <h4 class=''>${{ item.unit_price.toFixed(2) }}</h4>
+                                    <h4 class=''>${{ Number(item.unit_price).toFixed(2) }}</h4>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm">
                                     <span class=" text-letter">Sell: </span>
-                                    <h4 class=' text-danger'>${{ item.products.price.toFixed(2) }}</h4>
+                                    <h4 class=' text-danger'>${{ Number(item.products.price).toFixed(2) }}</h4>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm">
                                     <span class=" text-letter">Margin: </span>
-                                    <h4 class=' text-danger'>${{ item.margin.toFixed(2) }}</h4>
+                                    <h4 class=' text-danger'>${{ Number(item.margin).toFixed(2) }}</h4>
                                 </div>
                             </div>
                             <button @click="addToCart(item.products.id)" type='button'

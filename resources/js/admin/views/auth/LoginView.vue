@@ -21,7 +21,7 @@ onMounted(async () => {
 const login = async () => {
     loading.value = true;
     const formData = new FormData();
-    formData.append('name', form.value.username);
+    formData.append('email', form.value.username);
     formData.append('password', form.value.password);
 
     const [error, data] = await adminAuthService.login(formData)
@@ -29,7 +29,7 @@ const login = async () => {
     else {
         if (data.success) {
             sessionStorage.setItem("adminToken", data.token);
-            router.replace("/admin");
+            await router.replace("/admin");
         } else {
             message.value.name = data.data.name;
             message.value.password = data.data.password;

@@ -9,9 +9,9 @@ use App\Models\User;
 class Scheme extends Model
 {
     use HasFactory;
-    protected $table = 'tbl_scheme';
-    public function users(){
-        return $this->hasMany(User::class); //this scheme_id has many products
-    }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

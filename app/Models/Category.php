@@ -9,9 +9,9 @@ use  App\Models\Product;
 class Category extends Model
 {
     use HasFactory;
-    protected $table = 'tbl_category';
-    public function products(){
+
+    public function products()
+    {
         return $this->hasMany(Product::class); //this category_id has many products
     }
-
 }

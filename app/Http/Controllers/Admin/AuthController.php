@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\RoleTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminLoginRequest;
 use App\Models\User;
@@ -9,11 +10,12 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function login (AdminLoginRequest $req) {
-        $name = $req->name;
+    public function login(AdminLoginRequest $req)
+    {
+        $email = $req->email;
 
-        $user = User::where('name', $name)->first();
-        $user_check = User::where('role', 3)->first();
+        $user = User::where('email', $email)->first();
+        $user_check = User::where('role', RoleTypeEnum::ADMIN)->first();
 
         if (!$user) {
             return response()->json([
@@ -33,7 +35,6 @@ class AuthController extends Controller
                 'message'   => "User not found"
             ], 400);
         } else {
-            // $check = Hash::check($req->password, $user->password);
             $check = User::where('password', $req->password);
             if (!$check) {
                 return response()->json([
@@ -51,7 +52,8 @@ class AuthController extends Controller
         }
     }
 
-    public function logout (Request $request) {
+    public function logout(Request $request)
+    {
         if (auth()->check()) {
             $request->user()->currentAccessToken()->delete();
             return response()->json([

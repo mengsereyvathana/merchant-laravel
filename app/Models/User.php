@@ -16,11 +16,13 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = "users";
 
-    public function scheme(){
+    public function scheme()
+    {
         return $this->belongsTo(Scheme::class); //this user has  1 of scheme_id
     }
-    public function order(){
-        return $this->hasMany(Order::class,'user_id'); //this user has  1 of scheme_id
+    public function order()
+    {
+        return $this->hasMany(Order::class, 'user_id'); //this user has  1 of scheme_id
     }
     /**
      * The attributes that are mass assignable.

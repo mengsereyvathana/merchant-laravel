@@ -21,9 +21,9 @@ class OrderController extends Controller
             $offset = ($pg - 1) * $limit;
         }
 
-        $pg ? $order_detail = OrderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice')->skip($offset)->take($limit) :
-            $order_detail = OrderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice');
-        $total_invoice = count(OrderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice'));
+        $pg ? $order_detail = orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice')->skip($offset)->take($limit) :
+            $order_detail = orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice');
+        $total_invoice = count(orderDetail::whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice'));
         if (($total_invoice - $offset) < $limit || empty($pg)) {
             $sum_page = $total_invoice;
         } else {
@@ -67,8 +67,8 @@ class OrderController extends Controller
 
             //  return $collection;
             $uniqueincoive = $collection->unique();
-            $date =  OrderDetail::query();
-            //loop 0-1
+            $date =  orderDetail::query();
+            //loop 0-1 
             for ($i = 0; $i < count($uniqueincoive); $i++) {
                 // find value of invocie (100&2345) type obj =>{"0":100,"3":2345}
                 $collection = collect($uniqueincoive);
@@ -83,14 +83,14 @@ class OrderController extends Controller
                 // get value of obj point by key cus $keys[0]=100,$keys[1]=2345 =>$arrays[0]&$array[3] =>getInvoice [100,2345]
                 $getInvoice[] = $arrays[$keys[$i]];
                 $date->orwhereRelation('order', 'invoice', $arrays[$keys[$i]]);
-                // groupInvoice have key 100 & 2345 of 6 data so, we poit key of group and insert into array
+                // groupInvoice have key 100 & 2345 of 6 data so, we poit key of group and insert into array 
                 $get_group[] = $order_detail[$getInvoice[$i]];
 
                 $total[] = array_sum(array_column($groupedInvoices[$getInvoice[$i]], 'total'));
             }
             //    return $arrays;
             $getInvoice_ordered = implode(',', $getInvoice);
-            $date = Order::whereIn('invoice', $getInvoice)->orderByRaw("FIELD(invoice, $getInvoice_ordered)")->with('user')->get();
+            $date = order::whereIn('invoice', $getInvoice)->orderByRaw("FIELD(invoice, $getInvoice_ordered)")->with('user')->get();
 
             for ($i = 0; $i < count($getInvoice); $i++) {
                 $dates[] = $date[$i]['created_at'];
@@ -116,7 +116,8 @@ class OrderController extends Controller
         }
     }
 
-    public function search (Request $request) {
+    public function search(Request $request)
+    {
         $order_detail = OrderDetail::whereRelation('order', 'invoice', $request->invoice)->whereRelation('order', 'status', 'delivered')->with('order', 'product')->get();
         $total_invoice = count(OrderDetail::whereRelation('order', 'invoice', $request->invoice)->whereRelation('order', 'status', 'delivered')->with('order', 'product')->get()->groupBy('order.invoice'));
 
