@@ -64,7 +64,7 @@ const handleSignOut = async () => {
                 timer: 1000,
             })
         }
-        router.replace("/phone_login");
+        router.replace("/login");
     }
 }
 
