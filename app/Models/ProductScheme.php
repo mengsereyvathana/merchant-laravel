@@ -9,6 +9,14 @@ class ProductScheme extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'product_id',
+        'scheme_id',
+        'unit_price',
+        'margin',
+        'action',
+    ];
+
     protected $table = 'product_schemes';
 
     public function products()

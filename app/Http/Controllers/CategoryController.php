@@ -12,17 +12,19 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $get = Category::all();
-        if ($get) {
+        $categories = Category::all();
+
+        if ($categories->isEmpty()) {
             return response()->json([
-                'success' => true,
-                'data' => $get
+                'success' => false,
+                'message' => 'No category data',
             ], 200);
         }
+
         return response()->json([
             'success' => true,
-            'message' => 'No category data'
-        ], 400);
+            'data' => $categories,
+        ], 200);
     }
 
     /**

@@ -32,13 +32,9 @@ class ProductController extends Controller
         } else {
             $sum_page = $total_page - ($total_page - $offset) + $limit;
         }
-        $minutesToAdd = 1;
-
         return response()->json([
-            // 'date'=>$date,
             'success' => true,
             'data' => $data,
-
             'per_page' => $limit,
             'total_item' => $total_page,
             'total_page' => ceil($total_page / $limit),
@@ -46,7 +42,8 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function search (Request $request, $pg = null) {
+    public function search(Request $request, $pg = null)
+    {
         $user = User::where('id', $request->user_id)->first();
         if (!$user) {
             return response()->json([
@@ -58,7 +55,7 @@ class ProductController extends Controller
         $data_search = $request->name;
         $parts = preg_split('/\s+/', $data_search);
         $lenght = count($parts);
-        $pg ? $data = product_price_scheme::query() : $data = product_price_scheme::query();
+        $pg ? $data = ProductScheme::query() : $data = ProductScheme::query();
         for ($i = 0; $i < $lenght; $i++) {
             $data->whereRelation('products', 'name', 'like', "%{$parts[$i]}%");
         }

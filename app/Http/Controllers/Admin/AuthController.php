@@ -10,60 +10,66 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function login(AdminLoginRequest $req)
+    public function login(AdminLoginRequest $request)
     {
-        $email = $req->email;
+        $email = $request->email;
 
         $user = User::where('email', $email)->first();
-        $user_check = User::where('role', RoleTypeEnum::ADMIN)->first();
+        $adminUser = User::where('role', RoleTypeEnum::ADMIN)->first();
 
         if (!$user) {
             return response()->json([
-                'success'   =>  false,
-                'message'   => 'Incorrect name'
-            ], 401);
-        }
-        if (!$user_check) {
-            return response()->json([
-                'success'   =>  false,
-                'message'   => "This accound isn't admin"
-            ], 400);
-        }
-        if (!$user_check & !$user) {
-            return response()->json([
-                'success'   =>  false,
-                'message'   => "User not found"
-            ], 400);
-        } else {
-            $check = User::where('password', $req->password);
-            if (!$check) {
-                return response()->json([
-                    'success'   =>  false,
-                    'message'   => 'Incorrect password'
-                ], 401);
-            }
-            $token = $user->createToken('my-app-token')->plainTextToken;
-
-            return response()->json([
-                'success' => true,
-                'user' => $user,
-                'token' => $token
+                'success' => false,
+                'message' => 'Incorrect email',
             ], 200);
         }
+
+        if (!$adminUser) {
+            return response()->json([
+                'success' => false,
+                'message' => "This account isn't admin",
+            ], 200);
+        }
+
+        if (!$user && !$adminUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
+        }
+
+        $isPasswordCorrect = password_verify($request->password, $user->password);
+
+        if (!$isPasswordCorrect) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect password',
+            ], 201);
+        }
+
+        $token = $user->createToken('my-app-token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'token' => $token,
+        ], 200);
     }
 
     public function logout(Request $request)
     {
         if (auth()->check()) {
             $request->user()->currentAccessToken()->delete();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Logout successfuly'
+                'message' => 'Logout successfully',
             ], 200);
         }
+
         return response()->json([
             'success' => false,
-            'message' => 'unAuthorization'
-        ], 400);
+            'message' => 'Unauthorized',
+        ], 201);
     }
 }

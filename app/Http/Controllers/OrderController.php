@@ -16,8 +16,9 @@ class OrderController extends Controller
     public function index(Request $req)
     {
         $pg = $req->query('page');
-        $offset = 0;
         $limit  = 4;
+        $offset = 0;
+
         if ($pg > 0) {
             $offset = ($pg - 1) * $limit;
         }
@@ -25,6 +26,7 @@ class OrderController extends Controller
         $pg ? $order_detail = OrderDetail::whereRelation('order', 'status', 'delivered')->whereRelation('order', 'user_id', $req->user_id)->with('order', 'product')->get()->groupBy('order.invoice')->skip($offset)->take($limit) :
             $order_detail = OrderDetail::whereRelation('order', 'status', 'delivered')->whereRelation('order', 'user_id', $req->user_id)->with('order', 'product')->get()->groupBy('order.invoice');
         $total_invoice = count(OrderDetail::whereRelation('order', 'status', 'delivered')->whereRelation('order', 'user_id', $req->user_id)->with('order', 'product')->get()->groupBy('order.invoice'));
+
         if (($total_invoice - $offset) < $limit || empty($pg)) {
             $sum_page = $total_invoice;
         } else {
@@ -147,15 +149,17 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $order_invoice = Order::max('invoice');
-        $data = new Order;
-        $data->invoice = $order_invoice + 1;
-        $data->user_id = $request->user_id;
-        // $data->address_id = $request->address_id;
-        $data->pay_by = $request->pay_by;
-        $data->status = OrderStatusEnum::DELIVERED;
-        $result = $data->save();
-        $get_data = $data->load('user');
-        if ($result) {
+
+        $data = Order::create([
+            'invoice' => $order_invoice + 1,
+            'user_id' => $request->user_id,
+            'pay_by' => $request->pay_by,
+            'status' => OrderStatusEnum::DELIVERED,
+        ]);
+
+        if ($data) {
+            $get_data = $data->load('user');
+
             return response()->json([
                 'success' => true,
                 'data' => $get_data
@@ -163,10 +167,11 @@ class OrderController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'error'
+                'message' => 'Error creating order'
             ], 400);
         }
     }
+
 
     /**
      * Display the specified resource.

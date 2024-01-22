@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class emailOTP extends Mailable
+class EmailOTP extends Mailable
 {
     use Queueable, SerializesModels;
 

@@ -10,6 +10,11 @@ class Scheme extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'type',
+        'scheme_price',
+    ];
     public function users()
     {
         return $this->hasMany(User::class);

@@ -77,16 +77,15 @@ Route::get('/slide/{slide_id?}', [UserSlideController::class, 'show']);
 
 
 //auth
-Route::post('/login', [UserAuthController::class, 'login']);
-Route::post('/logout', [UserAuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::post('/create_user_with_phone', [UserAuthController::class, 'create_user_with_phone']);
-Route::post('/log_with_phone', [UserAuthController::class, 'log_with_phone']);
-Route::post('/admin_login', [UserAuthController::class, 'admin_login']);
 Route::post('/register', [UserAuthController::class, 'register']);
-Route::post('/verify_email_otp', [UserAuthController::class, 'verify_email_otp']);
-Route::post('/resend_otp', [UserAuthController::class, 'resend_otp']);
-Route::post('/change_password', [UserAuthController::class, 'change_password']);
-Route::post('/forgot', [UserAuthController::class, 'forgot']);
+Route::post('/login', [UserAuthController::class, 'login']);
+Route::post('/create_user_with_phone', [UserAuthController::class, 'createUserWithPhone']);
+Route::post('/log_with_phone', [UserAuthController::class, 'loginWithPhone']);
+Route::post('/logout', [UserAuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/verify_email_otp', [UserAuthController::class, 'verifyEmailOtp']);
+Route::post('/resend_otp', [UserAuthController::class, 'resendOtp']);
+Route::post('/change_password', [UserAuthController::class, 'changePassword']);
+Route::post('/forgot', [UserAuthController::class, 'forgotPassword']);
 
 /*
 |--------------------------------------------------------------------------
